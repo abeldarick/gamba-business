@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import {
   Search,
@@ -19,6 +19,7 @@ import {
   PlusCircle,
   LayoutGrid,
   RotateCcw,
+  Sparkles,
 } from 'lucide-react';
 import { useGamba } from '@/context/GambaContext';
 import {
@@ -29,6 +30,25 @@ import {
 } from '@/lib/mockData';
 import { CategoryId, QuartierGamba } from '@/lib/types';
 import ListingCard from '@/components/ListingCard';
+
+// Les 3 photos authentiques de la vie économique à Gamba (Gabon) pour le Hero animé
+const HERO_SLIDES = [
+  {
+    src: '/images/gamba-hero-1.jpg',
+    label: 'Bars, Maquis & Terrasses Régab à Gamba',
+    quartierTag: 'Ambiance & Détente • Centre-ville & Plaines',
+  },
+  {
+    src: '/images/gamba-hero-2.jpg',
+    label: 'Commerces, Sandwichs & Saveurs des Quartiers',
+    quartierTag: 'Restauration Rapide & Boutiques • Plaine 1 à 5',
+  },
+  {
+    src: '/images/gamba-hero-3.jpg',
+    label: 'Poisson Frais & Fumé de la Lagune Ndougou',
+    quartierTag: 'Pêche Locale & Grillades • Mayonami & Le Couloir',
+  },
+];
 
 const CATEGORY_ICONS: Record<CategoryId, React.ElementType> = {
   Motels: BedDouble,
@@ -48,6 +68,15 @@ export default function HomePage() {
   const [selectedCategory, setSelectedCategory] = useState<CategoryId | 'Toutes'>('Toutes');
   const [maxPrice, setMaxPrice] = useState<number>(100000);
   const [showPriceFilter, setShowPriceFilter] = useState(false);
+  const [activeHeroSlide, setActiveHeroSlide] = useState<number>(0);
+
+  // Animation automatique en boucle des 3 photos en arrière-plan du Hero (toutes les 4 secondes)
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActiveHeroSlide((prev) => (prev + 1) % HERO_SLIDES.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, []);
 
   const activeListings = useMemo(() => {
     return listings.filter((item) => getDaysRemaining(item.expiresAt) > 0);
@@ -111,30 +140,46 @@ export default function HomePage() {
   return (
     <div className="space-y-10 sm:space-y-14 pb-12">
       {/* =====================================================================
-          1. HERO IMMERSIF BLEU & BLANC AVEC VRAIE PHOTO DE LAGUNE TROPICALE
+          1. HERO IMMERSIF AVEC LES 3 PHOTOS AUTHENTIQUES ANIMÉES EN FOND
           ===================================================================== */}
-      <section className="relative overflow-hidden bg-[#0B192C] text-white pt-10 pb-16 sm:pt-16 sm:pb-24 px-4">
-        <img
-          src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&q=80"
-          alt="Lagune Ndougou et Plages de Gamba, Gabon"
-          className="absolute inset-0 w-full h-full object-cover object-center opacity-35 scale-105"
-        />
+      <section className="relative overflow-hidden bg-[#0B192C] text-white pt-10 pb-20 sm:pt-16 sm:pb-24 px-4">
+        {/* Diaporama animé (Crossfade + Effet Ken Burns Zoom fluide sur les 3 photos) */}
+        <div className="absolute inset-0 z-0 overflow-hidden">
+          {HERO_SLIDES.map((slide, idx) => {
+            const isActive = idx === activeHeroSlide;
+            return (
+              <img
+                key={slide.src}
+                src={slide.src}
+                alt={slide.label}
+                className={`absolute inset-0 w-full h-full object-cover object-center transition-all duration-[1500ms] ease-out ${
+                  isActive
+                    ? 'opacity-70 scale-110'
+                    : 'opacity-0 scale-100 pointer-events-none'
+                }`}
+              />
+            );
+          })}
+        </div>
+
+        {/* Voile dégradé calibré pour laisser briller les 3 photos tout en gardant le texte ultra lisible */}
         <div
-          className="absolute inset-0"
+          className="absolute inset-0 z-[1]"
           style={{
             background:
-              'linear-gradient(180deg, rgba(11, 25, 44, 0.72) 0%, rgba(11, 25, 44, 0.88) 65%, #0B192C 100%)',
+              'linear-gradient(180deg, rgba(11, 25, 44, 0.42) 0%, rgba(11, 25, 44, 0.55) 55%, rgba(11, 25, 44, 0.94) 100%)',
           }}
         />
+        <div className="absolute inset-0 z-[1] bg-radial from-transparent via-transparent to-[#0B192C]/60" />
 
         <div className="max-w-5xl mx-auto text-center space-y-6 relative z-10">
           {/* Badge de confiance local avec les vrais quartiers de Gamba */}
-          <div className="inline-flex items-center gap-2 rounded-full bg-blue-500/20 border border-sky-400/30 backdrop-blur-md px-4 py-1.5 text-xs font-semibold text-sky-200 shadow-sm">
+          <div className="inline-flex items-center gap-2 rounded-full bg-[#0B192C]/65 border border-sky-400/40 backdrop-blur-md px-4 py-1.5 text-xs font-semibold text-sky-200 shadow-lg">
             <span className="h-2 w-2 rounded-full bg-sky-400 animate-ping" />
             <span>PLAINE 1 À 5 • LE COULOIR • CENTRE-VILLE • CAMP YENZI • MAYONAMI</span>
           </div>
 
-          <h1 className="text-3xl sm:text-5xl md:text-6xl font-black tracking-tight leading-[1.12]">
+          <h1 className="text-3xl sm:text-5xl md:text-6xl font-black tracking-tight leading-[1.12] drop-shadow-[0_4px_18px_rgba(0,0,0,0.65)]">
             Tout{' '}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-300 via-blue-200 to-white">
               Gamba
@@ -142,13 +187,36 @@ export default function HomePage() {
             dans votre poche.
           </h1>
 
-          <p className="text-sm sm:text-lg text-slate-200 max-w-2xl mx-auto font-normal leading-relaxed">
+          <p className="text-sm sm:text-lg text-white/95 max-w-2xl mx-auto font-medium leading-relaxed drop-shadow-[0_2px_10px_rgba(0,0,0,0.7)]">
             La plateforme de référence pour trouver les meilleurs{' '}
-            <strong className="text-white font-semibold">
+            <strong className="text-sky-300 font-extrabold">
               Motels, Restaurants de poisson braisé, Bars, Boutiques, Salons et Techniciens
             </strong>{' '}
             à Gamba. Contact direct par WhatsApp.
           </p>
+
+          {/* Indicateur interactif des 3 photos animées en temps réel */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-1">
+            <div className="inline-flex items-center gap-2 rounded-full bg-[#0B192C]/75 border border-white/20 backdrop-blur-md px-3.5 py-1.5 text-xs font-bold text-white shadow-md">
+              <Sparkles className="h-3.5 w-3.5 text-amber-400 shrink-0" />
+              <span>{HERO_SLIDES[activeHeroSlide].label}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              {HERO_SLIDES.map((slide, idx) => (
+                <button
+                  key={slide.src}
+                  type="button"
+                  onClick={() => setActiveHeroSlide(idx)}
+                  aria-label={`Afficher photo ${idx + 1}: ${slide.label}`}
+                  className={`h-2.5 rounded-full transition-all duration-500 ${
+                    idx === activeHeroSlide
+                      ? 'w-9 bg-sky-400 shadow-[0_0_12px_rgba(56,189,248,0.9)]'
+                      : 'w-2.5 bg-white/45 hover:bg-white/80'
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
 
           {/* MOTEUR DE RECHERCHE BLANC & BLEU */}
           <div className="bg-white p-2.5 sm:p-3 rounded-2xl sm:rounded-3xl shadow-2xl shadow-blue-950/50 max-w-4xl mx-auto border border-slate-100 text-left">
@@ -370,20 +438,20 @@ export default function HomePage() {
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div
-            onClick={() => setSelectedCategory('Motels')}
+            onClick={() => setSelectedCategory('Bars')}
             className="group cursor-pointer relative h-52 rounded-3xl overflow-hidden shadow-md border border-slate-200"
           >
             <img
-              src="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=900&q=80"
-              alt="Motels et Résidences à Gamba"
+              src="/images/gamba-hero-1.jpg"
+              alt="Bars, Maquis et Détente à Gamba"
               className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/35 to-transparent" />
             <div className="absolute bottom-4 left-4 right-4 text-white">
               <span className="rounded-full bg-blue-600 px-2.5 py-0.5 text-[10px] font-bold uppercase">
-                Séjour &amp; Missions
+                Détente &amp; Séjours
               </span>
-              <h3 className="text-lg font-bold mt-1">Motels &amp; Résidences Climatisées</h3>
+              <h3 className="text-lg font-bold mt-1">Bars, Maquis &amp; Motels de Gamba</h3>
               <p className="text-xs text-slate-200">
                 Centre-ville, Plaine 1 à 5 &amp; Le Couloir
               </p>
@@ -395,43 +463,43 @@ export default function HomePage() {
             className="group cursor-pointer relative h-52 rounded-3xl overflow-hidden shadow-md border border-slate-200"
           >
             <img
-              src="https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=900&q=80"
-              alt="Poisson braisé et Grillades à Gamba"
+              src="/images/gamba-hero-3.jpg"
+              alt="Poisson braisé et fumé de la lagune de Gamba"
               className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/35 to-transparent" />
             <div className="absolute bottom-4 left-4 right-4 text-white">
               <span className="rounded-full bg-sky-500 px-2.5 py-0.5 text-[10px] font-bold uppercase">
-                Saveurs Locales
+                Saveurs de la Lagune
               </span>
               <h3 className="text-lg font-bold mt-1">
-                Poisson Braisé, Coupé-Coupé &amp; Restos
+                Poisson Braisé, Fumé &amp; Restaurants
               </h3>
               <p className="text-xs text-slate-200">
-                Carpe fraîche de la lagune, plantain &amp; livraison
+                Pêche fraîche de Ndougou, grillades &amp; livraison
               </p>
             </div>
           </div>
 
           <div
-            onClick={() => setSelectedCategory('Services')}
+            onClick={() => setSelectedCategory('Alimentation')}
             className="group cursor-pointer relative h-52 rounded-3xl overflow-hidden shadow-md border border-slate-200"
           >
             <img
-              src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?auto=format&fit=crop&w=900&q=80"
-              alt="Salons de coiffure et Services techniques à Gamba"
+              src="/images/gamba-hero-2.jpg"
+              alt="Sandwichs, Commerces et Boutiques à Gamba"
               className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/35 to-transparent" />
             <div className="absolute bottom-4 left-4 right-4 text-white">
               <span className="rounded-full bg-indigo-600 px-2.5 py-0.5 text-[10px] font-bold uppercase">
-                Beauté &amp; Artisans
+                Commerces &amp; Quartiers
               </span>
               <h3 className="text-lg font-bold mt-1">
-                Salons VIP, Froid/Clim &amp; Boutiques
+                Sandwichs, Boutiques &amp; Services
               </h3>
               <p className="text-xs text-slate-200">
-                Coiffure, dépannage 24h/7 et commerce général
+                Alimentation, coiffure et commerce général
               </p>
             </div>
           </div>
