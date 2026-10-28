@@ -11,6 +11,7 @@ import {
   Compass,
   Zap,
   PlusCircle,
+  FileSpreadsheet,
 } from 'lucide-react';
 import { useGamba } from '@/context/GambaContext';
 
@@ -27,9 +28,10 @@ export default function Navbar() {
 
   const navItems = [
     { href: '/', label: 'Explorer Gamba', shortLabel: 'Accueil', icon: LayoutGrid },
-    { href: '/publier', label: 'Publier une annonce', shortLabel: 'Publier', icon: Plus, highlight: true },
-    { href: '/tarifs', label: 'Tarifs & Visibilité', shortLabel: 'Tarifs', icon: Award },
-    { href: '/mes-annonces', label: 'Espace Vendeur', shortLabel: 'Mes Annonces', icon: Briefcase },
+    { href: '/publier', label: 'Publier', shortLabel: 'Publier', icon: Plus, highlight: true },
+    { href: '/facturation', label: 'Facturation TVA 18%', shortLabel: 'Factures', icon: FileSpreadsheet },
+    { href: '/tarifs', label: 'Tarifs', shortLabel: 'Tarifs', icon: Award },
+    { href: '/mes-annonces', label: 'Espace Vendeur', shortLabel: 'Vendeur', icon: Briefcase },
   ];
 
   return (
@@ -42,7 +44,7 @@ export default function Navbar() {
               🇬🇦 GAMBA • DÉPARTEMENT DE NDOUGOU
             </span>
             <span className="text-slate-300 font-medium hidden sm:inline">
-              1ère annonce 100% GRATUITE pendant 2 jours pour tous les commerçants !
+              1ère annonce 100% GRATUITE pendant 2 jours + Facturation TVA 18% incluse !
             </span>
           </div>
           <div className="flex items-center gap-3 ml-auto">
@@ -92,7 +94,7 @@ export default function Navbar() {
                   <Link
                     key={item.href}
                     href={item.href}
-                    className="flex items-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm px-5 py-2.5 shadow-md shadow-blue-600/20 transition ml-2"
+                    className="flex items-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm px-4 py-2.5 shadow-md shadow-blue-600/20 transition mx-1"
                   >
                     <PlusCircle className="h-4 w-4" />
                     <span>{item.label}</span>
@@ -103,7 +105,7 @@ export default function Navbar() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition ${
+                  className={`flex items-center gap-2 rounded-xl px-3.5 py-2.5 text-sm font-semibold transition ${
                     isActive
                       ? 'bg-blue-50/90 text-blue-700'
                       : 'text-slate-600 hover:text-blue-700 hover:bg-slate-100/80'
@@ -116,8 +118,15 @@ export default function Navbar() {
             })}
           </nav>
 
-          {/* Bouton rapide Mobile (Publier) */}
+          {/* Boutons rapides Mobile (Facturation + Publier) */}
           <div className="flex md:hidden items-center gap-2">
+            <Link
+              href="/facturation"
+              className="flex items-center gap-1 rounded-xl bg-blue-50 border border-blue-200 text-blue-700 font-bold text-xs px-3 py-2.5"
+            >
+              <FileSpreadsheet className="h-4 w-4" />
+              <span>Factures</span>
+            </Link>
             <Link
               href="/publier"
               className="flex items-center gap-1.5 rounded-xl bg-blue-600 active:bg-blue-700 text-white font-bold text-xs px-3.5 py-2.5 shadow-md shadow-blue-600/20"
