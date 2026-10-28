@@ -197,7 +197,13 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
         <p>
           © {new Date().getFullYear()} <strong>GAMBA BUSINESS</strong> — Tous droits réservés.
-          Conçu pour le développement économique de Gamba, Gabon 🇬🇦
+          Conçu pour le développement économique de Gamba, Gabon 🇬🇦 •{' '}
+          <Link
+            href="/admin"
+            className="text-slate-500 hover:text-slate-300 transition underline-offset-2 hover:underline"
+          >
+            Administration
+          </Link>
         </p>
         <div className="flex items-center gap-3">
           <span className="inline-flex items-center gap-1.5 rounded-lg bg-white/5 border border-white/10 px-3 py-1 text-[11px] font-bold text-white">
