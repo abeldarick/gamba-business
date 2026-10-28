@@ -119,6 +119,11 @@ export default function Footer() {
               </Link>
             </li>
             <li>
+              <Link href="/facturation" className="hover:text-sky-300 transition font-semibold text-sky-400">
+                Facturation TVA 18% (Pro)
+              </Link>
+            </li>
+            <li>
               <Link href="/tarifs" className="hover:text-sky-300 transition">
                 Offres PRO &amp; Tarifs
               </Link>
