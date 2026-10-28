@@ -50,9 +50,9 @@ interface GambaContextType {
 const GambaContext = createContext<GambaContextType | undefined>(undefined);
 
 const STORAGE_KEYS = {
-  LISTINGS: 'gamba_business_listings_v1',
-  TRANSACTIONS: 'gamba_business_tx_v1',
-  SUBSCRIPTION: 'gamba_business_sub_v1',
+  LISTINGS: 'gamba_business_listings_v3',
+  TRANSACTIONS: 'gamba_business_tx_v3',
+  SUBSCRIPTION: 'gamba_business_sub_v3',
 };
 
 export function GambaProvider({ children }: { children: React.ReactNode }) {
@@ -126,7 +126,7 @@ export function GambaProvider({ children }: { children: React.ReactNode }) {
   ): Listing => {
     const now = new Date();
     const planObj = PRICING_PLANS.find((p) => p.id === data.planTier);
-    const durationDays = planObj ? planObj.durationDays : 7; // 7 jours gratuits par défaut
+    const durationDays = planObj ? planObj.durationDays : 2; // 2 jours gratuits par défaut
     const expiresAt = new Date(now.getTime() + durationDays * 24 * 60 * 60 * 1000).toISOString();
 
     const isPaid = data.planTier !== 'free';
