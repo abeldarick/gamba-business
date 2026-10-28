@@ -29,8 +29,25 @@ export type PlanTier = 'free' | 'decouverte' | 'pro' | 'business';
 
 export type MobileMoneyOperator = 'airtel' | 'moov';
 
+export type AuthMethod = 'email' | 'phone';
+
+export interface AppUser {
+  id: string;
+  fullName: string; // Nom complet ou Nom du commerce
+  authMethod: AuthMethod; // 'email' (Inscription par Mail) ou 'phone' (Inscription par Téléphone)
+  email?: string;
+  phone: string; // Numéro Gabon +241
+  password?: string; // Mot de passe ou code PIN
+  quartier: QuartierGamba;
+  role: 'user' | 'admin';
+  planTier: PlanTier;
+  status: 'ACTIF' | 'SUSPENDU';
+  createdAt: string;
+}
+
 export interface Listing {
   id: string;
+  userId?: string;
   title: string;
   description: string;
   price: number; // En FCFA (XAF)
@@ -51,7 +68,7 @@ export interface Listing {
   views: number;
   whatsappClicks: number;
   createdAt: string; // ISO date
-  expiresAt: string; // ISO date (7 jours gratuit, 7j Découverte, 30j Pro/Business)
+  expiresAt: string; // ISO date (2 jours gratuit, 7j Découverte, 30j Pro/Business)
   isOwner?: boolean; // Indique si l'annonce appartient au vendeur actuel
 }
 
@@ -71,6 +88,8 @@ export interface PricingPlan {
 export interface MobileMoneyTransaction {
   id: string;
   reference: string;
+  userId?: string;
+  userName?: string;
   operator: MobileMoneyOperator;
   phoneNumber: string;
   amount: number;
