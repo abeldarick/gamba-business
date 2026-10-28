@@ -106,7 +106,7 @@ export default function ListingCard({ listing }: { listing: Listing }) {
             {listing.sellerVerified && (
               <ShieldCheck
                 className="h-3.5 w-3.5 text-emerald-600 shrink-0"
-                title="Commerce vérifié à Gamba"
+                aria-label="Commerce vérifié à Gamba"
               />
             )}
           </p>
