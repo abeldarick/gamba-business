@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500">
+  <defs>
+    <linearGradient id="bg2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#7C2D12"/>
+      <stop offset="100%" stop-color="#431407"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#bg2)"/>
+  <circle cx="400" cy="230" r="145" fill="#F97316" opacity="0.2"/>
+  <circle cx="400" cy="230" r="115" fill="#FFFFFF"/>
+  <circle cx="400" cy="230" r="95" fill="#FFF7ED" stroke="#FDBA74" stroke-width="4"/>
+  <!-- Fish / Grill symbol -->
+  <path d="M320 230 C355 185, 435 185, 475 230 C435 275, 355 275, 320 230 Z" fill="#EA580C"/>
+  <polygon points="470,230 505,205 505,255" fill="#EA580C"/>
+  <circle cx="350" cy="222" r="6" fill="#FFFFFF"/>
+  <!-- Garnish -->
+  <circle cx="380" cy="275" r="12" fill="#16A34A"/>
+  <circle cx="415" cy="278" r="10" fill="#DC2626"/>
+  <rect x="0" y="420" width="800" height="80" fill="#1C0A00"/>
+  <text x="400" y="468" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#FDBA74" text-anchor="middle">POISSON BRAISÉ FRAIS • COUPÉ-COUPÉ • LIVRAISON</text>
+</svg>
