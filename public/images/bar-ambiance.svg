@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500">
+  <defs>
+    <linearGradient id="bg3" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0F172A"/>
+      <stop offset="100%" stop-color="#1E1B4B"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#bg3)"/>
+  <circle cx="220" cy="140" r="100" fill="#EC4899" opacity="0.18"/>
+  <circle cx="580" cy="180" r="120" fill="#FF6B00" opacity="0.2"/>
+  <!-- Bottles & Glasses -->
+  <rect x="310" y="150" width="55" height="200" rx="12" fill="#F59E0B"/>
+  <rect x="325" y="105" width="25" height="50" rx="4" fill="#FDE68A"/>
+  <rect x="395" y="190" width="85" height="160" rx="10" fill="#FEF3C7"/>
+  <rect x="403" y="215" width="69" height="125" rx="6" fill="#D97706"/>
+  <path d="M480 215 H505 C518 215, 518 295, 505 295 H480" stroke="#FEF3C7" stroke-width="14" fill="none"/>
+  <rect x="0" y="420" width="800" height="80" fill="#090D16"/>
+  <text x="400" y="468" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#FBBF24" text-anchor="middle">BAR LOUNGE CLIMATISÉ • BIÈRES GLACÉES &amp; BILLARD</text>
+</svg>
