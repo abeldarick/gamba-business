@@ -13,12 +13,22 @@ import {
   PlusCircle,
   FileSpreadsheet,
   Users,
+  ShieldCheck,
+  UserCheck,
+  LogIn,
+  LogOut,
 } from 'lucide-react';
 import { useGamba } from '@/context/GambaContext';
 
 export default function Navbar() {
   const pathname = usePathname();
-  const { subscription, openPaymentModal } = useGamba();
+  const {
+    subscription,
+    openPaymentModal,
+    currentUser,
+    openAuthModal,
+    logoutUser,
+  } = useGamba();
 
   // Enregistrement du Service Worker PWA pour installation Android à Gamba
   useEffect(() => {
@@ -29,8 +39,8 @@ export default function Navbar() {
 
   const navItems = [
     { href: '/', label: 'Accueil', shortLabel: 'Accueil', icon: LayoutGrid },
-    { href: '/facturation', label: 'Dashboard & Factures', shortLabel: 'Dashboard', icon: FileSpreadsheet },
-    { href: '/facturation?tab=clients', label: 'Gestion Clients', shortLabel: 'Clients', icon: Users },
+    { href: '/facturation', label: 'Facturation', shortLabel: 'Factures', icon: FileSpreadsheet },
+    { href: '/admin', label: 'Back-End Admin', shortLabel: 'Admin', icon: ShieldCheck },
     { href: '/publier', label: 'Publier', shortLabel: 'Publier', icon: Plus, highlight: true },
     { href: '/mes-annonces', label: 'Mes Annonces', shortLabel: 'Annonces', icon: Briefcase },
     { href: '/tarifs', label: 'Tarifs', shortLabel: 'Tarifs', icon: Award },
@@ -38,7 +48,7 @@ export default function Navbar() {
 
   return (
     <>
-      {/* Barre supérieure institutionnelle Bleu Nuit & Mobile Money Gabon (2 jours gratuits) */}
+      {/* Barre supérieure institutionnelle Bleu Nuit & Mobile Money Gabon */}
       <div className="bg-[#0B192C] text-white text-xs py-2 px-4 border-b border-blue-900/60">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-2">
@@ -46,22 +56,25 @@ export default function Navbar() {
               🇬🇦 GAMBA • DÉPARTEMENT DE NDOUGOU
             </span>
             <span className="text-slate-300 font-medium hidden sm:inline">
-              1ère annonce GRATUITE 2 jours + Dashboard Facturation TVA 18% &amp; Gestion Clients !
+              Inscription rapide par Téléphone (+241) ou par Mail • 1ère annonce GRATUITE 2 jours !
             </span>
           </div>
           <div className="flex items-center gap-3 ml-auto">
             <Link
-              href="/facturation"
-              className="hidden sm:inline-flex items-center gap-1 text-emerald-300 hover:text-white font-bold transition"
+              href="/admin"
+              className="inline-flex items-center gap-1 text-emerald-300 hover:text-white font-extrabold transition"
             >
-              📊 Dashboard &amp; Clients →
+              <ShieldCheck className="h-3.5 w-3.5" />
+              <span>Back-End Admin</span>
             </Link>
+            <span className="text-blue-800">|</span>
             <button
               onClick={() => openPaymentModal('pro')}
               className="flex items-center gap-1.5 text-sky-300 hover:text-white font-semibold transition"
             >
               <Zap className="h-3.5 w-3.5 text-amber-400" />
-              <span>Booster via Airtel (*150#) / Moov (*555#)</span>
+              <span className="hidden sm:inline">Airtel (*150#) / Moov (*555#)</span>
+              <span className="sm:hidden">Booster PRO</span>
             </button>
           </div>
         </div>
@@ -87,7 +100,7 @@ export default function Navbar() {
                 )}
               </div>
               <p className="text-[11px] text-slate-500 hidden sm:flex items-center gap-1 font-medium">
-                <Compass className="h-3 w-3 text-blue-600" /> Annonces, Dashboard Facturation TVA 18% &amp; Clients
+                <Compass className="h-3 w-3 text-blue-600" /> Portail Officiel des Commerces de Gamba
               </p>
             </div>
           </Link>
@@ -96,7 +109,7 @@ export default function Navbar() {
           <nav className="hidden lg:flex items-center gap-1">
             {navItems.map((item) => {
               const Icon = item.icon;
-              const isActive = pathname === item.href.split('?')[0] && !item.href.includes('?');
+              const isActive = pathname === item.href;
               if (item.highlight) {
                 return (
                   <Link
@@ -124,24 +137,61 @@ export default function Navbar() {
                 </Link>
               );
             })}
+
+            {/* BOUTON DE CONNEXION / INSCRIPTION (2 MODES : MAIL & TÉLÉPHONE) */}
+            {currentUser ? (
+              <div className="flex items-center gap-1.5 ml-2 pl-2 border-l border-slate-200">
+                <span className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-50 border border-emerald-200 px-3 py-2 text-xs font-extrabold text-emerald-800">
+                  <UserCheck className="h-3.5 w-3.5 text-emerald-600" />
+                  <span className="max-w-[120px] truncate">{currentUser.fullName}</span>
+                </span>
+                <button
+                  onClick={logoutUser}
+                  className="rounded-xl bg-slate-100 hover:bg-rose-50 hover:text-rose-600 p-2 text-slate-600 transition"
+                  title="Se déconnecter"
+                >
+                  <LogOut className="h-4 w-4" />
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={openAuthModal}
+                className="flex items-center gap-1.5 rounded-xl bg-[#0B192C] hover:bg-slate-800 text-white font-extrabold text-xs xl:text-sm px-4 py-2.5 shadow-sm transition ml-1"
+              >
+                <LogIn className="h-4 w-4 text-sky-400" />
+                <span>Connexion / Inscription</span>
+              </button>
+            )}
           </nav>
 
-          {/* Boutons rapides Mobile & Tablette (Dashboard + Clients + Publier) */}
+          {/* Boutons rapides Mobile & Tablette */}
           <div className="flex lg:hidden items-center gap-1.5">
+            {currentUser ? (
+              <button
+                onClick={logoutUser}
+                className="flex items-center gap-1 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 font-extrabold text-[11px] px-2.5 py-2"
+              >
+                <UserCheck className="h-3.5 w-3.5 text-emerald-600" />
+                <span className="max-w-[75px] truncate">{currentUser.fullName}</span>
+              </button>
+            ) : (
+              <button
+                onClick={openAuthModal}
+                className="flex items-center gap-1 rounded-xl bg-[#0B192C] text-white font-extrabold text-[11px] px-2.5 py-2 shadow-sm"
+              >
+                <LogIn className="h-3.5 w-3.5 text-sky-400" />
+                <span>Connexion</span>
+              </button>
+            )}
+
             <Link
-              href="/facturation"
+              href="/admin"
               className="flex items-center gap-1 rounded-xl bg-blue-50 border border-blue-200 text-blue-700 font-extrabold text-[11px] px-2.5 py-2"
             >
-              <FileSpreadsheet className="h-3.5 w-3.5" />
-              <span>Dashboard</span>
+              <ShieldCheck className="h-3.5 w-3.5" />
+              <span>Admin</span>
             </Link>
-            <Link
-              href="/facturation?tab=clients"
-              className="flex items-center gap-1 rounded-xl bg-slate-100 border border-slate-200 text-slate-800 font-extrabold text-[11px] px-2.5 py-2"
-            >
-              <Users className="h-3.5 w-3.5 text-blue-600" />
-              <span>Clients</span>
-            </Link>
+
             <Link
               href="/publier"
               className="flex items-center gap-1 rounded-xl bg-blue-600 active:bg-blue-700 text-white font-bold text-[11px] px-3 py-2 shadow-md shadow-blue-600/20"
@@ -157,7 +207,7 @@ export default function Navbar() {
       <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 shadow-[0_-4px_20px_rgba(15,23,42,0.08)] px-1 py-1.5 flex items-center justify-around">
         {navItems.map((item) => {
           const Icon = item.icon;
-          const isActive = pathname === item.href.split('?')[0] && !item.href.includes('?');
+          const isActive = pathname === item.href;
           return (
             <Link
               key={item.href}
