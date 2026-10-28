@@ -114,19 +114,19 @@
           <i data-lucide="layout-grid" class="w-4 h-4"></i>
           <span>Accueil</span>
         </button>
-        <button onclick="openBillingView('invoices')" id="nav-facturation" class="flex items-center gap-1.5 rounded-xl px-3.5 py-2.5 text-xs xl:text-sm font-bold text-slate-700 hover:text-blue-700 hover:bg-slate-100/80 transition">
+        <button onclick="openBillingView('invoices')" id="nav-facturation" class="flex items-center gap-1.5 rounded-xl px-3 py-2.5 text-xs xl:text-sm font-bold text-slate-700 hover:text-blue-700 hover:bg-slate-100/80 transition">
           <i data-lucide="file-spreadsheet" class="w-4 h-4 text-blue-600"></i>
-          <span>Dashboard &amp; Factures</span>
+          <span>Facturation</span>
         </button>
-        <button onclick="openBillingView('clients')" id="nav-clients" class="flex items-center gap-1.5 rounded-xl px-3.5 py-2.5 text-xs xl:text-sm font-bold text-slate-700 hover:text-blue-700 hover:bg-slate-100/80 transition">
-          <i data-lucide="users" class="w-4 h-4 text-blue-600"></i>
-          <span>Gestion Clients</span>
+        <button onclick="navigateTo('admin')" id="nav-admin" class="flex items-center gap-1.5 rounded-xl px-3 py-2.5 text-xs xl:text-sm font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 transition">
+          <i data-lucide="shield-check" class="w-4 h-4 text-emerald-600"></i>
+          <span>Back-End Admin</span>
         </button>
-        <button onclick="navigateTo('mes-annonces')" id="nav-mes-annonces" class="flex items-center gap-1.5 rounded-xl px-3.5 py-2.5 text-xs xl:text-sm font-bold text-slate-700 hover:text-blue-700 hover:bg-slate-100/80 transition">
+        <button onclick="navigateTo('mes-annonces')" id="nav-mes-annonces" class="flex items-center gap-1.5 rounded-xl px-3 py-2.5 text-xs xl:text-sm font-bold text-slate-700 hover:text-blue-700 hover:bg-slate-100/80 transition">
           <i data-lucide="briefcase" class="w-4 h-4 text-blue-600"></i>
           <span>Mes Annonces</span>
         </button>
-        <button onclick="navigateTo('tarifs')" id="nav-tarifs" class="flex items-center gap-1.5 rounded-xl px-3.5 py-2.5 text-xs xl:text-sm font-bold text-slate-700 hover:text-blue-700 hover:bg-slate-100/80 transition">
+        <button onclick="navigateTo('tarifs')" id="nav-tarifs" class="flex items-center gap-1.5 rounded-xl px-3 py-2.5 text-xs xl:text-sm font-bold text-slate-700 hover:text-blue-700 hover:bg-slate-100/80 transition">
           <i data-lucide="award" class="w-4 h-4 text-blue-600"></i>
           <span>Tarifs</span>
         </button>
@@ -134,17 +134,21 @@
           <i data-lucide="plus-circle" class="w-4 h-4"></i>
           <span>Publier</span>
         </button>
+        <button onclick="openUserAuthModal()" id="nav-auth-btn" class="flex items-center gap-1.5 rounded-xl bg-gamba-navy hover:bg-slate-800 text-white font-extrabold text-xs xl:text-sm px-4 py-2.5 shadow-sm transition ml-1">
+          <i data-lucide="log-in" class="w-4 h-4 text-sky-400"></i>
+          <span id="nav-auth-label">Connexion / Inscription</span>
+        </button>
       </nav>
 
       <!-- Bouton rapide Mobile -->
       <div class="flex lg:hidden items-center gap-1.5">
-        <button onclick="openBillingView('invoices')" class="flex items-center gap-1 rounded-xl bg-blue-50 border border-blue-200 text-blue-700 font-extrabold text-[11px] px-2.5 py-2">
-          <i data-lucide="file-spreadsheet" class="w-3.5 h-3.5"></i>
-          <span>Dashboard</span>
+        <button onclick="openUserAuthModal()" class="flex items-center gap-1 rounded-xl bg-gamba-navy text-white font-extrabold text-[11px] px-2.5 py-2">
+          <i data-lucide="log-in" class="w-3.5 h-3.5 text-sky-400"></i>
+          <span id="nav-auth-mobile-label">Connexion</span>
         </button>
-        <button onclick="openBillingView('clients')" class="flex items-center gap-1 rounded-xl bg-slate-100 border border-slate-200 text-slate-800 font-extrabold text-[11px] px-2.5 py-2">
-          <i data-lucide="users" class="w-3.5 h-3.5 text-blue-600"></i>
-          <span>Clients</span>
+        <button onclick="navigateTo('admin')" class="flex items-center gap-1 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 font-extrabold text-[11px] px-2.5 py-2">
+          <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
+          <span>Admin</span>
         </button>
         <button onclick="navigateTo('publier')" class="flex items-center gap-1 rounded-xl bg-blue-600 active:bg-blue-700 text-white font-bold text-[11px] px-3 py-2 shadow-md shadow-blue-600/20">
           <i data-lucide="plus" class="w-3.5 h-3.5"></i>
@@ -314,14 +318,14 @@
           </div>
 
           <div class="flex flex-wrap items-center gap-2.5 shrink-0">
+            <button onclick="openUserAuthModal()" class="inline-flex items-center gap-2 rounded-2xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-extrabold text-xs sm:text-sm px-4 py-3 shadow-lg transition">
+              <span>🔐 Connexion / Inscription (Mail ou Tél)</span>
+            </button>
+            <button onclick="navigateTo('admin')" class="inline-flex items-center gap-2 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs sm:text-sm px-4 py-3 shadow-lg shadow-emerald-600/30 transition">
+              <span>⚙️ Back-End Admin (Utilisateurs &amp; Paiements)</span>
+            </button>
             <button onclick="openBillingView('invoices')" class="inline-flex items-center gap-2 rounded-2xl bg-blue-500 hover:bg-blue-400 text-white font-extrabold text-xs sm:text-sm px-4 py-3 shadow-lg shadow-blue-500/30 transition">
-              <span>📊 Dashboard &amp; Factures</span>
-            </button>
-            <button onclick="openBillingView('create')" class="inline-flex items-center gap-2 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs sm:text-sm px-4 py-3 shadow-lg shadow-emerald-600/30 transition">
-              <span>➕ Créer Facture (TVA 18%)</span>
-            </button>
-            <button onclick="openBillingView('clients')" class="inline-flex items-center gap-2 rounded-2xl bg-white text-slate-900 hover:bg-sky-50 font-extrabold text-xs sm:text-sm px-4 py-3 shadow-md transition">
-              <span>👥 Gestion Clients</span>
+              <span>📊 Facturation &amp; Clients</span>
             </button>
           </div>
         </div>
@@ -756,7 +760,26 @@
     <!-- ==================== VUE 6 : MODULE FACTURATION & GESTION CLIENTS (/facturation) ==================== -->
     <div id="view-facturation" class="hidden max-w-7xl mx-auto px-4 py-8 space-y-8"></div>
 
+    <!-- ==================== VUE 7 : BACK-END SUPER-ADMIN (/admin) ==================== -->
+    <div id="view-admin" class="hidden max-w-7xl mx-auto px-4 py-8 space-y-8"></div>
+
   </main>
+
+  <!-- MODAL CONNEXION / INSCRIPTION (2 MODES : PAR TÉLÉPHONE +241 OU PAR MAIL) -->
+  <div id="user-auth-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4 overflow-y-auto">
+    <div class="relative w-full max-w-md rounded-3xl bg-white shadow-2xl border border-slate-200 overflow-hidden my-auto">
+      <div class="bg-gradient-to-r from-[#0B192C] via-blue-950 to-blue-900 px-6 py-5 text-white flex items-center justify-between">
+        <div>
+          <span class="inline-block rounded-full bg-blue-500/20 border border-sky-400/30 px-2.5 py-0.5 text-[10px] font-extrabold text-sky-300 uppercase">
+            ESPACE MEMBRE &amp; VENDEUR GAMBA
+          </span>
+          <h2 id="auth-modal-title" class="text-lg font-heading font-black mt-1">Créer votre compte à Gamba</h2>
+        </div>
+        <button onclick="closeUserAuthModal()" class="rounded-full bg-white/10 p-2 text-slate-300 hover:bg-white/20 hover:text-white transition">✕</button>
+      </div>
+      <div class="p-6 space-y-4" id="user-auth-modal-body"></div>
+    </div>
+  </div>
 
   <!-- ====================================================================
        PIED DE PAGE COMPLET AVEC CONTACTS DIRECTS & RÉSEAUX SOCIAUX
@@ -1113,232 +1136,34 @@
     const now = Date.now();
     const dayMs = 86400000;
 
-    // ANNONCES RÉALISTES DE GAMBA AVEC LES VRAIS QUARTIERS (Plaine 1 à 5, Le Couloir, Centre-ville...)
-    const DEFAULT_LISTINGS = [
-      {
-        id: 'gamba-1',
-        title: 'Résidence & Motel La Lagune Ndougou — Chambres Climatisées, Canal+ & WiFi',
-        description: 'Hébergement calme et sécurisé au cœur de Gamba. Chambres climatisées grand confort avec Bouquet Canal+, WiFi haut débit, groupe électrogène automatique et réserve d\'eau permanente. Idéal pour missionnaires pétroliers, visiteurs et séjours week-end.',
-        price: 20000,
-        priceLabel: '/ nuitée',
-        category: 'Motels',
-        quartier: 'Centre-ville',
-        whatsapp: '24177451289',
-        phone: '+241 077 45 12 89',
-        mapsUrl: 'https://www.google.com/maps?q=-2.7258,10.0172',
-        addressHint: 'Centre-ville, à 150m du rond-point principal vers la lagune Ndougou',
-        images: [
-          'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=900&q=80',
-          'https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=900&q=80'
-        ],
-        sellerName: 'Motel La Lagune Gamba',
-        sellerVerified: true,
-        planTier: 'business',
-        isBoosted: true,
-        hasProBadge: true,
-        hasHomeBanner: true,
-        views: 418,
-        whatsappClicks: 86,
-        createdAt: new Date(now - 1 * dayMs).toISOString(),
-        expiresAt: new Date(now + 28 * dayMs).toISOString(),
-        isOwner: true,
-      },
-      {
-        id: 'gamba-2',
-        title: 'Chez Maman Clarisse — Carpe & Bar Braisés de la Lagune, Coupé-Coupé & Plantain',
-        description: 'Le vrai goût de Gamba midi et soir ! Poisson frais pêché du jour dans la lagune de Gamba braisé au feu de bois, coupé-coupé fumé, bouillon de poisson sauvage, feuilles de manioc et banane plantain mûre. Livraison rapide à Plaine 1, Plaine 2, Plaine 3 et Le Couloir.',
-        price: 3500,
-        priceLabel: '/ plat complet',
-        category: 'Restaurants',
-        quartier: 'Plaine 2',
-        whatsapp: '24166892341',
-        phone: '+241 066 89 23 41',
-        mapsUrl: 'https://www.google.com/maps?q=-2.7310,10.0210',
-        addressHint: 'Quartier Plaine 2, juste en face de la boulangerie principale',
-        images: [
-          'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=900&q=80',
-          'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=900&q=80'
-        ],
-        sellerName: 'Restaurant Maman Clarisse',
-        sellerVerified: true,
-        planTier: 'pro',
-        isBoosted: true,
-        hasProBadge: true,
-        hasHomeBanner: false,
-        views: 356,
-        whatsappClicks: 112,
-        createdAt: new Date(now - 1 * dayMs).toISOString(),
-        expiresAt: new Date(now + 25 * dayMs).toISOString(),
-        isOwner: true,
-      },
-      {
-        id: 'gamba-3',
-        title: 'Salon Glamour VIP Gamba — Tresses Africaines, Perruques, Manucure Gel & Coiffure',
-        description: 'Votre institut de beauté climatisé à Gamba. Tresses modernes sans douleur, pose lace frontal, tissages, soin du visage, pose ongles gel et coupe homme dégradé. Prise de rendez-vous directe sur WhatsApp.',
-        price: 5000,
-        priceLabel: 'À partir de',
-        category: 'Services',
-        quartier: 'Plaine 1',
-        whatsapp: '24174129088',
-        phone: '+241 074 12 90 88',
-        mapsUrl: 'https://www.google.com/maps?q=-2.7240,10.0155',
-        addressHint: 'Plaine 1, à côté du guichet Airtel Money',
-        images: [
-          'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=900&q=80'
-        ],
-        sellerName: 'Salon Glamour VIP',
-        sellerVerified: true,
-        planTier: 'pro',
-        isBoosted: true,
-        hasProBadge: true,
-        hasHomeBanner: false,
-        views: 245,
-        whatsappClicks: 64,
-        createdAt: new Date(now - 1 * dayMs).toISOString(),
-        expiresAt: new Date(now + 25 * dayMs).toISOString(),
-        isOwner: false,
-      },
-      {
-        id: 'gamba-4',
-        title: 'Le Phare Lounge & Snack-Bar — Bières Glacées, Brochettes, Billard & Matchs Canal+',
-        description: 'Cadre propre, climatisé et sécurisé au quartier Le Couloir pour vos soirées à Gamba. Boissons bien glacées, grillades de viande et poisson le soir, table de billard et retransmission de tous les grands matchs sur écran géant.',
-        price: 1000,
-        priceLabel: '/ consommation',
-        category: 'Bars',
-        quartier: 'Le Couloir',
-        whatsapp: '24177910233',
-        phone: '+241 077 91 02 33',
-        mapsUrl: 'https://www.google.com/maps?q=-2.7295,10.0190',
-        addressHint: 'Quartier Le Couloir, carrefour axe principal goudronné',
-        images: [
-          'https://images.unsplash.com/photo-1514933651103-005eec06c04b?auto=format&fit=crop&w=900&q=80'
-        ],
-        sellerName: 'Le Phare Lounge Bar',
-        sellerVerified: true,
-        planTier: 'decouverte',
-        isBoosted: true,
-        hasProBadge: false,
-        hasHomeBanner: false,
-        views: 190,
-        whatsappClicks: 41,
-        createdAt: new Date(now - 1 * dayMs).toISOString(),
-        expiresAt: new Date(now + 6 * dayMs).toISOString(),
-        isOwner: false,
-      },
-      {
-        id: 'gamba-5',
-        title: 'Établissement Nzambi Alimentation — Vivres Frais, Congelés, Riz, Boissons & Gaz',
-        description: 'Commerce général demi-gros et détail à Plaine 3. Arrivage régulier : sacs de riz 25kg, cartons de volaille, huile, produits laitiers, packs d\'eau minérale et bouteilles de gaz. Paiement Airtel Money et Moov Money sans frais de retrait.',
-        price: 14500,
-        priceLabel: 'Sac de riz 25kg',
-        category: 'Alimentation',
-        quartier: 'Plaine 3',
-        whatsapp: '24162334455',
-        phone: '+241 062 33 44 55',
-        mapsUrl: 'https://www.google.com/maps?q=-2.7350,10.0245',
-        addressHint: 'Carrefour Plaine 3, grand bâtiment bleu et blanc',
-        images: [
-          'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=900&q=80'
-        ],
-        sellerName: 'Éts Nzambi Alimentation',
-        sellerVerified: true,
-        planTier: 'pro',
-        isBoosted: false,
-        hasProBadge: true,
-        hasHomeBanner: false,
-        views: 164,
-        whatsappClicks: 38,
-        createdAt: new Date(now - 2 * dayMs).toISOString(),
-        expiresAt: new Date(now + 25 * dayMs).toISOString(),
-        isOwner: false,
-      },
-      {
-        id: 'gamba-6',
-        title: 'Gamba Froid & Énergie — Dépannage Climatiseurs Split, Congélateurs & Groupes Électrogènes',
-        description: 'Technicien frigoriste et électricien qualifié à Gamba (Plaine 4). Entretien complet de climatiseurs, recharge gaz fréon, réparation chambres froides/congélateurs et maintenance groupes électrogènes. Intervention rapide dans tout Gamba.',
-        price: 10000,
-        priceLabel: 'Intervention & diagnostic',
-        category: 'Services',
-        quartier: 'Plaine 4',
-        whatsapp: '24177556677',
-        phone: '+241 077 55 66 77',
-        mapsUrl: 'https://www.google.com/maps?q=-2.7420,10.0110',
-        addressHint: 'Plaine 4, près de l\'école publique',
-        images: [
-          'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=900&q=80'
-        ],
-        sellerName: 'Gamba Froid & Élec',
-        sellerVerified: false,
-        planTier: 'free',
-        isBoosted: false,
-        hasProBadge: false,
-        hasHomeBanner: false,
-        views: 118,
-        whatsappClicks: 29,
-        createdAt: new Date(now - 1 * dayMs).toISOString(),
-        expiresAt: new Date(now + 2 * dayMs).toISOString(),
-        isOwner: false,
-      },
-      {
-        id: 'gamba-7',
-        title: 'Boutique Élégance Ndougou — Arrivage Pagnes Wax, Ensembles Bazin, Robes & Sneakers',
-        description: 'Habillez toute la famille avec classe à Plaine 5 ! Nouvel arrivage de tenues Bazin riche brodé, pagnes Wax hollandais, chemises homme, chaussures dames et baskets. Livraison rapide dans tous les quartiers de Gamba.',
-        price: 12000,
-        priceLabel: 'À partir de',
-        category: 'Vêtements',
-        quartier: 'Plaine 5',
-        whatsapp: '24166112299',
-        phone: '+241 066 11 22 99',
-        mapsUrl: 'https://www.google.com/maps?q=-2.7265,10.0180',
-        addressHint: 'Entrée Plaine 5, boutique vitrée bleue',
-        images: [
-          'https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=900&q=80'
-        ],
-        sellerName: 'Élégance Ndougou Mode',
-        sellerVerified: false,
-        planTier: 'free',
-        isBoosted: false,
-        hasProBadge: false,
-        hasHomeBanner: false,
-        views: 132,
-        whatsappClicks: 33,
-        createdAt: new Date(now - 1 * dayMs).toISOString(),
-        expiresAt: new Date(now + 2 * dayMs).toISOString(),
-        isOwner: false,
-      },
-      {
-        id: 'gamba-8',
-        title: 'Pêcherie Coopérative de Mayonami — Paniers de Poissons Frais, Fumés & Crevettes',
-        description: 'Vente directe des pêcheurs de Mayonami : poissons fumés au bois naturel, crevettes fraîches et gros bars de mer/lagune sur commande. (Annonce d\'essai gratuit de 2 jours expirée — réactivez-la en 1 clic via Mobile Money !)',
-        price: 6000,
-        priceLabel: '/ panier familial',
-        category: 'Alimentation',
-        quartier: 'Mayonami',
-        whatsapp: '24177451289',
-        phone: '+241 077 45 12 89',
-        mapsUrl: 'https://www.google.com/maps?q=-2.7500,10.0300',
-        addressHint: 'Débarcadère Mayonami / Livraison Plaine 1 à 5',
-        images: [
-          'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=900&q=80'
-        ],
-        sellerName: 'Pêcherie de Mayonami',
-        sellerVerified: false,
-        planTier: 'free',
-        isBoosted: false,
-        hasProBadge: false,
-        hasHomeBanner: false,
-        views: 84,
-        whatsappClicks: 19,
-        createdAt: new Date(now - 3 * dayMs).toISOString(),
-        expiresAt: new Date(now - 1 * dayMs).toISOString(),
-        isOwner: true,
-      }
-    ];
+    // AUCUNE ANNONCE DÉMO : PLATEFORME 100% PROPRE POUR LES VRAIS UTILISATEURS
+    const DEFAULT_LISTINGS = [];
 
-    // Clé v3 pour charger immédiatement les vrais quartiers (Plaine 1-5, Le Couloir) et l'essai 2 jours
+    // Nettoyage automatique des anciennes annonces démo en cache
+    localStorage.removeItem('gamba_pro_blue_listings_v3');
+    localStorage.removeItem('gamba_business_listings_v3');
+
     let state = {
-      listings: JSON.parse(localStorage.getItem('gamba_pro_blue_listings_v3') || 'null') || DEFAULT_LISTINGS,
-      transactions: JSON.parse(localStorage.getItem('gamba_pro_blue_tx_v3') || '[]'),
+      listings: JSON.parse(localStorage.getItem('gamba_business_listings_v5_clean') || '[]'),
+      transactions: JSON.parse(localStorage.getItem('gamba_business_tx_v5_clean') || '[]'),
+      users: JSON.parse(localStorage.getItem('gamba_business_users_v5_clean') || 'null') || [
+        {
+          id: 'admin-gamba-01',
+          fullName: 'Abel Darick (Administrateur)',
+          authMethod: 'email',
+          email: 'admin@gambabusiness.ga',
+          phone: '+241 077 45 12 89',
+          quartier: 'Centre-ville',
+          role: 'admin',
+          planTier: 'business',
+          status: 'ACTIF',
+          createdAt: new Date().toISOString()
+        }
+      ],
+      currentUser: JSON.parse(localStorage.getItem('gamba_business_current_user_v5_clean') || 'null'),
+      authMode: 'register', // 'register' | 'login'
+      authMethod: 'phone',  // 'phone' | 'email'
+      adminTab: 'users',    // 'users' | 'payments' | 'listings'
       selectedCategory: 'Toutes',
       maxPrice: 100000,
       formPhotos: ['https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=900&q=80'],
@@ -1348,8 +1173,14 @@
     };
 
     function saveState() {
-      localStorage.setItem('gamba_pro_blue_listings_v3', JSON.stringify(state.listings));
-      localStorage.setItem('gamba_pro_blue_tx_v3', JSON.stringify(state.transactions));
+      localStorage.setItem('gamba_business_listings_v5_clean', JSON.stringify(state.listings));
+      localStorage.setItem('gamba_business_tx_v5_clean', JSON.stringify(state.transactions));
+      localStorage.setItem('gamba_business_users_v5_clean', JSON.stringify(state.users));
+      if (state.currentUser) {
+        localStorage.setItem('gamba_business_current_user_v5_clean', JSON.stringify(state.currentUser));
+      } else {
+        localStorage.removeItem('gamba_business_current_user_v5_clean');
+      }
     }
 
     function formatXAF(amount) {
@@ -1370,7 +1201,7 @@
     }
 
     function navigateTo(view, listingId = null) {
-      ['home', 'detail', 'publier', 'tarifs', 'mes-annonces', 'facturation'].forEach(v => {
+      ['home', 'detail', 'publier', 'tarifs', 'mes-annonces', 'facturation', 'admin'].forEach(v => {
         const el = document.getElementById('view-' + v);
         if (el) el.classList.add('hidden');
       });
@@ -1383,6 +1214,7 @@
       if (view === 'publier') renderFormPhotos();
       if (view === 'mes-annonces') renderDashboard();
       if (view === 'facturation') renderBillingModule();
+      if (view === 'admin') renderAdminBackend();
       lucide.createIcons();
     }
 
@@ -1906,6 +1738,23 @@
       const plan = PLANS[state.modalPlan];
       const newExpiry = new Date(Date.now() + plan.durationDays * dayMs).toISOString();
       const isProOrBus = plan.id === 'pro' || plan.id === 'business';
+      const phoneVal = document.getElementById('modal-phone').value;
+
+      state.transactions.unshift({
+        id: 'tx-' + Date.now(),
+        reference: 'CP-GA-' + Math.floor(100000 + Math.random() * 900000),
+        operator: state.modalOperator,
+        phoneNumber: phoneVal,
+        amount: plan.priceXAF,
+        planId: plan.id,
+        status: 'SUCCESS',
+        createdAt: new Date().toISOString()
+      });
+
+      if (state.currentUser) {
+        state.currentUser.planTier = plan.id;
+        state.users = state.users.map(u => u.id === state.currentUser.id ? { ...u, planTier: plan.id } : u);
+      }
 
       state.listings = state.listings.map(item => {
         if ((state.modalTargetId && item.id === state.modalTargetId) || (!state.modalTargetId && item.isOwner)) {
@@ -2602,7 +2451,291 @@
       renderBillingModule();
     }
 
+    // =========================================================================
+    // AUTHENTIFICATION UTILISATEUR (2 MODES : PAR TÉLÉPHONE +241 OU PAR MAIL)
+    // =========================================================================
+    function updateHeaderAuthLabel() {
+      const lbl = document.getElementById('nav-auth-label');
+      const mobLbl = document.getElementById('nav-auth-mobile-label');
+      if (state.currentUser) {
+        if (lbl) lbl.textContent = '✓ ' + state.currentUser.fullName;
+        if (mobLbl) mobLbl.textContent = state.currentUser.fullName.split(' ')[0];
+      } else {
+        if (lbl) lbl.textContent = 'Connexion / Inscription';
+        if (mobLbl) mobLbl.textContent = 'Connexion';
+      }
+    }
+
+    function openUserAuthModal() {
+      document.getElementById('user-auth-modal').classList.remove('hidden');
+      renderUserAuthModal();
+    }
+
+    function closeUserAuthModal() {
+      document.getElementById('user-auth-modal').classList.add('hidden');
+    }
+
+    function renderUserAuthModal() {
+      const body = document.getElementById('user-auth-modal-body');
+      const isReg = state.authMode === 'register';
+      const isPhone = state.authMethod === 'phone';
+      document.getElementById('auth-modal-title').textContent = isReg
+        ? 'Créer votre compte à Gamba'
+        : 'Connexion à votre compte';
+
+      body.innerHTML = `
+        <div class="grid grid-cols-2 gap-1.5 rounded-2xl bg-slate-100 p-1.5">
+          <button type="button" onclick="state.authMode = 'register'; renderUserAuthModal();" class="rounded-xl py-2.5 text-xs font-extrabold ${isReg ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-600'}">
+            Inscription (Nouveau)
+          </button>
+          <button type="button" onclick="state.authMode = 'login'; renderUserAuthModal();" class="rounded-xl py-2.5 text-xs font-extrabold ${!isReg ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-600'}">
+            Se Connecter
+          </button>
+        </div>
+
+        <div class="space-y-1.5">
+          <label class="block text-[11px] font-extrabold uppercase text-slate-500">Choisissez votre mode :</label>
+          <div class="grid grid-cols-2 gap-2.5">
+            <button type="button" onclick="state.authMethod = 'phone'; renderUserAuthModal();" class="rounded-2xl p-3 border-2 text-xs font-extrabold ${isPhone ? 'border-blue-600 bg-blue-50 text-blue-700' : 'border-slate-200 text-slate-600'}">
+              📱 1. Par Téléphone (+241)
+            </button>
+            <button type="button" onclick="state.authMethod = 'email'; renderUserAuthModal();" class="rounded-2xl p-3 border-2 text-xs font-extrabold ${!isPhone ? 'border-blue-600 bg-blue-50 text-blue-700' : 'border-slate-200 text-slate-600'}">
+              ✉️ 2. Par Adresse Mail
+            </button>
+          </div>
+        </div>
+
+        <form onsubmit="handleUserAuthSubmit(event)" class="space-y-3.5">
+          ${isReg ? `
+            <div>
+              <label class="block text-xs font-extrabold uppercase text-slate-700 mb-1">Votre Nom ou Nom du Commerce *</label>
+              <input id="auth-fullname" type="text" required placeholder="Ex: Boutique Maman Clarisse" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-semibold" />
+            </div>
+          ` : ''}
+
+          ${!isPhone ? `
+            <div>
+              <label class="block text-xs font-extrabold uppercase text-slate-700 mb-1">Adresse Email *</label>
+              <input id="auth-email" type="email" required placeholder="exemple@gamba.ga" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-semibold" />
+            </div>
+          ` : ''}
+
+          ${(isPhone || isReg) ? `
+            <div>
+              <label class="block text-xs font-extrabold uppercase text-slate-700 mb-1">Numéro de Téléphone Gabon (+241) *</label>
+              <input id="auth-phone" type="tel" required value="+241 077 " placeholder="+241 077 45 12 89" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-bold" />
+            </div>
+          ` : ''}
+
+          ${isReg ? `
+            <div>
+              <label class="block text-xs font-extrabold uppercase text-slate-700 mb-1">Votre Quartier à Gamba *</label>
+              <select id="auth-quartier" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-bold">
+                <option value="Plaine 1">Plaine 1</option>
+                <option value="Plaine 2">Plaine 2</option>
+                <option value="Plaine 3">Plaine 3</option>
+                <option value="Plaine 4">Plaine 4</option>
+                <option value="Plaine 5">Plaine 5</option>
+                <option value="Le Couloir">Le Couloir</option>
+                <option value="Centre-ville">Centre-ville</option>
+                <option value="Camp Yenzi">Camp Yenzi</option>
+                <option value="Mayonami">Mayonami</option>
+              </select>
+            </div>
+          ` : ''}
+
+          <div>
+            <label class="block text-xs font-extrabold uppercase text-slate-700 mb-1">${isPhone ? 'Code PIN secret *' : 'Mot de passe *'}</label>
+            <input id="auth-password" type="password" required placeholder="${isPhone ? 'Ex: 1234' : 'Mot de passe'}" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-semibold" />
+          </div>
+
+          <button type="submit" class="w-full rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-heading font-extrabold text-sm py-3.5 px-5 shadow-lg transition">
+            ${isReg ? (isPhone ? "S'inscrire avec mon Numéro (+241) →" : "S'inscrire avec mon Adresse Mail →") : "Se connecter maintenant →"}
+          </button>
+        </form>
+      `;
+    }
+
+    function handleUserAuthSubmit(e) {
+      e.preventDefault();
+      const isReg = state.authMode === 'register';
+      const isPhone = state.authMethod === 'phone';
+      const emailEl = document.getElementById('auth-email');
+      const phoneEl = document.getElementById('auth-phone');
+      const nameEl = document.getElementById('auth-fullname');
+      const quartierEl = document.getElementById('auth-quartier');
+
+      if (isReg) {
+        const newUser = {
+          id: 'usr-' + Date.now(),
+          fullName: nameEl ? nameEl.value : 'Utilisateur Gamba',
+          authMethod: state.authMethod,
+          email: emailEl ? emailEl.value : '',
+          phone: phoneEl ? phoneEl.value : '+241 077 00 00 00',
+          quartier: quartierEl ? quartierEl.value : 'Plaine 1',
+          role: 'user',
+          planTier: 'free',
+          status: 'ACTIF',
+          createdAt: new Date().toISOString()
+        };
+        state.users.unshift(newUser);
+        state.currentUser = newUser;
+      } else {
+        const idVal = isPhone ? (phoneEl ? phoneEl.value : '') : (emailEl ? emailEl.value : '');
+        const found = state.users.find(u => isPhone ? u.phone.includes(idVal.trim()) : (u.email && u.email.toLowerCase() === idVal.trim().toLowerCase()));
+        state.currentUser = found || state.users[0];
+      }
+      saveState();
+      updateHeaderAuthLabel();
+      closeUserAuthModal();
+    }
+
+    // =========================================================================
+    // TABLEAU DE BORD BACK-END SUPER-ADMIN (UTILISATEURS & PAIEMENTS)
+    // =========================================================================
+    function renderAdminBackend() {
+      const container = document.getElementById('view-admin');
+      if (!container) return;
+
+      const totalUsers = state.users.length;
+      const phoneUsers = state.users.filter(u => u.authMethod === 'phone').length;
+      const emailUsers = state.users.filter(u => u.authMethod === 'email').length;
+      const totalRevenue = state.transactions.reduce((acc, t) => acc + (Number(t.amount) || 0), 0);
+      const paidSubs = state.users.filter(u => u.planTier !== 'free').length;
+
+      container.innerHTML = `
+        <div class="rounded-3xl bg-gradient-to-r from-[#0B192C] via-blue-950 to-blue-900 text-white p-6 sm:p-8 shadow-xl border border-blue-800/50 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+          <div class="space-y-2">
+            <span class="inline-block rounded-full bg-emerald-500/20 border border-emerald-400/30 px-3 py-1 text-[11px] font-extrabold text-emerald-300 uppercase">
+              ⚙️ BACK-END SUPER-ADMIN • CONTRÔLE TOTAL
+            </span>
+            <h1 class="text-2xl sm:text-3xl font-heading font-black">Tableau de Bord Administrateur — Gestion Globale</h1>
+            <p class="text-xs sm:text-sm text-sky-200/90">Supervisez le nombre d'utilisateurs inscrits (par Téléphone ou par Mail), les paiements Mobile Money et les annonces.</p>
+          </div>
+          <div class="flex gap-2.5">
+            <button onclick="openUserAuthModal()" class="rounded-2xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-extrabold text-xs sm:text-sm px-4 py-3 shadow-lg">
+              + Inscrire un Utilisateur
+            </button>
+            <button onclick="openPaymentModal('pro')" class="rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs sm:text-sm px-4 py-3 shadow-lg">
+              + Simuler un Paiement Mobile Money
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="rounded-3xl bg-white p-5 border-2 border-blue-500/20 shadow-sm space-y-1.5">
+            <span class="text-xs font-extrabold uppercase text-slate-500">1. Utilisateurs Inscrits</span>
+            <p class="text-2xl font-heading font-black text-slate-900">${totalUsers} Utilisateur(s)</p>
+            <span class="text-[11px] font-bold text-blue-700 block">📱 ${phoneUsers} par Tél • ✉️ ${emailUsers} par Mail</span>
+          </div>
+          <div class="rounded-3xl bg-white p-5 border-2 border-emerald-500/20 shadow-sm space-y-1.5">
+            <span class="text-xs font-extrabold uppercase text-slate-500">2. Paiements Encaissés</span>
+            <p class="text-2xl font-heading font-black text-emerald-600">${formatAmountFCFA(totalRevenue)}</p>
+            <span class="text-[11px] font-bold text-slate-500 block">${state.transactions.length} paiement(s) Airtel / Moov</span>
+          </div>
+          <div class="rounded-3xl bg-white p-5 border-2 border-sky-500/20 shadow-sm space-y-1.5">
+            <span class="text-xs font-extrabold uppercase text-slate-500">3. Annonces en Ligne</span>
+            <p class="text-2xl font-heading font-black text-slate-900">${state.listings.length} Annonce(s)</p>
+            <span class="text-[11px] font-bold text-sky-700 block">Zéro annonce démo</span>
+          </div>
+          <div class="rounded-3xl bg-white p-5 border-2 border-amber-500/20 shadow-sm space-y-1.5">
+            <span class="text-xs font-extrabold uppercase text-slate-500">4. Comptes PRO / VIP</span>
+            <p class="text-2xl font-heading font-black text-slate-900">${paidSubs} Abonné(s)</p>
+            <span class="text-[11px] font-bold text-amber-700 block">Gestion directe des forfaits</span>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap gap-2 border-b border-slate-200 pb-3">
+          <button onclick="state.adminTab = 'users'; renderAdminBackend();" class="rounded-2xl px-5 py-2.5 text-xs sm:text-sm font-extrabold ${state.adminTab === 'users' ? 'bg-blue-600 text-white' : 'bg-white text-slate-600 border border-slate-200'}">
+            👥 1. Utilisateurs Inscrits (${state.users.length})
+          </button>
+          <button onclick="state.adminTab = 'payments'; renderAdminBackend();" class="rounded-2xl px-5 py-2.5 text-xs sm:text-sm font-extrabold ${state.adminTab === 'payments' ? 'bg-blue-600 text-white' : 'bg-white text-slate-600 border border-slate-200'}">
+            💳 2. Paiements Mobile Money (${state.transactions.length})
+          </button>
+          <button onclick="state.adminTab = 'listings'; renderAdminBackend();" class="rounded-2xl px-5 py-2.5 text-xs sm:text-sm font-extrabold ${state.adminTab === 'listings' ? 'bg-blue-600 text-white' : 'bg-white text-slate-600 border border-slate-200'}">
+            📢 3. Annonces Publiées (${state.listings.length})
+          </button>
+        </div>
+
+        ${state.adminTab === 'users' ? `
+          <div class="space-y-3">
+            ${state.users.map(u => `
+              <div class="rounded-3xl bg-white p-5 border border-slate-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <span class="rounded-full px-2.5 py-0.5 text-[10px] font-extrabold ${u.authMethod === 'phone' ? 'bg-blue-50 text-blue-700' : 'bg-indigo-50 text-indigo-700'}">
+                    ${u.authMethod === 'phone' ? '📱 INSCRIT PAR TÉLÉPHONE' : '✉️ INSCRIT PAR MAIL'}
+                  </span>
+                  <h3 class="text-base font-heading font-black text-slate-900 mt-1">${u.fullName}</h3>
+                  <p class="text-xs text-slate-600">📞 <strong>${u.phone}</strong> ${u.email ? '• ✉️ ' + u.email : ''} • 📍 ${u.quartier}</p>
+                </div>
+                <div class="flex items-center gap-2">
+                  <select onchange="adminChangeUserPlan('${u.id}', this.value)" class="rounded-xl border border-slate-300 px-3 py-2 text-xs font-extrabold text-blue-700">
+                    <option value="free" ${u.planTier === 'free' ? 'selected' : ''}>Forfait : GRATUIT (2j)</option>
+                    <option value="decouverte" ${u.planTier === 'decouverte' ? 'selected' : ''}>DÉCOUVERTE (2 000 F)</option>
+                    <option value="pro" ${u.planTier === 'pro' ? 'selected' : ''}>PRO (5 000 F)</option>
+                    <option value="business" ${u.planTier === 'business' ? 'selected' : ''}>BUSINESS (15 000 F)</option>
+                  </select>
+                  ${u.role !== 'admin' ? `<button onclick="adminRemoveUser('${u.id}')" class="rounded-xl bg-rose-50 text-rose-600 font-bold text-xs px-3 py-2">Supprimer</button>` : ''}
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        ` : ''}
+
+        ${state.adminTab === 'payments' ? `
+          <div class="space-y-3">
+            ${state.transactions.length === 0 ? `
+              <div class="rounded-3xl bg-white p-10 text-center border border-slate-200">
+                <p class="text-base font-heading font-black text-slate-900">Aucun paiement Mobile Money pour le moment</p>
+                <p class="text-xs text-slate-500 mt-1">Tous les paiements Airtel Money (*150#) et Moov Money (*555#) s'afficheront ici.</p>
+              </div>
+            ` : state.transactions.map(tx => `
+              <div class="rounded-3xl bg-white p-5 border border-slate-200 shadow-sm flex items-center justify-between">
+                <div>
+                  <span class="rounded-lg bg-slate-900 text-white px-2.5 py-0.5 text-xs font-mono font-bold">${tx.reference || 'CP-GA'}</span>
+                  <h3 class="text-sm font-heading font-black text-slate-900 mt-1">${tx.operator === 'airtel' ? '🔴 Airtel Money' : '🔵 Moov Money'} — +241 ${tx.phoneNumber}</h3>
+                </div>
+                <span class="text-lg font-heading font-black text-emerald-700">${formatAmountFCFA(tx.amount)}</span>
+              </div>
+            `).join('')}
+          </div>
+        ` : ''}
+
+        ${state.adminTab === 'listings' ? `
+          <div class="space-y-3">
+            ${state.listings.length === 0 ? `
+              <div class="rounded-3xl bg-white p-10 text-center border border-slate-200">
+                <p class="text-base font-heading font-black text-slate-900">Aucune annonce démo — Plateforme 100% propre</p>
+                <p class="text-xs text-slate-500 mt-1">Seules les vraies annonces publiées par vos utilisateurs apparaîtront ici.</p>
+              </div>
+            ` : state.listings.map(item => `
+              <div class="rounded-3xl bg-white p-5 border border-slate-200 shadow-sm flex items-center justify-between">
+                <div>
+                  <h3 class="text-base font-heading font-black text-slate-900">${item.title}</h3>
+                  <p class="text-xs text-slate-500">📍 ${item.quartier} • ${formatAmountFCFA(item.price)}</p>
+                </div>
+                <button onclick="state.listings = state.listings.filter(x => x.id !== '${item.id}'); saveState(); renderAdminBackend();" class="rounded-xl bg-rose-50 text-rose-600 font-bold text-xs px-3 py-2">Supprimer</button>
+              </div>
+            `).join('')}
+          </div>
+        ` : ''}
+      `;
+    }
+
+    function adminChangeUserPlan(uid, planTier) {
+      state.users = state.users.map(u => u.id === uid ? { ...u, planTier } : u);
+      saveState();
+      renderAdminBackend();
+    }
+
+    function adminRemoveUser(uid) {
+      state.users = state.users.filter(u => u.id !== uid);
+      saveState();
+      renderAdminBackend();
+    }
+
     window.addEventListener('DOMContentLoaded', () => {
+      updateHeaderAuthLabel();
       renderHomeListings();
       lucide.createIcons();
     });
