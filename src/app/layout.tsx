@@ -4,6 +4,7 @@ import { GambaProvider } from '@/context/GambaContext';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import MobileMoneyModal from '@/components/MobileMoneyModal';
+import AuthModal from '@/components/AuthModal';
 
 export const metadata: Metadata = {
   title: 'GAMBA BUSINESS | Le Bon Coin de Gamba, Gabon - Commerces, Motels & Services',
@@ -18,7 +19,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: '#FF6B00',
+  themeColor: '#0B192C',
   width: 'device-width',
   initialScale: 1,
   maximumScale: 5,
@@ -35,12 +36,13 @@ export default function RootLayout({
         <link rel="icon" href="/icon.svg" type="image/svg+xml" />
         <link rel="apple-touch-icon" href="/icon.svg" />
       </head>
-      <body className="min-h-screen flex flex-col bg-gray-50 text-gray-900 antialiased">
+      <body className="min-h-screen flex flex-col bg-slate-50 text-slate-900 antialiased">
         <GambaProvider>
           <Navbar />
           <main className="flex-1">{children}</main>
           <Footer />
           <MobileMoneyModal />
+          <AuthModal />
         </GambaProvider>
       </body>
     </html>
