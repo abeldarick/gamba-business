@@ -1,0 +1,18 @@
+{
+  "name": "GAMBA BUSINESS - Le Bon Coin de Gamba",
+  "short_name": "GambaBiz",
+  "description": "Tout Gamba dans votre poche : Commerces, Motels, Bars, Restaurants, Boutiques et Services à Gamba, Gabon.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#111827",
+  "theme_color": "#FF6B00",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
