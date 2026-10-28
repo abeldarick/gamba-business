@@ -330,6 +330,14 @@ export default function FacturationPage() {
 
       const savedAuth = localStorage.getItem(STORAGE_KEYS.AUTH);
       if (savedAuth) setMerchant(JSON.parse(savedAuth));
+
+      if (typeof window !== 'undefined') {
+        const params = new URLSearchParams(window.location.search);
+        const tabParam = params.get('tab');
+        if (tabParam === 'clients' || tabParam === 'create' || tabParam === 'invoices') {
+          setActiveTab(tabParam);
+        }
+      }
     } catch {}
   }, []);
 
@@ -758,77 +766,94 @@ export default function FacturationPage() {
       {/* =====================================================================
           DASHBOARD 4 STATS OBLIGATOIRES (EN FCFA)
           ===================================================================== */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Stat 1 : Chiffre d'Affaires Encaissé TTC */}
-        <div className="rounded-3xl bg-white p-5 border border-slate-200 shadow-sm space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-extrabold uppercase text-slate-500">
-              1. CA Encaissé (TTC)
+      <div className="space-y-3">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <h2 className="text-base sm:text-lg font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
+            <span className="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-blue-600 text-white text-xs">
+              📊
             </span>
-            <div className="h-9 w-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
-              <Wallet className="h-5 w-5" />
-            </div>
-          </div>
-          <p className="text-2xl font-black text-slate-900">
-            {formatXAF(stats.totalRevenuePaid)}
-          </p>
-          <span className="text-[11px] font-semibold text-emerald-600 block">
-            ✓ {stats.paidCount} facture(s) payée(s)
+            <span>Dashboard Financier — 4 Statistiques Clés (FCFA)</span>
+          </h2>
+          <span className="text-xs font-bold text-blue-700 bg-blue-50 border border-blue-200 px-3 py-1 rounded-full">
+            Calcul automatique HT + TVA 18% + TTC
           </span>
         </div>
 
-        {/* Stat 2 : En Attente & Recouvrement */}
-        <div className="rounded-3xl bg-white p-5 border border-slate-200 shadow-sm space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-extrabold uppercase text-slate-500">
-              2. Reste à Encaisser
-            </span>
-            <div className="h-9 w-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
-              <Clock className="h-5 w-5" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {/* Stat 1 : Chiffre d'Affaires Encaissé TTC */}
+          <div className="rounded-3xl bg-white p-5 border-2 border-emerald-500/20 shadow-sm space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-extrabold uppercase text-slate-500">
+                1. CA Encaissé (TTC)
+              </span>
+              <div className="h-9 w-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                <Wallet className="h-5 w-5" />
+              </div>
             </div>
+            <p className="text-2xl font-black text-slate-900">
+              {formatXAF(stats.totalRevenuePaid)}
+            </p>
+            <span className="text-[11px] font-semibold text-emerald-600 block">
+              ✓ {stats.paidCount} facture(s) payée(s)
+            </span>
           </div>
-          <p className="text-2xl font-black text-amber-600">
-            {formatXAF(stats.pendingAmount)}
-          </p>
-          <span className="text-[11px] font-semibold text-rose-600 block">
-            dont {stats.overdueCount} facture(s) en retard
-          </span>
-        </div>
 
-        {/* Stat 3 : TVA 18% Collectée (Gabon) */}
-        <div className="rounded-3xl bg-white p-5 border border-slate-200 shadow-sm space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-extrabold uppercase text-slate-500">
-              3. TVA 18% Collectée
-            </span>
-            <div className="h-9 w-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
-              <TrendingUp className="h-5 w-5" />
+          {/* Stat 2 : En Attente & Recouvrement */}
+          <div className="rounded-3xl bg-white p-5 border-2 border-amber-500/20 shadow-sm space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-extrabold uppercase text-slate-500">
+                2. Reste à Encaisser
+              </span>
+              <div className="h-9 w-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
+                <Clock className="h-5 w-5" />
+              </div>
             </div>
+            <p className="text-2xl font-black text-amber-600">
+              {formatXAF(stats.pendingAmount)}
+            </p>
+            <span className="text-[11px] font-semibold text-rose-600 block">
+              dont {stats.overdueCount} facture(s) en retard
+            </span>
           </div>
-          <p className="text-2xl font-black text-blue-700">
-            {formatXAF(stats.totalTvaCollected)}
-          </p>
-          <span className="text-[11px] font-semibold text-slate-500 block">
-            Taux légal Gabon : 18%
-          </span>
-        </div>
 
-        {/* Stat 4 : Total Factures & Clients actifs */}
-        <div className="rounded-3xl bg-white p-5 border border-slate-200 shadow-sm space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-extrabold uppercase text-slate-500">
-              4. Factures &amp; Clients
-            </span>
-            <div className="h-9 w-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
-              <Receipt className="h-5 w-5" />
+          {/* Stat 3 : TVA 18% Collectée (Gabon) */}
+          <div className="rounded-3xl bg-white p-5 border-2 border-blue-500/20 shadow-sm space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-extrabold uppercase text-slate-500">
+                3. TVA 18% Collectée
+              </span>
+              <div className="h-9 w-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+                <TrendingUp className="h-5 w-5" />
+              </div>
             </div>
+            <p className="text-2xl font-black text-blue-700">
+              {formatXAF(stats.totalTvaCollected)}
+            </p>
+            <span className="text-[11px] font-semibold text-slate-500 block">
+              Taux légal Gabon : 18%
+            </span>
           </div>
-          <p className="text-2xl font-black text-slate-900">
-            {stats.totalInvoices} Factures
-          </p>
-          <span className="text-[11px] font-semibold text-blue-600 block">
-            {rlsClients.length} clients enregistrés à Gamba
-          </span>
+
+          {/* Stat 4 : Total Factures & Clients actifs */}
+          <div
+            onClick={() => setActiveTab('clients')}
+            className="rounded-3xl bg-white p-5 border-2 border-indigo-500/20 shadow-sm space-y-2 cursor-pointer hover:border-blue-600 transition"
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-extrabold uppercase text-slate-500">
+                4. Factures &amp; Clients
+              </span>
+              <div className="h-9 w-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                <Receipt className="h-5 w-5" />
+              </div>
+            </div>
+            <p className="text-2xl font-black text-slate-900">
+              {stats.totalInvoices} Factures • {rlsClients.length} Clients
+            </p>
+            <span className="text-[11px] font-extrabold text-blue-600 underline block">
+              Gérer les clients à Gamba →
+            </span>
+          </div>
         </div>
       </div>
 
