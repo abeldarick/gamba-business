@@ -9,9 +9,9 @@
   "orientation": "portrait",
   "icons": [
     {
-      "src": "/icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
+      "src": "/images/logo-gamba-icon.jpg",
+      "sizes": "248x248",
+      "type": "image/jpeg",
       "purpose": "any maskable"
     }
   ]
