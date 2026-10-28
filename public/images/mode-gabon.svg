@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500">
+  <defs>
+    <linearGradient id="bg7" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#581C87"/>
+      <stop offset="100%" stop-color="#3B0764"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#bg7)"/>
+  <circle cx="400" cy="220" r="120" fill="#C084FC" opacity="0.2"/>
+  <!-- T-shirt / Fashion icon -->
+  <path d="M330 150 L365 150 C375 170, 425 170, 435 150 L470 150 L505 195 L475 225 L455 200 V310 H345 V200 L325 225 L295 195 Z" fill="#F3E8FF" stroke="#F59E0B" stroke-width="6"/>
+  <rect x="0" y="420" width="800" height="80" fill="#230338"/>
+  <text x="400" y="468" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#E9D5FF" text-anchor="middle">PRÊT-À-PORTER • BAZIN • WAX • SNEAKERS &amp; SACS</text>
+</svg>
