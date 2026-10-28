@@ -18,6 +18,8 @@ import {
   Sparkles,
   UserPlus,
   Smartphone,
+  Lock,
+  LogOut,
 } from 'lucide-react';
 import { useGamba } from '@/context/GambaContext';
 import {
@@ -33,6 +35,7 @@ export default function AdminBackendPage() {
     users,
     transactions,
     listings,
+    currentUser,
     registerUser,
     adminUpdateUserPlan,
     adminToggleUserStatus,
@@ -43,6 +46,12 @@ export default function AdminBackendPage() {
     adminToggleListingBoost,
     deleteListing,
   } = useGamba();
+
+  // Sécurité Console Super-Admin : Verrouillée par code secret Propriétaire
+  const [adminUnlocked, setAdminUnlocked] = useState(false);
+  const [adminEmailInput, setAdminEmailInput] = useState('admin@gambabusiness.ga');
+  const [adminPassInput, setAdminPassInput] = useState('');
+  const [adminAuthError, setAdminAuthError] = useState('');
 
   const [activeTab, setActiveTab] = useState<'users' | 'payments' | 'listings'>('users');
   const [searchUser, setSearchUser] = useState('');
@@ -120,6 +129,86 @@ export default function AdminBackendPage() {
     setPayPhone('077 ');
   };
 
+  const handleAdminGateSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (
+      adminPassInput === 'admin' ||
+      adminPassInput === 'admin2026' ||
+      adminPassInput === 'gamba2026'
+    ) {
+      setAdminUnlocked(true);
+      setAdminAuthError('');
+    } else {
+      setAdminAuthError('Code d’accès Administrateur incorrect.');
+    }
+  };
+
+  const isAuthorizedAdmin = adminUnlocked || currentUser?.role === 'admin';
+
+  if (!isAuthorizedAdmin) {
+    return (
+      <div className="max-w-md mx-auto px-4 py-16">
+        <div className="rounded-3xl bg-white border border-slate-200 shadow-2xl overflow-hidden">
+          <div className="bg-gradient-to-r from-[#0B192C] via-blue-950 to-blue-900 p-6 text-white text-center space-y-2">
+            <div className="mx-auto h-12 w-12 rounded-2xl bg-blue-600/30 border border-blue-400/30 flex items-center justify-center">
+              <Lock className="h-6 w-6 text-sky-300" />
+            </div>
+            <span className="inline-block rounded-full bg-emerald-500/20 border border-emerald-400/30 px-3 py-0.5 text-[10px] font-extrabold text-emerald-300 uppercase">
+              ACCÈS PRIVÉ PROPRIÉTAIRE
+            </span>
+            <h1 className="text-xl font-black">Console Super-Admin</h1>
+            <p className="text-xs text-sky-200/80">
+              Cet espace back-end est strictement réservé à l&apos;administrateur de GAMBA
+              BUSINESS.
+            </p>
+          </div>
+
+          <form onSubmit={handleAdminGateSubmit} className="p-6 space-y-4">
+            {adminAuthError && (
+              <div className="rounded-xl bg-rose-50 border border-rose-200 p-3 text-xs font-bold text-rose-700">
+                {adminAuthError}
+              </div>
+            )}
+
+            <div>
+              <label className="block text-xs font-extrabold uppercase text-slate-700 mb-1">
+                Identifiant Administrateur *
+              </label>
+              <input
+                type="email"
+                required
+                value={adminEmailInput}
+                onChange={(e) => setAdminEmailInput(e.target.value)}
+                className="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-semibold focus:border-blue-600 focus:outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-extrabold uppercase text-slate-700 mb-1">
+                Mot de passe Administrateur *
+              </label>
+              <input
+                type="password"
+                required
+                value={adminPassInput}
+                onChange={(e) => setAdminPassInput(e.target.value)}
+                placeholder="Mot de passe propriétaire (ex: admin2026)"
+                className="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-semibold focus:border-blue-600 focus:outline-none"
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="w-full rounded-2xl bg-[#0B192C] hover:bg-blue-900 text-white font-extrabold text-sm py-3.5 px-4 shadow-lg transition"
+            >
+              Déverrouiller le Back-End Admin →
+            </button>
+          </form>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 space-y-8">
       {/* =====================================================================
@@ -151,12 +240,13 @@ export default function AdminBackendPage() {
           >
             📊 Facturation TVA 18%
           </Link>
-          <Link
-            href="/publier"
-            className="rounded-2xl bg-blue-500 hover:bg-blue-400 text-white font-extrabold text-xs sm:text-sm px-5 py-3 shadow-lg transition"
+          <button
+            onClick={() => setAdminUnlocked(false)}
+            className="inline-flex items-center gap-1.5 rounded-2xl bg-rose-500/20 hover:bg-rose-500/30 text-rose-200 border border-rose-400/30 font-bold text-xs sm:text-sm px-4 py-3 transition"
           >
-            + Publier une Annonce
-          </Link>
+            <LogOut className="h-4 w-4" />
+            <span>Verrouiller Admin</span>
+          </button>
         </div>
       </div>
 
