@@ -33,8 +33,8 @@ export default function RootLayout({
   return (
     <html lang="fr">
       <head>
-        <link rel="icon" href="/icon.svg" type="image/svg+xml" />
-        <link rel="apple-touch-icon" href="/icon.svg" />
+        <link rel="icon" href="/images/logo-gamba-icon.jpg" type="image/jpeg" />
+        <link rel="apple-touch-icon" href="/images/logo-gamba-icon.jpg" />
       </head>
       <body className="min-h-screen flex flex-col bg-slate-50 text-slate-900 antialiased">
         <GambaProvider>
