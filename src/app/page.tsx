@@ -41,7 +41,7 @@ const CATEGORY_ICONS: Record<CategoryId, React.ElementType> = {
 };
 
 export default function HomePage() {
-  const { listings, openPaymentModal } = useGamba();
+  const { listings, openPaymentModal, openAuthModal, currentUser } = useGamba();
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedQuartier, setSelectedQuartier] = useState<QuartierGamba | 'Tous'>('Tous');
@@ -292,23 +292,27 @@ export default function HomePage() {
           </div>
 
           <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+            <button
+              onClick={openAuthModal}
+              className="inline-flex items-center gap-2 rounded-2xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-extrabold text-xs sm:text-sm px-4 py-3 shadow-lg transition"
+            >
+              <span>
+                {currentUser
+                  ? `✓ Connecté : ${currentUser.fullName}`
+                  : '🔐 Connexion / Inscription (Mail ou Tél)'}
+              </span>
+            </button>
+            <Link
+              href="/admin"
+              className="inline-flex items-center gap-2 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs sm:text-sm px-4 py-3 shadow-lg shadow-emerald-600/30 transition"
+            >
+              <span>⚙️ Back-End Admin (Utilisateurs &amp; Paiements)</span>
+            </Link>
             <Link
               href="/facturation"
               className="inline-flex items-center gap-2 rounded-2xl bg-blue-500 hover:bg-blue-400 text-white font-extrabold text-xs sm:text-sm px-4 py-3 shadow-lg shadow-blue-500/30 transition"
             >
-              <span>📊 Dashboard &amp; Factures</span>
-            </Link>
-            <Link
-              href="/facturation?tab=create"
-              className="inline-flex items-center gap-2 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs sm:text-sm px-4 py-3 shadow-lg shadow-emerald-600/30 transition"
-            >
-              <span>➕ Créer Facture (TVA 18%)</span>
-            </Link>
-            <Link
-              href="/facturation?tab=clients"
-              className="inline-flex items-center gap-2 rounded-2xl bg-white text-slate-900 hover:bg-sky-50 font-extrabold text-xs sm:text-sm px-4 py-3 shadow-md transition"
-            >
-              <span>👥 Gestion Clients</span>
+              <span>📊 Facturation &amp; Clients</span>
             </Link>
           </div>
         </div>
@@ -595,17 +599,28 @@ export default function HomePage() {
         </div>
 
         {latestListings.length === 0 ? (
-          <div className="rounded-3xl bg-white border border-slate-200 p-10 text-center space-y-3">
-            <p className="text-base font-bold text-slate-800">
-              Aucune annonce ne correspond à ce filtre.
+          <div className="rounded-3xl bg-white border border-slate-200 p-10 text-center space-y-4 shadow-sm">
+            <p className="text-lg font-black text-slate-900">
+              Aucune annonce publiée pour le moment
             </p>
-            <div className="flex justify-center gap-3 pt-2">
+            <p className="text-xs sm:text-sm text-slate-500 max-w-lg mx-auto">
+              Toutes les annonces de démonstration ont été retirées. Connectez-vous par
+              numéro de téléphone (+241) ou par adresse mail et publiez votre première vraie
+              annonce commerciale à Gamba !
+            </p>
+            <div className="flex flex-wrap justify-center gap-3 pt-2">
               <button
-                onClick={resetFilters}
-                className="rounded-xl bg-blue-600 text-white font-bold text-xs px-5 py-2.5"
+                onClick={openAuthModal}
+                className="rounded-xl bg-[#0B192C] hover:bg-slate-800 text-white font-extrabold text-xs sm:text-sm px-5 py-3 transition"
               >
-                Réinitialiser la recherche
+                🔐 S&apos;inscrire (Mail ou Téléphone)
               </button>
+              <Link
+                href="/publier"
+                className="rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs sm:text-sm px-5 py-3 shadow-md transition"
+              >
+                + Publier la 1ère annonce (2 jours gratuits)
+              </Link>
             </div>
           </div>
         ) : (
