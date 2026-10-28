@@ -1,0 +1,1876 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <meta name="theme-color" content="#0F4C81" />
+  <title>GAMBA BUSINESS | La Plateforme Officielle des Commerces de Gamba, Gabon 🇬🇦</title>
+  <link rel="manifest" href="public/manifest.json" />
+  <link rel="icon" href="public/icon.svg" type="image/svg+xml" />
+  <!-- Police Inter & Plus Jakarta Sans (Rendu SaaS Ultra Pro) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@700;800;900&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS & Lucide Icons -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            display: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
+          },
+          colors: {
+            gamba: {
+              blue: '#0284C7',      /* Bleu Océan / Lagune Ndougou */
+              royal: '#1D4ED8',     /* Bleu Royal Corporate */
+              navy: '#0B192C',      /* Bleu Nuit Profond */
+              sky: '#F0F9FF',       /* Fond Bleu Glacé Très Clair */
+              airtel: '#E60000',    /* Rouge Officiel Airtel Money */
+              moov: '#0055A5',      /* Bleu Officiel Moov Money */
+              whatsapp: '#16A34A'   /* WhatsApp Direct */
+            }
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background-color: #F8FAFC;
+      color: #0F172A;
+      -webkit-tap-highlight-color: transparent;
+    }
+    h1, h2, h3, .font-heading {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .glass-nav {
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+    .hero-overlay {
+      background: linear-gradient(180deg, rgba(11, 25, 44, 0.72) 0%, rgba(11, 25, 44, 0.88) 65%, #0B192C 100%);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col pb-24 md:pb-0 selection:bg-blue-600 selection:text-white">
+
+  <!-- ====================================================================
+       TOPBAR INSTITUTIONNELLE BLEU NUIT & MOBILE MONEY GABON
+       ==================================================================== -->
+  <div class="bg-gamba-navy text-white text-xs py-2 px-4 border-b border-blue-900/60">
+    <div class="max-w-7xl mx-auto flex items-center justify-between gap-2">
+      <div class="flex items-center gap-2">
+        <span class="inline-flex items-center gap-1.5 rounded-full bg-blue-600/30 border border-blue-400/30 px-2.5 py-0.5 text-[11px] font-bold text-sky-300">
+          🇬🇦 GAMBA • DÉPARTEMENT DE NDOUGOU
+        </span>
+        <span class="text-slate-300 font-medium hidden sm:inline">
+          1ère annonce 100% GRATUITE pendant 2 jours pour tous les commerçants !
+        </span>
+      </div>
+      <div class="flex items-center gap-3 ml-auto">
+        <button onclick="openPaymentModal('pro')" class="flex items-center gap-1.5 text-sky-300 hover:text-white font-semibold transition">
+          <i data-lucide="zap" class="w-3.5 h-3.5 text-amber-400"></i>
+          <span>Booster via Airtel Money (*150#) / Moov (*555#)</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       HEADER PRINCIPAL BLEU & BLANC (GLASSMORPHISM PRO)
+       ==================================================================== -->
+  <header class="sticky top-0 z-40 glass-nav border-b border-slate-200/80 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 h-16 sm:h-20 flex items-center justify-between gap-3">
+      <!-- Logo -->
+      <button onclick="navigateTo('home')" class="flex items-center gap-3 text-left group">
+        <div class="h-11 w-11 rounded-2xl bg-gradient-to-br from-blue-700 via-blue-600 to-sky-500 flex items-center justify-center text-white font-heading font-black text-lg shadow-lg shadow-blue-600/25 group-hover:scale-105 transition">
+          GB
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="font-heading font-extrabold text-lg sm:text-xl tracking-tight text-slate-900">
+              GAMBA <span class="text-blue-600">BUSINESS</span>
+            </span>
+            <span id="nav-plan-badge" class="hidden rounded-full bg-blue-50 border border-blue-200 px-2 py-0.5 text-[10px] font-extrabold text-blue-700 uppercase">
+              PRO
+            </span>
+          </div>
+          <p class="text-[11px] text-slate-500 flex items-center gap-1 font-medium">
+            <i data-lucide="compass" class="w-3 h-3 text-blue-600"></i> Le Portail Officiel des Commerces de Gamba
+          </p>
+        </div>
+      </button>
+
+      <!-- Navigation Desktop -->
+      <nav class="hidden md:flex items-center gap-1.5">
+        <button onclick="navigateTo('home')" id="nav-home" class="flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold text-blue-700 bg-blue-50/80 transition">
+          <i data-lucide="layout-grid" class="w-4 h-4"></i>
+          <span>Explorer Gamba</span>
+        </button>
+        <button onclick="navigateTo('tarifs')" id="nav-tarifs" class="flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-600 hover:text-blue-700 hover:bg-slate-100/80 transition">
+          <i data-lucide="award" class="w-4 h-4 text-blue-600"></i>
+          <span>Tarifs &amp; Visibilité</span>
+        </button>
+        <button onclick="navigateTo('mes-annonces')" id="nav-mes-annonces" class="flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-600 hover:text-blue-700 hover:bg-slate-100/80 transition">
+          <i data-lucide="briefcase" class="w-4 h-4"></i>
+          <span>Espace Vendeur</span>
+        </button>
+        <button onclick="navigateTo('publier')" class="flex items-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm px-5 py-2.5 shadow-md shadow-blue-600/20 transition ml-2">
+          <i data-lucide="plus-circle" class="w-4 h-4"></i>
+          <span>Publier une annonce</span>
+        </button>
+      </nav>
+
+      <!-- Bouton rapide Mobile -->
+      <div class="flex md:hidden items-center gap-2">
+        <button onclick="navigateTo('publier')" class="flex items-center gap-1.5 rounded-xl bg-blue-600 active:bg-blue-700 text-white font-bold text-xs px-3.5 py-2.5 shadow-md shadow-blue-600/20">
+          <i data-lucide="plus" class="w-4 h-4"></i>
+          <span>Publier</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ====================================================================
+       CONTENEUR PRINCIPAL DES VUES (SPA ULTRA FLUIDE)
+       ==================================================================== -->
+  <main class="flex-1">
+
+    <!-- ==================== VUE 1 : ACCUEIL (LANDING PAGE PRO) ==================== -->
+    <div id="view-home" class="space-y-10 sm:space-y-14 pb-12">
+
+      <!-- 1. HERO IMMERSIF AVEC VRAIE PHOTO DE LAGUNE TROPICALE / CÔTE GABONAISE -->
+      <section class="relative overflow-hidden bg-gamba-navy text-white pt-10 pb-16 sm:pt-16 sm:pb-24 px-4">
+        <img
+          src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&q=80"
+          alt="Lagune Ndougou et Plages de Gamba, Gabon"
+          class="absolute inset-0 w-full h-full object-cover object-center opacity-35 scale-105"
+        />
+        <div class="absolute inset-0 hero-overlay"></div>
+
+        <div class="max-w-5xl mx-auto text-center space-y-6 relative z-10">
+          <!-- Badge de confiance local avec les vrais quartiers de Gamba -->
+          <div class="inline-flex items-center gap-2 rounded-full bg-blue-500/20 border border-sky-400/30 backdrop-blur-md px-4 py-1.5 text-xs font-semibold text-sky-200 shadow-sm">
+            <span class="h-2 w-2 rounded-full bg-sky-400 animate-ping"></span>
+            <span>PLAINE 1 À 5 • LE COULOIR • CENTRE-VILLE • CAMP YENZI • MAYONAMI</span>
+          </div>
+
+          <h1 class="text-3xl sm:text-5xl md:text-6xl font-heading font-black tracking-tight leading-[1.12]">
+            Tout <span class="text-transparent bg-clip-text bg-gradient-to-r from-sky-300 via-blue-200 to-white">Gamba</span> dans votre poche.
+          </h1>
+
+          <p class="text-sm sm:text-lg text-slate-200 max-w-2xl mx-auto font-normal leading-relaxed">
+            La plateforme de référence pour trouver les meilleurs <strong class="text-white font-semibold">Motels, Restaurants de poisson braisé, Bars, Boutiques, Salons et Techniciens</strong> à Gamba. Contact direct par WhatsApp.
+          </p>
+
+          <!-- MOTEUR DE RECHERCHE BLANC & BLEU (VRAIS QUARTIERS DE GAMBA) -->
+          <div class="bg-white p-2.5 sm:p-3 rounded-2xl sm:rounded-3xl shadow-2xl shadow-blue-950/50 max-w-4xl mx-auto border border-slate-100 text-left">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-2.5">
+              <!-- Recherche par mot-clé -->
+              <div class="md:col-span-5 relative flex items-center">
+                <i data-lucide="search" class="w-5 h-5 text-blue-600 absolute left-4 pointer-events-none"></i>
+                <input
+                  id="search-input"
+                  type="text"
+                  oninput="renderHomeListings()"
+                  placeholder="Motel, carpe braisée, clim, tresses..."
+                  class="w-full pl-11 pr-4 py-3.5 rounded-xl sm:rounded-2xl bg-slate-50 text-slate-900 placeholder-slate-400 text-sm font-medium focus:bg-white focus:ring-2 focus:ring-blue-600 focus:outline-none transition"
+                />
+              </div>
+
+              <!-- Sélection des vrais Quartiers de Gamba -->
+              <div class="md:col-span-4 relative flex items-center">
+                <i data-lucide="map-pin" class="w-5 h-5 text-blue-600 absolute left-4 pointer-events-none"></i>
+                <select
+                  id="quartier-select"
+                  onchange="renderHomeListings()"
+                  class="w-full pl-11 pr-8 py-3.5 rounded-xl sm:rounded-2xl bg-slate-50 text-slate-900 text-sm font-semibold focus:bg-white focus:ring-2 focus:ring-blue-600 focus:outline-none cursor-pointer transition"
+                >
+                  <option value="Tous">📍 Tous les quartiers de Gamba</option>
+                  <option value="Plaine 1">Quartier Plaine 1</option>
+                  <option value="Plaine 2">Quartier Plaine 2</option>
+                  <option value="Plaine 3">Quartier Plaine 3</option>
+                  <option value="Plaine 4">Quartier Plaine 4</option>
+                  <option value="Plaine 5">Quartier Plaine 5</option>
+                  <option value="Le Couloir">Quartier Le Couloir</option>
+                  <option value="Centre-ville">Centre-ville</option>
+                  <option value="Camp Yenzi">Camp Yenzi</option>
+                  <option value="Mayonami">Mayonami (Plage &amp; Pêche)</option>
+                  <option value="Pont Dick">Pont Dick</option>
+                  <option value="Voungou">Voungou</option>
+                  <option value="Terminal / Aéroport">Terminal / Aéroport</option>
+                </select>
+              </div>
+
+              <!-- Bouton Filtrer Budget & Rechercher -->
+              <div class="md:col-span-3 flex gap-2">
+                <button
+                  type="button"
+                  onclick="toggleBudgetDrawer()"
+                  class="w-full flex items-center justify-center gap-2 rounded-xl sm:rounded-2xl bg-blue-600 hover:bg-blue-700 active:scale-[0.99] text-white font-bold text-sm py-3.5 px-4 transition shadow-lg shadow-blue-600/25"
+                >
+                  <i data-lucide="sliders-horizontal" class="w-4 h-4"></i>
+                  <span>Filtrer Prix</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Tiroir de filtre par budget en FCFA -->
+            <div id="budget-drawer" class="hidden mt-3 pt-3 border-t border-slate-100 px-3 pb-1 flex flex-col sm:flex-row items-center justify-between gap-4 text-slate-800">
+              <div class="flex items-center gap-2 text-xs font-bold">
+                <span class="text-slate-500">Budget maximum :</span>
+                <span id="budget-label" class="rounded-lg bg-blue-50 text-blue-700 border border-blue-200 px-3 py-1 font-extrabold">
+                  Tous les tarifs (Illimité)
+                </span>
+              </div>
+              <div class="flex items-center gap-3 w-full sm:w-80">
+                <span class="text-[11px] font-semibold text-slate-400">1 000 F</span>
+                <input
+                  id="budget-range"
+                  type="range"
+                  min="1000"
+                  max="100000"
+                  step="1000"
+                  value="100000"
+                  oninput="updateBudgetFilter(this.value)"
+                  class="w-full accent-blue-600 cursor-pointer"
+                />
+                <span class="text-[11px] font-semibold text-slate-400">100 000 F+</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Filtres rapides par Vrais Quartiers de Gamba (Pills tactiles Mobile) -->
+          <div class="flex items-center justify-start sm:justify-center overflow-x-auto no-scrollbar gap-2 pt-2 text-xs">
+            <span class="text-sky-200/80 font-medium shrink-0">Quartiers :</span>
+            <button onclick="quickSelectQuartier('Plaine 1')" class="shrink-0 rounded-full bg-white/10 hover:bg-blue-600 border border-white/15 px-3.5 py-1.5 font-semibold text-white transition">Plaine 1</button>
+            <button onclick="quickSelectQuartier('Plaine 2')" class="shrink-0 rounded-full bg-white/10 hover:bg-blue-600 border border-white/15 px-3.5 py-1.5 font-semibold text-white transition">Plaine 2</button>
+            <button onclick="quickSelectQuartier('Plaine 3')" class="shrink-0 rounded-full bg-white/10 hover:bg-blue-600 border border-white/15 px-3.5 py-1.5 font-semibold text-white transition">Plaine 3</button>
+            <button onclick="quickSelectQuartier('Plaine 4')" class="shrink-0 rounded-full bg-white/10 hover:bg-blue-600 border border-white/15 px-3.5 py-1.5 font-semibold text-white transition">Plaine 4</button>
+            <button onclick="quickSelectQuartier('Plaine 5')" class="shrink-0 rounded-full bg-white/10 hover:bg-blue-600 border border-white/15 px-3.5 py-1.5 font-semibold text-white transition">Plaine 5</button>
+            <button onclick="quickSelectQuartier('Le Couloir')" class="shrink-0 rounded-full bg-white/10 hover:bg-blue-600 border border-white/15 px-3.5 py-1.5 font-semibold text-white transition">Le Couloir</button>
+            <button onclick="quickSelectQuartier('Centre-ville')" class="shrink-0 rounded-full bg-white/10 hover:bg-blue-600 border border-white/15 px-3.5 py-1.5 font-semibold text-white transition">Centre-ville</button>
+          </div>
+
+          <!-- Chiffres clés rassurants (2 Jours gratuits) -->
+          <div class="grid grid-cols-3 gap-2 max-w-lg mx-auto pt-4 border-t border-white/10 text-center">
+            <div>
+              <p class="text-lg sm:text-2xl font-heading font-black text-white">100%</p>
+              <p class="text-[11px] text-sky-200/80">Commerces de Gamba</p>
+            </div>
+            <div>
+              <p class="text-lg sm:text-2xl font-heading font-black text-sky-300">WhatsApp</p>
+              <p class="text-[11px] text-sky-200/80">Contact direct sans intermédiaire</p>
+            </div>
+            <div>
+              <p class="text-lg sm:text-2xl font-heading font-black text-white">2 Jours</p>
+              <p class="text-[11px] text-sky-200/80">1ère annonce offerte</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. BARRE DES 7 CATÉGORIES (STYLE MODERNE BLEU & BLANC) -->
+      <section class="max-w-7xl mx-auto px-4 -mt-14 relative z-20">
+        <div class="bg-white rounded-3xl p-4 sm:p-6 shadow-xl shadow-slate-900/5 border border-slate-200/80">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-2">
+              <span class="h-2.5 w-2.5 rounded-full bg-blue-600"></span>
+              <h2 class="text-sm sm:text-base font-heading font-extrabold text-slate-900 uppercase tracking-wider">
+                Explorer par secteur d'activité
+              </h2>
+            </div>
+            <button onclick="resetAllFilters()" id="reset-filters-btn" class="hidden inline-flex items-center gap-1 text-xs font-bold text-blue-600 hover:text-blue-800">
+              Tout afficher ✕
+            </button>
+          </div>
+
+          <div id="categories-bar" class="flex md:grid md:grid-cols-8 gap-2.5 overflow-x-auto no-scrollbar pb-1"></div>
+        </div>
+      </section>
+
+      <!-- 3. VITRINE PHOTO RÉELLE : LA VIE ÉCONOMIQUE À GAMBA (NDOUGOU) -->
+      <section class="max-w-7xl mx-auto px-4">
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-5 gap-2">
+          <div>
+            <span class="text-xs font-extrabold uppercase tracking-wider text-blue-600">DÉCOUVRIR GAMBA</span>
+            <h2 class="text-xl sm:text-2xl font-heading font-black text-slate-900">
+              L'économie locale de Gamba en un clin d'œil
+            </h2>
+          </div>
+          <p class="text-xs text-slate-500">Cliquez sur un univers pour filtrer les annonces correspondantes</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <!-- Carte Réalité 1 : Hébergement & Lagune Ndougou -->
+          <div onclick="selectCategory('Motels')" class="group cursor-pointer relative h-52 rounded-3xl overflow-hidden shadow-md border border-slate-200">
+            <img
+              src="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=900&q=80"
+              alt="Motels et Résidences à Gamba"
+              class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/35 to-transparent"></div>
+            <div class="absolute bottom-4 left-4 right-4 text-white">
+              <span class="rounded-full bg-blue-600 px-2.5 py-0.5 text-[10px] font-bold uppercase">Séjour &amp; Missions</span>
+              <h3 class="text-lg font-heading font-bold mt-1">Motels &amp; Résidences Climatisées</h3>
+              <p class="text-xs text-slate-200">Centre-ville, Plaine 1 à 5 &amp; Le Couloir</p>
+            </div>
+          </div>
+
+          <!-- Carte Réalité 2 : Gastronomie Gabonaise & Poisson Braisé -->
+          <div onclick="selectCategory('Restaurants')" class="group cursor-pointer relative h-52 rounded-3xl overflow-hidden shadow-md border border-slate-200">
+            <img
+              src="https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=900&q=80"
+              alt="Poisson braisé et Grillades à Gamba"
+              class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/35 to-transparent"></div>
+            <div class="absolute bottom-4 left-4 right-4 text-white">
+              <span class="rounded-full bg-sky-500 px-2.5 py-0.5 text-[10px] font-bold uppercase">Saveurs Locales</span>
+              <h3 class="text-lg font-heading font-bold mt-1">Poisson Braisé, Coupé-Coupé &amp; Restos</h3>
+              <p class="text-xs text-slate-200">Carpe fraîche de la lagune, plantain &amp; livraison</p>
+            </div>
+          </div>
+
+          <!-- Carte Réalité 3 : Boutiques, Marché & Services -->
+          <div onclick="selectCategory('Services')" class="group cursor-pointer relative h-52 rounded-3xl overflow-hidden shadow-md border border-slate-200">
+            <img
+              src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?auto=format&fit=crop&w=900&q=80"
+              alt="Salons de coiffure et Services techniques à Gamba"
+              class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/35 to-transparent"></div>
+            <div class="absolute bottom-4 left-4 right-4 text-white">
+              <span class="rounded-full bg-indigo-600 px-2.5 py-0.5 text-[10px] font-bold uppercase">Beauté &amp; Artisans</span>
+              <h3 class="text-lg font-heading font-bold mt-1">Salons VIP, Froid/Clim &amp; Boutiques</h3>
+              <p class="text-xs text-slate-200">Coiffure, dépannage 24h/7 et commerce général</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. GRANDE BANNIÈRE SPONSORISÉE (OFFRE BUSINESS 15 000 XAF) -->
+      <section id="home-banner-section" class="max-w-7xl mx-auto px-4"></section>
+
+      <!-- 5. SECTION "ANNONCES À LA UNE" (BOOSTÉES / VÉRIFIÉES) -->
+      <section id="featured-section" class="max-w-7xl mx-auto px-4 space-y-5">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-gradient-to-r from-blue-50 via-sky-50 to-white border border-blue-200/80 rounded-3xl p-5 shadow-sm">
+          <div class="flex items-center gap-3.5">
+            <div class="h-12 w-12 rounded-2xl bg-blue-600 text-white flex items-center justify-center shadow-md shadow-blue-600/20 shrink-0">
+              <i data-lucide="award" class="w-6 h-6"></i>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h2 class="text-lg sm:text-xl font-heading font-black text-slate-900">Annonces à la une à Gamba</h2>
+                <span class="rounded-full bg-blue-600 text-white text-[10px] font-extrabold px-2.5 py-0.5 uppercase">PARTENAIRES PRO</span>
+              </div>
+              <p class="text-xs sm:text-sm text-slate-600">Établissements vérifiés et annonces mises en avant via Airtel Money &amp; Moov Money</p>
+            </div>
+          </div>
+          <button onclick="navigateTo('tarifs')" class="inline-flex items-center gap-1.5 rounded-xl bg-white hover:bg-blue-50 text-blue-700 border border-blue-200 font-bold text-xs px-4 py-2.5 shadow-sm transition shrink-0">
+            <span>Mettre mon commerce à la une (dès 2 000 F)</span>
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <div id="featured-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5"></div>
+      </section>
+
+      <!-- 6. SECTION "DERNIÈRES ANNONCES" -->
+      <section class="max-w-7xl mx-auto px-4 space-y-5">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-4">
+          <div>
+            <h2 class="text-xl sm:text-2xl font-heading font-black text-slate-900">Toutes les annonces récentes</h2>
+            <p id="results-counter" class="text-xs sm:text-sm text-slate-500">Chargement des commerces de Gamba...</p>
+          </div>
+          <button onclick="navigateTo('publier')" class="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 hover:bg-blue-700 text-white font-bold text-xs sm:text-sm px-4 py-2.5 transition">
+            <i data-lucide="plus-circle" class="w-4 h-4 text-sky-400"></i>
+            <span>Publier une annonce (2 jours gratuits)</span>
+          </button>
+        </div>
+
+        <div id="latest-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5"></div>
+      </section>
+
+      <!-- 7. BANDEAU D'ACQUISITION COMMERÇANTS (2 JOURS GRATUITS) -->
+      <section class="max-w-7xl mx-auto px-4 pt-4">
+        <div class="rounded-3xl bg-gradient-to-br from-blue-900 via-blue-800 to-gamba-navy text-white p-6 sm:p-10 shadow-xl border border-blue-700/50 grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+          <div class="lg:col-span-8 space-y-3">
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-sky-400/20 border border-sky-300/30 px-3 py-1 text-xs font-bold text-sky-200">
+              🚀 DÉVELOPPEZ VOTRE CHIFFRE D'AFFAIRES À GAMBA
+            </span>
+            <h3 class="text-2xl sm:text-3xl font-heading font-black leading-tight">
+              Vous gérez un Motel, un Restaurant, une Boutique ou un Service à Gamba ?
+            </h3>
+            <p class="text-xs sm:text-sm text-blue-100 leading-relaxed max-w-2xl">
+              Profitez de <strong>2 jours d'essai 100% gratuit</strong> pour votre première annonce. Ensuite, restez en tête des recherches dès <strong>2 000 FCFA</strong> payables directement par Airtel Money (<code class="font-bold text-white">*150#</code>) ou Moov Money (<code class="font-bold text-white">*555#</code>).
+            </p>
+          </div>
+          <div class="lg:col-span-4 flex flex-col sm:flex-row lg:flex-col gap-3">
+            <button onclick="navigateTo('publier')" class="w-full flex items-center justify-center gap-2 rounded-2xl bg-white hover:bg-sky-50 text-blue-900 font-heading font-extrabold text-sm py-4 px-5 shadow-lg transition">
+              <i data-lucide="plus-circle" class="w-5 h-5 text-blue-600"></i>
+              <span>Publier gratuitement (2 jours)</span>
+            </button>
+            <button onclick="navigateTo('tarifs')" class="w-full flex items-center justify-center gap-2 rounded-2xl bg-blue-700/60 hover:bg-blue-700 text-white font-bold text-xs sm:text-sm py-3.5 px-5 border border-blue-400/30 transition">
+              <span>Découvrir les forfaits PRO (2 000 F - 15 000 F)</span>
+            </button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ==================== VUE 2 : DÉTAIL D'UNE ANNONCE ==================== -->
+    <div id="view-detail" class="hidden max-w-6xl mx-auto px-4 py-6 sm:py-8 space-y-8"></div>
+
+    <!-- ==================== VUE 3 : CRÉER / PUBLIER UNE ANNONCE ==================== -->
+    <div id="view-publier" class="hidden max-w-4xl mx-auto px-4 py-8">
+      <div class="mb-6 space-y-2">
+        <span class="inline-flex items-center gap-1.5 rounded-full bg-blue-50 border border-blue-200 text-blue-700 px-3 py-1 text-xs font-extrabold uppercase">
+          ✨ ESPACE VENDEURS &amp; COMMERÇANTS DE GAMBA
+        </span>
+        <h1 class="text-2xl sm:text-3xl font-heading font-black text-slate-900">Publier une annonce sur GAMBA BUSINESS</h1>
+        <p class="text-xs sm:text-sm text-slate-600">
+          Ajoutez vos informations et jusqu'à 4 photos réelles. Les clients de Gamba vous écriront directement sur WhatsApp.
+        </p>
+      </div>
+
+      <form onsubmit="handleCreateListing(event)" class="space-y-6">
+        <!-- Bloc 1 -->
+        <div class="rounded-3xl bg-white p-5 sm:p-7 border border-slate-200 shadow-sm space-y-4">
+          <h2 class="text-base font-heading font-extrabold text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
+            <span class="h-6 w-6 rounded-full bg-blue-600 text-white text-xs flex items-center justify-center font-black">1</span>
+            <span>Informations sur votre commerce ou produit</span>
+          </h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="sm:col-span-2">
+              <label class="block text-xs font-bold uppercase text-slate-700 mb-1.5">Titre de l'annonce *</label>
+              <input id="form-title" type="text" required placeholder="Ex: Chambres climatisées Motel La Lagune / Carpe braisée fraîche..." class="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm font-medium focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20 focus:outline-none" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold uppercase text-slate-700 mb-1.5">Nom du Commerce / Vendeur *</label>
+              <input id="form-seller" type="text" required placeholder="Ex: Chez Maman Clarisse / Salon Glamour" class="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm font-medium focus:border-blue-600 focus:outline-none" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold uppercase text-slate-700 mb-1.5">Catégorie *</label>
+              <select id="form-category" class="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm font-bold bg-white focus:border-blue-600 focus:outline-none">
+                <option value="Motels">Motels &amp; Hébergement</option>
+                <option value="Restaurants">Restaurants &amp; Grillades</option>
+                <option value="Bars">Bars, Terrasses &amp; Snacks</option>
+                <option value="Boutiques">Boutiques &amp; Équipements</option>
+                <option value="Services">Salons de coiffure &amp; Services</option>
+                <option value="Alimentation">Alimentation, Pêche &amp; Frais</option>
+                <option value="Vêtements">Vêtements, Wax &amp; Mode</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold uppercase text-slate-700 mb-1.5">Prix en FCFA (XAF) *</label>
+              <input id="form-price" type="number" required value="5000" min="0" step="500" class="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm font-black text-blue-700 focus:border-blue-600 focus:outline-none" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold uppercase text-slate-700 mb-1.5">Unité de prix (Optionnel)</label>
+              <input id="form-pricelabel" type="text" placeholder="Ex: / nuitée, / plat, À partir de..." class="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm font-medium focus:border-blue-600 focus:outline-none" />
+            </div>
+            <div class="sm:col-span-2">
+              <label class="block text-xs font-bold uppercase text-slate-700 mb-1.5">Description détaillée *</label>
+              <textarea id="form-desc" rows="4" required placeholder="Précisez vos avantages : climatisation, groupe électrogène, livraison dans Gamba, paiement Airtel/Moov Money..." class="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm font-medium focus:border-blue-600 focus:outline-none"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bloc 2 : Photos (Max 4) avec banque d'images réelles -->
+        <div class="rounded-3xl bg-white p-5 sm:p-7 border border-slate-200 shadow-sm space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <h2 class="text-base font-heading font-extrabold text-slate-900 flex items-center gap-2">
+              <span class="h-6 w-6 rounded-full bg-blue-600 text-white text-xs flex items-center justify-center font-black">2</span>
+              <span>Photos de l'annonce (Maximum 4 photos)</span>
+            </h2>
+            <span id="photo-count-label" class="text-xs font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full">1 / 4 photos</span>
+          </div>
+          <div id="form-photos-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-3"></div>
+          <div class="pt-2">
+            <p class="text-xs font-semibold text-slate-500 mb-2">📸 Ou choisissez une photo réelle professionnelle adaptée à votre activité :</p>
+            <div class="flex flex-wrap gap-2">
+              <button type="button" onclick="addPresetPhoto('https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=900&q=80')" class="rounded-xl border border-slate-200 hover:border-blue-600 bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-700 transition">+ Photo Motel / Chambre</button>
+              <button type="button" onclick="addPresetPhoto('https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=900&q=80')" class="rounded-xl border border-slate-200 hover:border-blue-600 bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-700 transition">+ Photo Poisson Braisé</button>
+              <button type="button" onclick="addPresetPhoto('https://images.unsplash.com/photo-1514933651103-005eec06c04b?auto=format&fit=crop&w=900&q=80')" class="rounded-xl border border-slate-200 hover:border-blue-600 bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-700 transition">+ Photo Bar / Lounge</button>
+              <button type="button" onclick="addPresetPhoto('https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=900&q=80')" class="rounded-xl border border-slate-200 hover:border-blue-600 bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-700 transition">+ Photo Salon Coiffure</button>
+              <button type="button" onclick="addPresetPhoto('https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=900&q=80')" class="rounded-xl border border-slate-200 hover:border-blue-600 bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-700 transition">+ Photo Alimentation</button>
+              <button type="button" onclick="addPresetPhoto('https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=900&q=80')" class="rounded-xl border border-slate-200 hover:border-blue-600 bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-700 transition">+ Photo Service Clim/Élec</button>
+              <button type="button" onclick="addPresetPhoto('https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=900&q=80')" class="rounded-xl border border-slate-200 hover:border-blue-600 bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-700 transition">+ Photo Boutique Mode</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bloc 3 : Vrais Quartiers de Gamba, WhatsApp & Google Maps -->
+        <div class="rounded-3xl bg-white p-5 sm:p-7 border border-slate-200 shadow-sm space-y-4">
+          <h2 class="text-base font-heading font-extrabold text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
+            <span class="h-6 w-6 rounded-full bg-blue-600 text-white text-xs flex items-center justify-center font-black">3</span>
+            <span>Quartier à Gamba, WhatsApp &amp; Google Maps</span>
+          </h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold uppercase text-slate-700 mb-1.5">Quartier à Gamba *</label>
+              <select id="form-quartier" class="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm font-bold bg-white focus:border-blue-600 focus:outline-none">
+                <option value="Plaine 1">Plaine 1</option>
+                <option value="Plaine 2">Plaine 2</option>
+                <option value="Plaine 3">Plaine 3</option>
+                <option value="Plaine 4">Plaine 4</option>
+                <option value="Plaine 5">Plaine 5</option>
+                <option value="Le Couloir">Le Couloir</option>
+                <option value="Centre-ville">Centre-ville</option>
+                <option value="Camp Yenzi">Camp Yenzi</option>
+                <option value="Mayonami">Mayonami</option>
+                <option value="Pont Dick">Pont Dick</option>
+                <option value="Voungou">Voungou</option>
+                <option value="Terminal / Aéroport">Terminal / Aéroport</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold uppercase text-slate-700 mb-1.5">Repère facile (Adresse locale) *</label>
+              <input id="form-address" type="text" required placeholder="Ex: Plaine 2 en face de la boulangerie / Carrefour Le Couloir..." class="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm font-medium focus:border-blue-600 focus:outline-none" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold uppercase text-slate-700 mb-1.5">Numéro WhatsApp (Pour recevoir les clients) *</label>
+              <div class="flex">
+                <span class="inline-flex items-center rounded-l-xl border border-r-0 border-slate-300 bg-slate-100 px-3.5 text-xs font-bold text-slate-700">🇬🇦 +241</span>
+                <input id="form-whatsapp" type="tel" required value="077 45 12 89" class="w-full rounded-r-xl border border-slate-300 px-4 py-3 text-sm font-bold focus:border-blue-600 focus:outline-none" />
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-bold uppercase text-slate-700 mb-1.5">Position Google Maps</label>
+              <div class="flex gap-2">
+                <input id="form-maps" type="text" value="https://www.google.com/maps?q=-2.7258,10.0172" class="w-full rounded-xl border border-slate-300 px-3.5 py-3 text-xs font-medium focus:border-blue-600 focus:outline-none" />
+                <button type="button" onclick="detectGambaGPS()" class="shrink-0 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-3.5 py-2">📍 Mon GPS</button>
+              </div>
+              <p id="gps-feedback" class="text-[11px] text-emerald-600 font-semibold mt-1 hidden"></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bloc 4 : Choix de l'offre Freemium (2 JOURS GRATUITS) ou Mobile Money -->
+        <div class="rounded-3xl bg-white p-5 sm:p-7 border-2 border-blue-600/30 shadow-sm space-y-4">
+          <h2 class="text-base font-heading font-extrabold text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
+            <span class="h-6 w-6 rounded-full bg-blue-600 text-white text-xs flex items-center justify-center font-black">4</span>
+            <span>Choisissez votre formule de visibilité</span>
+          </h2>
+          <input type="hidden" id="form-plan" value="free" />
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="form-plan-cards">
+            <div onclick="selectFormPlan('free')" id="plan-card-free" class="cursor-pointer rounded-2xl p-4 border-2 border-blue-600 bg-blue-50/50">
+              <div class="flex justify-between"><span class="font-bold text-sm text-slate-900">ESSAI GRATUIT (2 JOURS)</span><span class="font-black text-sm text-emerald-600">0 FCFA</span></div>
+              <p class="text-xs text-slate-500 mt-1">1 annonce standard gratuite pendant 2 jours.</p>
+            </div>
+            <div onclick="selectFormPlan('decouverte')" id="plan-card-decouverte" class="cursor-pointer rounded-2xl p-4 border-2 border-slate-200">
+              <div class="flex justify-between"><span class="font-bold text-sm text-slate-900">OFFRE DÉCOUVERTE (7 JOURS)</span><span class="font-black text-sm text-blue-600">2 000 FCFA</span></div>
+              <p class="text-xs text-slate-500 mt-1">1 annonce mise en avant dans "Annonces à la une".</p>
+            </div>
+            <div onclick="selectFormPlan('pro')" id="plan-card-pro" class="cursor-pointer rounded-2xl p-4 border-2 border-slate-200">
+              <div class="flex justify-between"><span class="font-bold text-sm text-slate-900">OFFRE PRO 🔥 (30 JOURS)</span><span class="font-black text-sm text-blue-600">5 000 FCFA</span></div>
+              <p class="text-xs text-slate-500 mt-1">5 annonces + Badge PRO + En haut des résultats.</p>
+            </div>
+            <div onclick="selectFormPlan('business')" id="plan-card-business" class="cursor-pointer rounded-2xl p-4 border-2 border-slate-200">
+              <div class="flex justify-between"><span class="font-bold text-sm text-slate-900">OFFRE BUSINESS 👑 (30 JOURS)</span><span class="font-black text-sm text-blue-600">15 000 FCFA</span></div>
+              <p class="text-xs text-slate-500 mt-1">Annonces illimitées + Grande Bannière sur l'accueil.</p>
+            </div>
+          </div>
+
+          <button type="submit" id="form-submit-btn" class="w-full rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-heading font-extrabold text-base py-4 px-6 shadow-xl shadow-blue-600/25 transition">
+            Publier mon annonce gratuite (2 jours)
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- ==================== VUE 4 : TARIFS (/tarifs) ==================== -->
+    <div id="view-tarifs" class="hidden max-w-7xl mx-auto px-4 py-8 sm:py-12 space-y-10">
+      <div class="text-center max-w-3xl mx-auto space-y-4">
+        <div class="inline-flex items-center gap-2 rounded-full bg-blue-50 border border-blue-200 px-4 py-1.5 text-xs font-extrabold text-blue-700 uppercase">
+          📱 PAIEMENT MOBILE MONEY GABON (AIRTEL MONEY &amp; MOOV MONEY)
+        </div>
+        <h1 class="text-3xl sm:text-5xl font-heading font-black text-slate-900 tracking-tight leading-tight">
+          Boostez vos ventes à Gamba avec nos tarifs en <span class="text-blue-600">FCFA</span>
+        </h1>
+        <p class="text-sm sm:text-base text-slate-600">
+          Commencez avec <strong>1 annonce gratuite pendant 2 jours</strong>. Pour publier davantage ou rester tout en haut des résultats, activez votre forfait en 10 secondes par Mobile Money.
+        </p>
+      </div>
+
+      <!-- Bandeau Offre Gratuite 2 Jours -->
+      <div class="rounded-3xl bg-white border border-blue-200 p-5 sm:p-6 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="space-y-1 text-center md:text-left">
+          <div class="inline-flex items-center gap-2">
+            <span class="rounded-full bg-emerald-100 text-emerald-800 px-3 py-0.5 text-xs font-extrabold uppercase">OFFRE D'ESSAI GRATUITE</span>
+            <span class="text-sm font-black text-slate-900">0 FCFA / 2 jours</span>
+          </div>
+          <h3 class="text-base sm:text-lg font-heading font-extrabold text-slate-900">
+            Testez GAMBA BUSINESS avec 1 annonce gratuite pendant 2 jours !
+          </h3>
+          <p class="text-xs text-slate-500">
+            Au bout des 2 jours gratuits, prolongez et boostez votre annonce dès 2 000 FCFA avec Airtel Money ou Moov Money.
+          </p>
+        </div>
+        <button onclick="navigateTo('publier')" class="shrink-0 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs sm:text-sm px-5 py-3.5 shadow transition">
+          + Publier gratuitement (2 jours)
+        </button>
+      </div>
+
+      <!-- Les 3 offres obligatoires en FCFA (Design Bleu & Blanc Corporate) -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
+        <!-- OFFRE DÉCOUVERTE -->
+        <div class="flex flex-col justify-between rounded-3xl bg-white p-6 sm:p-8 border border-slate-200 shadow-sm">
+          <div class="space-y-4">
+            <span class="inline-block rounded-full bg-slate-100 text-slate-800 px-3 py-1 text-[10px] font-extrabold uppercase">VISIBILITÉ RAPIDE</span>
+            <h2 class="text-xl font-heading font-black text-slate-900">OFFRE DÉCOUVERTE</h2>
+            <p class="text-xs text-slate-500">Idéal pour mettre en avant une annonce ou une promotion d'arrivage sur 7 jours.</p>
+            <div class="pt-3 border-t border-slate-100 flex items-baseline gap-1.5">
+              <span class="text-3xl sm:text-4xl font-heading font-black text-slate-900">2 000 XAF</span>
+              <span class="text-xs font-bold text-slate-500">/ 7 jours</span>
+            </div>
+            <ul class="space-y-3 text-xs sm:text-sm text-slate-700 pt-2">
+              <li class="flex items-center gap-2"><span class="text-blue-600 font-bold">✓</span> <strong>1 annonce mise en avant</strong> ("À la une")</li>
+              <li class="flex items-center gap-2"><span class="text-blue-600 font-bold">✓</span> Durée de visibilité : 7 jours complets</li>
+              <li class="flex items-center gap-2"><span class="text-blue-600 font-bold">✓</span> Bouton direct WhatsApp &amp; Appel</li>
+              <li class="flex items-center gap-2"><span class="text-blue-600 font-bold">✓</span> Localisation par quartier &amp; Google Maps</li>
+              <li class="flex items-center gap-2"><span class="text-blue-600 font-bold">✓</span> Jusqu'à 4 photos HD</li>
+            </ul>
+          </div>
+          <div class="pt-6 mt-6 border-t border-slate-100 space-y-2.5">
+            <button onclick="openPaymentModal('decouverte')" class="w-full rounded-2xl bg-slate-900 hover:bg-blue-700 text-white font-heading font-extrabold text-xs sm:text-sm py-4 px-4 shadow transition">
+              Payer avec Airtel Money / Moov Money
+            </button>
+            <p class="text-center text-[11px] text-slate-500 font-medium">🔴 Airtel *150# • 🔵 Moov *555#</p>
+          </div>
+        </div>
+
+        <!-- OFFRE PRO (LA PLUS POPULAIRE) -->
+        <div class="flex flex-col justify-between rounded-3xl bg-gradient-to-b from-blue-900 via-blue-950 to-gamba-navy text-white p-6 sm:p-8 border-4 border-blue-500 shadow-2xl shadow-blue-900/30 lg:-translate-y-2">
+          <div class="space-y-4">
+            <span class="inline-block rounded-full bg-blue-500 text-white px-3.5 py-1 text-[10px] font-extrabold uppercase shadow">LA PLUS POPULAIRE 🔥</span>
+            <h2 class="text-xl font-heading font-black">OFFRE PRO</h2>
+            <p class="text-xs text-blue-200">La formule préférée des motels, restaurants, salons de coiffure et boutiques de Gamba.</p>
+            <div class="pt-3 border-t border-white/10 flex items-baseline gap-1.5">
+              <span class="text-3xl sm:text-4xl font-heading font-black text-sky-300">5 000 XAF</span>
+              <span class="text-xs font-bold text-blue-200">/ 30 jours</span>
+            </div>
+            <ul class="space-y-3 text-xs sm:text-sm text-blue-50 pt-2">
+              <li class="flex items-center gap-2"><span class="text-sky-400 font-bold">✓</span> <strong>5 annonces actives</strong> pendant 30 jours</li>
+              <li class="flex items-center gap-2"><span class="text-sky-400 font-bold">✓</span> <strong>Badge officiel "PRO"</strong> rassurant les clients</li>
+              <li class="flex items-center gap-2"><span class="text-sky-400 font-bold">✓</span> <strong>Toujours en haut des résultats</strong></li>
+              <li class="flex items-center gap-2"><span class="text-sky-400 font-bold">✓</span> Priorité dans la section "Annonces à la une"</li>
+              <li class="flex items-center gap-2"><span class="text-sky-400 font-bold">✓</span> Statistiques de vues et clics WhatsApp</li>
+            </ul>
+          </div>
+          <div class="pt-6 mt-6 border-t border-white/10 space-y-2.5">
+            <button onclick="openPaymentModal('pro')" class="w-full rounded-2xl bg-blue-500 hover:bg-blue-400 text-white font-heading font-extrabold text-xs sm:text-sm py-4 px-4 shadow-lg shadow-blue-500/30 transition">
+              Payer avec Airtel Money / Moov Money
+            </button>
+            <p class="text-center text-[11px] text-blue-200 font-medium">🔴 Airtel *150# • 🔵 Moov *555#</p>
+          </div>
+        </div>
+
+        <!-- OFFRE BUSINESS -->
+        <div class="flex flex-col justify-between rounded-3xl bg-white p-6 sm:p-8 border-2 border-blue-600 shadow-lg">
+          <div class="space-y-4">
+            <span class="inline-block rounded-full bg-blue-100 text-blue-800 px-3 py-1 text-[10px] font-extrabold uppercase">VISIBILITÉ MAXIMALE VIP 👑</span>
+            <h2 class="text-xl font-heading font-black text-slate-900">OFFRE BUSINESS</h2>
+            <p class="text-xs text-slate-500">Pour les hôtels, grands commerces, demi-grossistes et entreprises de Gamba.</p>
+            <div class="pt-3 border-t border-slate-100 flex items-baseline gap-1.5">
+              <span class="text-3xl sm:text-4xl font-heading font-black text-blue-700">15 000 XAF</span>
+              <span class="text-xs font-bold text-slate-500">/ 30 jours</span>
+            </div>
+            <ul class="space-y-3 text-xs sm:text-sm text-slate-700 pt-2">
+              <li class="flex items-center gap-2"><span class="text-blue-600 font-bold">✓</span> <strong>Annonces ILLIMITÉES</strong> pendant 30 jours</li>
+              <li class="flex items-center gap-2"><span class="text-blue-600 font-bold">✓</span> <strong>GRANDE BANNIÈRE PUB sur l'accueil</strong></li>
+              <li class="flex items-center gap-2"><span class="text-blue-600 font-bold">✓</span> Badge "PRO VÉRIFIÉ" + Encadré Bleu VIP</li>
+              <li class="flex items-center gap-2"><span class="text-blue-600 font-bold">✓</span> Position N°1 garantie dans votre catégorie</li>
+              <li class="flex items-center gap-2"><span class="text-blue-600 font-bold">✓</span> Assistance dédiée sur WhatsApp 7j/7</li>
+            </ul>
+          </div>
+          <div class="pt-6 mt-6 border-t border-slate-100 space-y-2.5">
+            <button onclick="openPaymentModal('business')" class="w-full rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-heading font-extrabold text-xs sm:text-sm py-4 px-4 shadow-lg shadow-blue-600/20 transition">
+              Payer avec Airtel Money / Moov Money
+            </button>
+            <p class="text-center text-[11px] text-slate-500 font-medium">🔴 Airtel *150# • 🔵 Moov *555#</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== VUE 5 : TABLEAU DE BORD VENDEUR (/mes-annonces) ==================== -->
+    <div id="view-mes-annonces" class="hidden max-w-7xl mx-auto px-4 py-8 space-y-8"></div>
+
+  </main>
+
+  <!-- ====================================================================
+       PIED DE PAGE COMPLET AVEC CONTACTS DIRECTS & RÉSEAUX SOCIAUX
+       ==================================================================== -->
+  <footer class="bg-gamba-navy text-slate-300 pt-14 pb-24 md:pb-12 px-4 border-t border-blue-900/50 mt-14">
+    <div class="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-8 pb-10 border-b border-blue-900/40">
+
+      <!-- Colonne 1 (4 cols) : Marque & Réseaux Sociaux Officiels -->
+      <div class="lg:col-span-4 space-y-4">
+        <div class="flex items-center gap-3">
+          <div class="h-10 w-10 rounded-2xl bg-gradient-to-br from-blue-600 to-sky-500 flex items-center justify-center text-white font-heading font-black text-base shadow-lg">
+            GB
+          </div>
+          <div>
+            <span class="font-heading font-extrabold text-xl text-white">GAMBA <span class="text-sky-400">BUSINESS</span></span>
+            <p class="text-[11px] text-sky-300/80">Le Bon Coin de Gamba, Gabon 🇬🇦</p>
+          </div>
+        </div>
+        <p class="text-xs text-slate-400 leading-relaxed">
+          La 1ère plateforme d'annonces commerciales dédiée aux commerçants, motels, bars, restaurants, salons de coiffure, boutiques et services de Gamba (Département de Ndougou).
+        </p>
+
+        <!-- Réseaux sociaux cliquables -->
+        <div class="space-y-2 pt-1">
+          <span class="text-[11px] font-bold uppercase tracking-wider text-sky-300 block">Suivez-nous sur les réseaux sociaux :</span>
+          <div class="flex items-center gap-2.5">
+            <!-- Facebook -->
+            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook Gamba Business" class="h-10 w-10 rounded-xl bg-blue-600/20 hover:bg-blue-600 border border-blue-500/30 flex items-center justify-center text-white transition shadow-sm" title="Page Facebook Gamba Business">
+              <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c5.05-.5 9-4.76 9-9.95z"/></svg>
+            </a>
+            <!-- WhatsApp Direct -->
+            <a href="https://wa.me/24177451289?text=Bonjour%20Support%20GAMBA%20BUSINESS" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp Gamba Business" class="h-10 w-10 rounded-xl bg-emerald-600/20 hover:bg-emerald-600 border border-emerald-500/30 flex items-center justify-center text-white transition shadow-sm" title="WhatsApp Direct Gamba Business">
+              <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824z"/></svg>
+            </a>
+            <!-- TikTok -->
+            <a href="https://tiktok.com" target="_blank" rel="noopener noreferrer" aria-label="TikTok Gamba Business" class="h-10 w-10 rounded-xl bg-white/10 hover:bg-pink-600 border border-white/15 flex items-center justify-center text-white transition shadow-sm" title="TikTok Gamba Business">
+              <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/></svg>
+            </a>
+            <!-- Instagram -->
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram Gamba Business" class="h-10 w-10 rounded-xl bg-white/10 hover:bg-purple-600 border border-white/15 flex items-center justify-center text-white transition shadow-sm" title="Instagram Gamba Business">
+              <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Colonne 2 (3 cols) : Quartiers Officiels de Gamba -->
+      <div class="lg:col-span-3 space-y-3">
+        <h4 class="font-heading font-bold text-white text-xs uppercase tracking-wider">Quartiers de Gamba</h4>
+        <div class="flex flex-wrap gap-1.5">
+          <button onclick="navigateTo('home'); quickSelectQuartier('Plaine 1')" class="rounded-lg bg-blue-950/80 hover:bg-blue-600 border border-blue-800/60 px-2.5 py-1 text-xs text-slate-300 hover:text-white transition">Plaine 1</button>
+          <button onclick="navigateTo('home'); quickSelectQuartier('Plaine 2')" class="rounded-lg bg-blue-950/80 hover:bg-blue-600 border border-blue-800/60 px-2.5 py-1 text-xs text-slate-300 hover:text-white transition">Plaine 2</button>
+          <button onclick="navigateTo('home'); quickSelectQuartier('Plaine 3')" class="rounded-lg bg-blue-950/80 hover:bg-blue-600 border border-blue-800/60 px-2.5 py-1 text-xs text-slate-300 hover:text-white transition">Plaine 3</button>
+          <button onclick="navigateTo('home'); quickSelectQuartier('Plaine 4')" class="rounded-lg bg-blue-950/80 hover:bg-blue-600 border border-blue-800/60 px-2.5 py-1 text-xs text-slate-300 hover:text-white transition">Plaine 4</button>
+          <button onclick="navigateTo('home'); quickSelectQuartier('Plaine 5')" class="rounded-lg bg-blue-950/80 hover:bg-blue-600 border border-blue-800/60 px-2.5 py-1 text-xs text-slate-300 hover:text-white transition">Plaine 5</button>
+          <button onclick="navigateTo('home'); quickSelectQuartier('Le Couloir')" class="rounded-lg bg-blue-950/80 hover:bg-blue-600 border border-blue-800/60 px-2.5 py-1 text-xs text-slate-300 hover:text-white transition">Le Couloir</button>
+          <button onclick="navigateTo('home'); quickSelectQuartier('Centre-ville')" class="rounded-lg bg-blue-950/80 hover:bg-blue-600 border border-blue-800/60 px-2.5 py-1 text-xs text-slate-300 hover:text-white transition">Centre-ville</button>
+          <button onclick="navigateTo('home'); quickSelectQuartier('Camp Yenzi')" class="rounded-lg bg-blue-950/80 hover:bg-blue-600 border border-blue-800/60 px-2.5 py-1 text-xs text-slate-300 hover:text-white transition">Camp Yenzi</button>
+          <button onclick="navigateTo('home'); quickSelectQuartier('Mayonami')" class="rounded-lg bg-blue-950/80 hover:bg-blue-600 border border-blue-800/60 px-2.5 py-1 text-xs text-slate-300 hover:text-white transition">Mayonami</button>
+        </div>
+      </div>
+
+      <!-- Colonne 3 (2 cols) : Liens Rapides -->
+      <div class="lg:col-span-2 space-y-3">
+        <h4 class="font-heading font-bold text-white text-xs uppercase tracking-wider">Navigation</h4>
+        <ul class="space-y-2 text-xs text-slate-400">
+          <li><button onclick="navigateTo('home')" class="hover:text-sky-300 transition">Accueil &amp; Recherche</button></li>
+          <li><button onclick="navigateTo('publier')" class="hover:text-sky-300 transition">Publier (2 jours gratuits)</button></li>
+          <li><button onclick="navigateTo('tarifs')" class="hover:text-sky-300 transition">Offres PRO &amp; Tarifs</button></li>
+          <li><button onclick="navigateTo('mes-annonces')" class="hover:text-sky-300 transition">Tableau de bord Vendeur</button></li>
+        </ul>
+      </div>
+
+      <!-- Colonne 4 (3 cols) : Contacts & Support Gamba -->
+      <div class="lg:col-span-3 space-y-3">
+        <h4 class="font-heading font-bold text-white text-xs uppercase tracking-wider">Contactez-nous à Gamba</h4>
+        <ul class="space-y-2.5 text-xs text-slate-300">
+          <li class="flex items-start gap-2.5">
+            <i data-lucide="phone-call" class="w-4 h-4 text-sky-400 shrink-0 mt-0.5"></i>
+            <div>
+              <span class="block text-[11px] text-slate-400">Service Client Airtel / Moov :</span>
+              <a href="tel:+241077451289" class="font-bold text-white hover:text-sky-300">+241 077 45 12 89</a> / <a href="tel:+241066892341" class="font-bold text-white hover:text-sky-300">066 89 23 41</a>
+            </div>
+          </li>
+          <li class="flex items-start gap-2.5">
+            <i data-lucide="message-circle" class="w-4 h-4 text-emerald-400 shrink-0 mt-0.5"></i>
+            <div>
+              <span class="block text-[11px] text-slate-400">Assistance WhatsApp 7j/7 :</span>
+              <a href="https://wa.me/24177451289" target="_blank" class="font-bold text-emerald-400 hover:underline">Écrire au Support Gamba Business</a>
+            </div>
+          </li>
+          <li class="flex items-start gap-2.5">
+            <i data-lucide="mail" class="w-4 h-4 text-sky-400 shrink-0 mt-0.5"></i>
+            <div>
+              <span class="block text-[11px] text-slate-400">Email professionnel :</span>
+              <a href="mailto:contact@gambabusiness.ga" class="font-semibold text-white hover:text-sky-300">contact@gambabusiness.ga</a>
+            </div>
+          </li>
+          <li class="flex items-start gap-2.5">
+            <i data-lucide="map-pin" class="w-4 h-4 text-sky-400 shrink-0 mt-0.5"></i>
+            <span>Centre-ville &amp; Plaine 2, Gamba (Ndougou, Gabon)</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Bas de footer copyright & logos Mobile Money -->
+    <div class="max-w-7xl mx-auto pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
+      <p>© 2026 <strong>GAMBA BUSINESS</strong> — Tous droits réservés. Conçu pour le développement économique de Gamba, Gabon 🇬🇦</p>
+      <div class="flex items-center gap-3">
+        <span class="inline-flex items-center gap-1.5 rounded-lg bg-white/5 border border-white/10 px-3 py-1 text-[11px] font-bold text-white">
+          <span class="h-2 w-2 rounded-full bg-red-500"></span> Airtel Money *150#
+        </span>
+        <span class="inline-flex items-center gap-1.5 rounded-lg bg-white/5 border border-white/10 px-3 py-1 text-[11px] font-bold text-white">
+          <span class="h-2 w-2 rounded-full bg-blue-500"></span> Moov Money *555#
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ====================================================================
+       POPUP PAIEMENT MOBILE MONEY GABON ULTRA DESIGN AVEC LOGOS OFFICIELS
+       AIRTEL MONEY & MOOV MONEY (AFRICA)
+       ==================================================================== -->
+  <div id="payment-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-4 overflow-y-auto">
+    <div class="relative w-full max-w-md rounded-3xl bg-white shadow-2xl border border-slate-200 overflow-hidden my-auto">
+
+      <!-- En-tête Guichet CinetPay Gabon -->
+      <div class="bg-gradient-to-r from-gamba-navy via-blue-950 to-blue-900 px-6 py-4 text-white flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-sky-400 text-white font-heading font-black text-sm shadow-md">
+            CP
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="font-heading font-extrabold text-sm tracking-wide">CinetPay Gabon</span>
+              <span class="rounded-full bg-emerald-500/20 px-2 py-0.5 text-[10px] font-bold text-emerald-300 border border-emerald-400/30">
+                🔒 SSL SÉCURISÉ
+              </span>
+            </div>
+            <p class="text-[11px] text-sky-200">Paiement Mobile Money Instantané • Gamba</p>
+          </div>
+        </div>
+        <button onclick="closePaymentModal()" class="rounded-xl p-1.5 text-slate-300 hover:bg-white/10 hover:text-white text-lg font-bold transition">✕</button>
+      </div>
+
+      <!-- Bandeau Récapitulatif de la Commande -->
+      <div class="bg-slate-50 border-b border-slate-200/80 px-6 py-3.5 flex items-center justify-between">
+        <div>
+          <span id="modal-plan-name" class="text-[11px] font-extrabold uppercase tracking-wider text-blue-700 block">OFFRE PRO (30 JOURS)</span>
+          <p id="modal-target-title" class="text-xs text-slate-500 font-medium line-clamp-1">Activation immédiate sur votre compte</p>
+        </div>
+        <div class="text-right">
+          <span class="text-[10px] font-bold uppercase text-slate-400 block">Total à payer</span>
+          <span id="modal-plan-price" class="text-lg font-heading font-black text-slate-900">5 000 FCFA</span>
+        </div>
+      </div>
+
+      <!-- ÉTAPE 1 : FORMULAIRE DESIGN AVEC VRAIS LOGOS AIRTEL MONEY & MOOV MONEY -->
+      <div id="modal-step-form" class="p-6 space-y-5">
+        <div>
+          <label class="block text-xs font-extrabold uppercase tracking-wider text-slate-700 mb-2.5">
+            1. Sélectionnez votre opérateur Mobile Money :
+          </label>
+          <div class="grid grid-cols-2 gap-3.5">
+
+            <!-- Carte Opérateur AIRTEL MONEY GABON avec Logo Officiel SVG -->
+            <button
+              type="button"
+              id="op-airtel"
+              onclick="selectOperator('airtel')"
+              class="relative flex flex-col items-center justify-center rounded-2xl p-4 border-2 border-[#E60000] bg-red-50/50 shadow-md transition group"
+            >
+              <div id="check-airtel" class="absolute top-2.5 right-2.5 h-5 w-5 rounded-full bg-[#E60000] text-white flex items-center justify-center text-[11px] font-black shadow">
+                ✓
+              </div>
+              <!-- Logo Vectoriel Officiel Airtel Money -->
+              <div class="h-12 w-28 rounded-xl bg-[#E60000] flex flex-col items-center justify-center px-3 py-1.5 shadow-sm mb-2">
+                <svg viewBox="0 0 140 42" class="w-full h-full">
+                  <path d="M18 8 C10 8, 6 15, 10 22 C14 28, 24 26, 26 18 C28 12, 24 8, 18 8 Z" fill="none" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round"/>
+                  <text x="76" y="21" font-family="Plus Jakarta Sans, Arial, sans-serif" font-size="17" font-weight="900" fill="#FFFFFF" text-anchor="middle" letter-spacing="0.5">airtel</text>
+                  <text x="76" y="34" font-family="Inter, Arial, sans-serif" font-size="10" font-weight="800" fill="#FFE4E6" text-anchor="middle" letter-spacing="1.5">MONEY</text>
+                </svg>
+              </div>
+              <span class="font-heading font-extrabold text-xs text-slate-900">Airtel Money</span>
+              <span class="text-[10px] font-semibold text-slate-500 mt-0.5">074 • 077 • 076 (*150#)</span>
+            </button>
+
+            <!-- Carte Opérateur MOOV MONEY GABON avec Logo Officiel SVG -->
+            <button
+              type="button"
+              id="op-moov"
+              onclick="selectOperator('moov')"
+              class="relative flex flex-col items-center justify-center rounded-2xl p-4 border-2 border-slate-200 bg-white hover:border-blue-400 transition group"
+            >
+              <div id="check-moov" class="hidden absolute top-2.5 right-2.5 h-5 w-5 rounded-full bg-[#0055A5] text-white flex items-center justify-center text-[11px] font-black shadow">
+                ✓
+              </div>
+              <!-- Logo Vectoriel Officiel Moov Money Africa -->
+              <div class="h-12 w-28 rounded-xl bg-gradient-to-r from-[#0055A5] to-[#003B73] flex flex-col items-center justify-center px-3 py-1.5 shadow-sm mb-2 relative overflow-hidden">
+                <div class="absolute -bottom-2 -right-2 h-7 w-7 rounded-full bg-[#FF6B00]"></div>
+                <svg viewBox="0 0 140 42" class="w-full h-full relative z-10">
+                  <text x="68" y="20" font-family="Plus Jakarta Sans, Arial, sans-serif" font-size="16" font-weight="900" fill="#FFFFFF" text-anchor="middle">Moov</text>
+                  <text x="68" y="34" font-family="Inter, Arial, sans-serif" font-size="10" font-weight="800" fill="#FF9E44" text-anchor="middle" letter-spacing="1.2">MONEY</text>
+                </svg>
+              </div>
+              <span class="font-heading font-extrabold text-xs text-slate-900">Moov Money</span>
+              <span class="text-[10px] font-semibold text-slate-500 mt-0.5">062 • 066 • 065 (*555#)</span>
+            </button>
+
+          </div>
+        </div>
+
+        <!-- Champ Numéro de téléphone avec indicateur d'opérateur dynamique -->
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <label class="text-xs font-extrabold uppercase tracking-wider text-slate-700">
+              2. Numéro de téléphone à débiter :
+            </label>
+            <span id="modal-op-pill" class="rounded-full bg-red-100 text-[#E60000] px-2.5 py-0.5 text-[10px] font-extrabold">
+              Airtel Money Gabon
+            </span>
+          </div>
+          <div class="flex rounded-2xl shadow-sm">
+            <span class="inline-flex items-center gap-1.5 rounded-l-2xl border border-r-0 border-slate-300 bg-slate-100 px-3.5 py-3.5 text-sm font-extrabold text-slate-700">
+              🇬🇦 +241
+            </span>
+            <input
+              id="modal-phone"
+              type="tel"
+              value="077 45 12 89"
+              placeholder="077 00 00 00"
+              class="w-full rounded-r-2xl border border-slate-300 px-4 py-3.5 text-base font-heading font-bold text-slate-900 focus:border-blue-600 focus:outline-none"
+            />
+          </div>
+          <p class="text-[11px] text-slate-500 mt-1.5 flex items-center gap-1">
+            <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-600"></i>
+            <span>Aucun frais supplémentaire. Activation automatique après confirmation.</span>
+          </p>
+        </div>
+
+        <!-- Bouton d'action dynamique -->
+        <button
+          type="button"
+          id="modal-pay-btn"
+          onclick="goToUssdStep()"
+          class="w-full flex items-center justify-center gap-2 rounded-2xl bg-[#E60000] hover:opacity-95 text-white font-heading font-extrabold py-4 px-5 shadow-lg shadow-red-600/25 transition text-sm"
+        >
+          <span>Payer avec Airtel Money (*150#)</span>
+          <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <!-- ÉTAPE 2 : POPUP USSD "Paiement Mobile Money : Composez *150# ou *555# pour payer" -->
+      <div id="modal-step-ussd" class="hidden p-6 text-center space-y-4">
+        <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-50 border border-blue-200 text-blue-600 font-black text-2xl animate-pulse">
+          📲
+        </div>
+        <div class="space-y-1">
+          <span class="inline-block rounded-full bg-blue-100 text-blue-800 text-xs font-extrabold px-3 py-1">ATTENTE DE VALIDATION SUR VOTRE TÉLÉPHONE</span>
+          <h3 id="modal-ussd-headline" class="text-lg font-heading font-black text-slate-900 pt-1">
+            Paiement Mobile Money : Composez <span class="text-blue-600 underline">*150#</span> pour payer
+          </h3>
+          <p id="modal-ussd-sub" class="text-xs text-slate-600"></p>
+        </div>
+
+        <div class="rounded-2xl bg-gamba-navy text-white p-4 text-left space-y-2 border border-blue-900">
+          <p class="text-xs text-sky-300 font-bold">Instructions simples :</p>
+          <ol class="text-xs text-slate-200 space-y-1.5 list-decimal list-inside">
+            <li>Composez <span id="modal-ussd-code-badge" class="rounded bg-blue-600 px-2 py-0.5 font-mono font-bold text-white">*150#</span> ou validez la fenêtre Push CinetPay sur votre téléphone.</li>
+            <li>Saisissez votre code PIN secret pour valider le montant.</li>
+            <li>Cliquez sur le bouton vert ci-dessous dès que c'est validé !</li>
+          </ol>
+        </div>
+
+        <div class="space-y-2">
+          <button type="button" onclick="confirmMobileMoneyPayment()" class="w-full rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-heading font-extrabold py-4 px-4 shadow-lg shadow-emerald-600/25 transition text-sm">
+            ✓ J'ai validé le paiement sur mon téléphone
+          </button>
+          <button type="button" onclick="backToModalForm()" class="text-xs font-semibold text-slate-500 hover:text-slate-800 py-1">
+            ← Changer d'opérateur ou de numéro
+          </button>
+        </div>
+      </div>
+
+      <!-- ÉTAPE 3 : SUCCÈS & BOOST AUTOMATIQUE -->
+      <div id="modal-step-success" class="hidden p-6 text-center space-y-4">
+        <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 text-3xl font-black">
+          ✓
+        </div>
+        <h3 class="text-xl font-heading font-black text-slate-900">Paiement confirmé ! Annonce boostée 🚀</h3>
+        <p id="modal-success-desc" class="text-xs text-slate-600 leading-relaxed"></p>
+        <button type="button" onclick="closePaymentModal(); navigateTo('mes-annonces');" class="w-full rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-heading font-extrabold py-3.5 px-4 text-sm transition shadow-md">
+          Accéder à mon tableau de bord vendeur
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       BARRE DE NAVIGATION BASSE ANDROID / MOBILE RESPONSIVE (BLEU & BLANC)
+       ==================================================================== -->
+  <nav class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 shadow-[0_-4px_20px_rgba(15,23,42,0.08)] px-2 py-1.5 flex items-center justify-around">
+    <button onclick="navigateTo('home')" class="flex flex-col items-center justify-center py-1 px-2 text-[11px] font-bold text-blue-600">
+      <i data-lucide="layout-grid" class="w-5 h-5"></i>
+      <span>Accueil</span>
+    </button>
+    <button onclick="navigateTo('publier')" class="flex flex-col items-center justify-center py-1 px-2 text-[11px] font-bold text-blue-700">
+      <div class="bg-blue-600 text-white rounded-2xl p-2.5 -mt-5 shadow-lg shadow-blue-600/30 border-2 border-white">
+        <i data-lucide="plus" class="w-5 h-5"></i>
+      </div>
+      <span>Publier</span>
+    </button>
+    <button onclick="navigateTo('tarifs')" class="flex flex-col items-center justify-center py-1 px-2 text-[11px] font-bold text-slate-600">
+      <i data-lucide="award" class="w-5 h-5 text-blue-600"></i>
+      <span>Tarifs</span>
+    </button>
+    <button onclick="navigateTo('mes-annonces')" class="flex flex-col items-center justify-center py-1 px-2 text-[11px] font-bold text-slate-600">
+      <i data-lucide="briefcase" class="w-5 h-5"></i>
+      <span>Mes Annonces</span>
+    </button>
+  </nav>
+
+  <!-- ====================================================================
+       SCRIPT APPLICATION GAMBA BUSINESS (2 JOURS GRATUITS + VRAIS QUARTIERS)
+       ==================================================================== -->
+  <script>
+    const CATEGORIES = [
+      { id: 'Motels', label: 'Motels', icon: 'bed-double', color: 'bg-blue-50 text-blue-700 border-blue-100' },
+      { id: 'Restaurants', label: 'Restaurants', icon: 'utensils-crossed', color: 'bg-sky-50 text-sky-700 border-sky-100' },
+      { id: 'Bars', label: 'Bars & Snacks', icon: 'beer', color: 'bg-indigo-50 text-indigo-700 border-indigo-100' },
+      { id: 'Boutiques', label: 'Boutiques', icon: 'store', color: 'bg-blue-50 text-blue-700 border-blue-100' },
+      { id: 'Services', label: 'Services & Coiffure', icon: 'scissors', color: 'bg-sky-50 text-sky-700 border-sky-100' },
+      { id: 'Alimentation', label: 'Alimentation', icon: 'shopping-bag', color: 'bg-emerald-50 text-emerald-700 border-emerald-100' },
+      { id: 'Vêtements', label: 'Vêtements', icon: 'shirt', color: 'bg-indigo-50 text-indigo-700 border-indigo-100' },
+    ];
+
+    // Modèle Freemium : 2 JOURS GRATUITS (au lieu de 7 jours)
+    const PLANS = {
+      free: { id: 'free', name: 'ESSAI GRATUIT', priceXAF: 0, durationDays: 2 },
+      decouverte: { id: 'decouverte', name: 'OFFRE DÉCOUVERTE', priceXAF: 2000, durationDays: 7 },
+      pro: { id: 'pro', name: 'OFFRE PRO', priceXAF: 5000, durationDays: 30 },
+      business: { id: 'business', name: 'OFFRE BUSINESS', priceXAF: 15000, durationDays: 30 },
+    };
+
+    const now = Date.now();
+    const dayMs = 86400000;
+
+    // ANNONCES RÉALISTES DE GAMBA AVEC LES VRAIS QUARTIERS (Plaine 1 à 5, Le Couloir, Centre-ville...)
+    const DEFAULT_LISTINGS = [
+      {
+        id: 'gamba-1',
+        title: 'Résidence & Motel La Lagune Ndougou — Chambres Climatisées, Canal+ & WiFi',
+        description: 'Hébergement calme et sécurisé au cœur de Gamba. Chambres climatisées grand confort avec Bouquet Canal+, WiFi haut débit, groupe électrogène automatique et réserve d\'eau permanente. Idéal pour missionnaires pétroliers, visiteurs et séjours week-end.',
+        price: 20000,
+        priceLabel: '/ nuitée',
+        category: 'Motels',
+        quartier: 'Centre-ville',
+        whatsapp: '24177451289',
+        phone: '+241 077 45 12 89',
+        mapsUrl: 'https://www.google.com/maps?q=-2.7258,10.0172',
+        addressHint: 'Centre-ville, à 150m du rond-point principal vers la lagune Ndougou',
+        images: [
+          'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=900&q=80',
+          'https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=900&q=80'
+        ],
+        sellerName: 'Motel La Lagune Gamba',
+        sellerVerified: true,
+        planTier: 'business',
+        isBoosted: true,
+        hasProBadge: true,
+        hasHomeBanner: true,
+        views: 418,
+        whatsappClicks: 86,
+        createdAt: new Date(now - 1 * dayMs).toISOString(),
+        expiresAt: new Date(now + 28 * dayMs).toISOString(),
+        isOwner: true,
+      },
+      {
+        id: 'gamba-2',
+        title: 'Chez Maman Clarisse — Carpe & Bar Braisés de la Lagune, Coupé-Coupé & Plantain',
+        description: 'Le vrai goût de Gamba midi et soir ! Poisson frais pêché du jour dans la lagune de Gamba braisé au feu de bois, coupé-coupé fumé, bouillon de poisson sauvage, feuilles de manioc et banane plantain mûre. Livraison rapide à Plaine 1, Plaine 2, Plaine 3 et Le Couloir.',
+        price: 3500,
+        priceLabel: '/ plat complet',
+        category: 'Restaurants',
+        quartier: 'Plaine 2',
+        whatsapp: '24166892341',
+        phone: '+241 066 89 23 41',
+        mapsUrl: 'https://www.google.com/maps?q=-2.7310,10.0210',
+        addressHint: 'Quartier Plaine 2, juste en face de la boulangerie principale',
+        images: [
+          'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=900&q=80',
+          'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=900&q=80'
+        ],
+        sellerName: 'Restaurant Maman Clarisse',
+        sellerVerified: true,
+        planTier: 'pro',
+        isBoosted: true,
+        hasProBadge: true,
+        hasHomeBanner: false,
+        views: 356,
+        whatsappClicks: 112,
+        createdAt: new Date(now - 1 * dayMs).toISOString(),
+        expiresAt: new Date(now + 25 * dayMs).toISOString(),
+        isOwner: true,
+      },
+      {
+        id: 'gamba-3',
+        title: 'Salon Glamour VIP Gamba — Tresses Africaines, Perruques, Manucure Gel & Coiffure',
+        description: 'Votre institut de beauté climatisé à Gamba. Tresses modernes sans douleur, pose lace frontal, tissages, soin du visage, pose ongles gel et coupe homme dégradé. Prise de rendez-vous directe sur WhatsApp.',
+        price: 5000,
+        priceLabel: 'À partir de',
+        category: 'Services',
+        quartier: 'Plaine 1',
+        whatsapp: '24174129088',
+        phone: '+241 074 12 90 88',
+        mapsUrl: 'https://www.google.com/maps?q=-2.7240,10.0155',
+        addressHint: 'Plaine 1, à côté du guichet Airtel Money',
+        images: [
+          'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=900&q=80'
+        ],
+        sellerName: 'Salon Glamour VIP',
+        sellerVerified: true,
+        planTier: 'pro',
+        isBoosted: true,
+        hasProBadge: true,
+        hasHomeBanner: false,
+        views: 245,
+        whatsappClicks: 64,
+        createdAt: new Date(now - 1 * dayMs).toISOString(),
+        expiresAt: new Date(now + 25 * dayMs).toISOString(),
+        isOwner: false,
+      },
+      {
+        id: 'gamba-4',
+        title: 'Le Phare Lounge & Snack-Bar — Bières Glacées, Brochettes, Billard & Matchs Canal+',
+        description: 'Cadre propre, climatisé et sécurisé au quartier Le Couloir pour vos soirées à Gamba. Boissons bien glacées, grillades de viande et poisson le soir, table de billard et retransmission de tous les grands matchs sur écran géant.',
+        price: 1000,
+        priceLabel: '/ consommation',
+        category: 'Bars',
+        quartier: 'Le Couloir',
+        whatsapp: '24177910233',
+        phone: '+241 077 91 02 33',
+        mapsUrl: 'https://www.google.com/maps?q=-2.7295,10.0190',
+        addressHint: 'Quartier Le Couloir, carrefour axe principal goudronné',
+        images: [
+          'https://images.unsplash.com/photo-1514933651103-005eec06c04b?auto=format&fit=crop&w=900&q=80'
+        ],
+        sellerName: 'Le Phare Lounge Bar',
+        sellerVerified: true,
+        planTier: 'decouverte',
+        isBoosted: true,
+        hasProBadge: false,
+        hasHomeBanner: false,
+        views: 190,
+        whatsappClicks: 41,
+        createdAt: new Date(now - 1 * dayMs).toISOString(),
+        expiresAt: new Date(now + 6 * dayMs).toISOString(),
+        isOwner: false,
+      },
+      {
+        id: 'gamba-5',
+        title: 'Établissement Nzambi Alimentation — Vivres Frais, Congelés, Riz, Boissons & Gaz',
+        description: 'Commerce général demi-gros et détail à Plaine 3. Arrivage régulier : sacs de riz 25kg, cartons de volaille, huile, produits laitiers, packs d\'eau minérale et bouteilles de gaz. Paiement Airtel Money et Moov Money sans frais de retrait.',
+        price: 14500,
+        priceLabel: 'Sac de riz 25kg',
+        category: 'Alimentation',
+        quartier: 'Plaine 3',
+        whatsapp: '24162334455',
+        phone: '+241 062 33 44 55',
+        mapsUrl: 'https://www.google.com/maps?q=-2.7350,10.0245',
+        addressHint: 'Carrefour Plaine 3, grand bâtiment bleu et blanc',
+        images: [
+          'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=900&q=80'
+        ],
+        sellerName: 'Éts Nzambi Alimentation',
+        sellerVerified: true,
+        planTier: 'pro',
+        isBoosted: false,
+        hasProBadge: true,
+        hasHomeBanner: false,
+        views: 164,
+        whatsappClicks: 38,
+        createdAt: new Date(now - 2 * dayMs).toISOString(),
+        expiresAt: new Date(now + 25 * dayMs).toISOString(),
+        isOwner: false,
+      },
+      {
+        id: 'gamba-6',
+        title: 'Gamba Froid & Énergie — Dépannage Climatiseurs Split, Congélateurs & Groupes Électrogènes',
+        description: 'Technicien frigoriste et électricien qualifié à Gamba (Plaine 4). Entretien complet de climatiseurs, recharge gaz fréon, réparation chambres froides/congélateurs et maintenance groupes électrogènes. Intervention rapide dans tout Gamba.',
+        price: 10000,
+        priceLabel: 'Intervention & diagnostic',
+        category: 'Services',
+        quartier: 'Plaine 4',
+        whatsapp: '24177556677',
+        phone: '+241 077 55 66 77',
+        mapsUrl: 'https://www.google.com/maps?q=-2.7420,10.0110',
+        addressHint: 'Plaine 4, près de l\'école publique',
+        images: [
+          'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=900&q=80'
+        ],
+        sellerName: 'Gamba Froid & Élec',
+        sellerVerified: false,
+        planTier: 'free',
+        isBoosted: false,
+        hasProBadge: false,
+        hasHomeBanner: false,
+        views: 118,
+        whatsappClicks: 29,
+        createdAt: new Date(now - 1 * dayMs).toISOString(),
+        expiresAt: new Date(now + 2 * dayMs).toISOString(),
+        isOwner: false,
+      },
+      {
+        id: 'gamba-7',
+        title: 'Boutique Élégance Ndougou — Arrivage Pagnes Wax, Ensembles Bazin, Robes & Sneakers',
+        description: 'Habillez toute la famille avec classe à Plaine 5 ! Nouvel arrivage de tenues Bazin riche brodé, pagnes Wax hollandais, chemises homme, chaussures dames et baskets. Livraison rapide dans tous les quartiers de Gamba.',
+        price: 12000,
+        priceLabel: 'À partir de',
+        category: 'Vêtements',
+        quartier: 'Plaine 5',
+        whatsapp: '24166112299',
+        phone: '+241 066 11 22 99',
+        mapsUrl: 'https://www.google.com/maps?q=-2.7265,10.0180',
+        addressHint: 'Entrée Plaine 5, boutique vitrée bleue',
+        images: [
+          'https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=900&q=80'
+        ],
+        sellerName: 'Élégance Ndougou Mode',
+        sellerVerified: false,
+        planTier: 'free',
+        isBoosted: false,
+        hasProBadge: false,
+        hasHomeBanner: false,
+        views: 132,
+        whatsappClicks: 33,
+        createdAt: new Date(now - 1 * dayMs).toISOString(),
+        expiresAt: new Date(now + 2 * dayMs).toISOString(),
+        isOwner: false,
+      },
+      {
+        id: 'gamba-8',
+        title: 'Pêcherie Coopérative de Mayonami — Paniers de Poissons Frais, Fumés & Crevettes',
+        description: 'Vente directe des pêcheurs de Mayonami : poissons fumés au bois naturel, crevettes fraîches et gros bars de mer/lagune sur commande. (Annonce d\'essai gratuit de 2 jours expirée — réactivez-la en 1 clic via Mobile Money !)',
+        price: 6000,
+        priceLabel: '/ panier familial',
+        category: 'Alimentation',
+        quartier: 'Mayonami',
+        whatsapp: '24177451289',
+        phone: '+241 077 45 12 89',
+        mapsUrl: 'https://www.google.com/maps?q=-2.7500,10.0300',
+        addressHint: 'Débarcadère Mayonami / Livraison Plaine 1 à 5',
+        images: [
+          'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=900&q=80'
+        ],
+        sellerName: 'Pêcherie de Mayonami',
+        sellerVerified: false,
+        planTier: 'free',
+        isBoosted: false,
+        hasProBadge: false,
+        hasHomeBanner: false,
+        views: 84,
+        whatsappClicks: 19,
+        createdAt: new Date(now - 3 * dayMs).toISOString(),
+        expiresAt: new Date(now - 1 * dayMs).toISOString(),
+        isOwner: true,
+      }
+    ];
+
+    // Clé v3 pour charger immédiatement les vrais quartiers (Plaine 1-5, Le Couloir) et l'essai 2 jours
+    let state = {
+      listings: JSON.parse(localStorage.getItem('gamba_pro_blue_listings_v3') || 'null') || DEFAULT_LISTINGS,
+      transactions: JSON.parse(localStorage.getItem('gamba_pro_blue_tx_v3') || '[]'),
+      selectedCategory: 'Toutes',
+      maxPrice: 100000,
+      formPhotos: ['https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=900&q=80'],
+      modalPlan: 'pro',
+      modalTargetId: null,
+      modalOperator: 'airtel'
+    };
+
+    function saveState() {
+      localStorage.setItem('gamba_pro_blue_listings_v3', JSON.stringify(state.listings));
+      localStorage.setItem('gamba_pro_blue_tx_v3', JSON.stringify(state.transactions));
+    }
+
+    function formatXAF(amount) {
+      if (!amount || amount <= 0) return 'Prix sur demande';
+      return new Intl.NumberFormat('fr-FR').format(amount) + ' FCFA';
+    }
+
+    function getDaysRemaining(expiresAt) {
+      return Math.ceil((new Date(expiresAt).getTime() - Date.now()) / dayMs);
+    }
+
+    function buildWhatsAppUrl(phoneRaw, title, price) {
+      let clean = String(phoneRaw).replace(/\D/g, '');
+      if (clean.startsWith('0')) clean = '241' + clean.substring(1);
+      else if (!clean.startsWith('241')) clean = '241' + clean;
+      const msg = `Bonjour ! J'ai vu votre annonce "${title}" (${formatXAF(price)}) sur GAMBA BUSINESS. Est-ce toujours disponible ?`;
+      return `https://wa.me/${clean}?text=${encodeURIComponent(msg)}`;
+    }
+
+    function navigateTo(view, listingId = null) {
+      ['home', 'detail', 'publier', 'tarifs', 'mes-annonces'].forEach(v => {
+        document.getElementById('view-' + v).classList.add('hidden');
+      });
+      document.getElementById('view-' + view).classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      if (view === 'home') renderHomeListings();
+      if (view === 'detail' && listingId) renderDetailView(listingId);
+      if (view === 'publier') renderFormPhotos();
+      if (view === 'mes-annonces') renderDashboard();
+      lucide.createIcons();
+    }
+
+    function toggleBudgetDrawer() {
+      document.getElementById('budget-drawer').classList.toggle('hidden');
+    }
+
+    function updateBudgetFilter(val) {
+      state.maxPrice = Number(val);
+      document.getElementById('budget-label').textContent =
+        state.maxPrice >= 100000 ? 'Tous les tarifs (Illimité)' : formatXAF(state.maxPrice);
+      renderHomeListings();
+    }
+
+    function quickSelectQuartier(q) {
+      const sel = document.getElementById('quartier-select');
+      sel.value = sel.value === q ? 'Tous' : q;
+      renderHomeListings();
+    }
+
+    function selectCategory(catId) {
+      state.selectedCategory = state.selectedCategory === catId ? 'Toutes' : catId;
+      renderHomeListings();
+    }
+
+    function resetAllFilters() {
+      document.getElementById('search-input').value = '';
+      document.getElementById('quartier-select').value = 'Tous';
+      document.getElementById('budget-range').value = 100000;
+      state.selectedCategory = 'Toutes';
+      state.maxPrice = 100000;
+      document.getElementById('budget-label').textContent = 'Tous les tarifs (Illimité)';
+      renderHomeListings();
+    }
+
+    function createListingCardHTML(item) {
+      const waUrl = buildWhatsAppUrl(item.whatsapp, item.title, item.price);
+      const borderClass = item.planTier === 'business'
+        ? 'border-2 border-blue-600 shadow-xl shadow-blue-900/10'
+        : item.isBoosted
+        ? 'border-2 border-sky-500/80 shadow-md shadow-sky-900/5'
+        : 'border border-slate-200/90 hover:border-blue-300 shadow-sm hover:shadow-md';
+
+      return `
+        <div class="group flex flex-col rounded-3xl bg-white overflow-hidden transition duration-300 ${borderClass}">
+          <div onclick="navigateTo('detail', '${item.id}')" class="cursor-pointer relative h-52 w-full bg-slate-900 overflow-hidden">
+            <img src="${item.images[0]}" alt="${item.title}" class="h-full w-full object-cover group-hover:scale-105 transition duration-500" loading="lazy" />
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950/75 via-transparent to-slate-950/20"></div>
+
+            <!-- Badges Supérieurs -->
+            <div class="absolute top-3 left-3 flex flex-wrap gap-1.5">
+              ${item.planTier === 'business' ? `<span class="rounded-full bg-blue-600 px-3 py-1 text-[10px] font-extrabold uppercase text-white shadow-md">👑 SPONSOR VIP</span>` : ''}
+              ${item.isBoosted && item.planTier !== 'business' ? `<span class="rounded-full bg-sky-500 px-3 py-1 text-[10px] font-extrabold uppercase text-white shadow-md">✨ À LA UNE</span>` : ''}
+              ${item.hasProBadge ? `<span class="rounded-full bg-white/95 backdrop-blur-md px-2.5 py-1 text-[10px] font-extrabold text-blue-800 shadow">✓ PRO VÉRIFIÉ</span>` : ''}
+            </div>
+
+            <!-- Quartier & Catégorie -->
+            <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between gap-2">
+              <span class="rounded-full bg-slate-900/80 backdrop-blur-md px-3 py-1 text-[11px] font-semibold text-white truncate">
+                📍 ${item.quartier}
+              </span>
+              <span class="rounded-full bg-blue-50/95 px-2.5 py-0.5 text-[10px] font-extrabold text-blue-800 shadow">
+                ${item.category}
+              </span>
+            </div>
+          </div>
+
+          <div class="flex flex-1 flex-col justify-between p-5 space-y-4">
+            <div class="space-y-1.5">
+              <div class="flex items-baseline justify-between">
+                <span class="text-lg font-heading font-black text-blue-700">
+                  ${formatXAF(item.price)}
+                  <small class="text-xs font-medium text-slate-400">${item.priceLabel || ''}</small>
+                </span>
+                <span class="text-[11px] font-medium text-slate-400">👁️ ${item.views}</span>
+              </div>
+
+              <h3 onclick="navigateTo('detail', '${item.id}')" class="cursor-pointer font-heading font-bold text-slate-900 group-hover:text-blue-600 transition text-sm sm:text-base line-clamp-2 leading-snug">
+                ${item.title}
+              </h3>
+
+              <p class="text-xs text-slate-500 font-medium pt-0.5 truncate">
+                ${item.sellerName} ${item.sellerVerified ? '<span class="text-blue-600 font-bold" title="Commerçant vérifié">✓</span>' : ''}
+              </p>
+            </div>
+
+            <!-- Boutons WhatsApp & Appeler -->
+            <div class="pt-3 border-t border-slate-100 flex items-center gap-2">
+              <a href="${waUrl}" target="_blank" onclick="recordWhatsApp('${item.id}')" class="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs py-2.5 px-3 shadow-sm transition">
+                <span>WhatsApp</span>
+              </a>
+              <a href="tel:${item.phone}" class="inline-flex items-center justify-center gap-1 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold text-xs py-2.5 px-3.5 transition">
+                <span>Appeler</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderHomeListings() {
+      const query = (document.getElementById('search-input')?.value || '').toLowerCase().trim();
+      const quartier = document.getElementById('quartier-select')?.value || 'Tous';
+      const activeListings = state.listings.filter(l => getDaysRemaining(l.expiresAt) > 0);
+
+      const hasFilters = query !== '' || quartier !== 'Tous' || state.selectedCategory !== 'Toutes' || state.maxPrice < 100000;
+      document.getElementById('reset-filters-btn').classList.toggle('hidden', !hasFilters);
+
+      // Barre des catégories Bleu & Blanc
+      const catBar = document.getElementById('categories-bar');
+      let catHTML = `
+        <button onclick="selectCategory('Toutes')" class="shrink-0 flex flex-col items-center justify-center rounded-2xl p-3 border text-center transition min-w-[98px] ${state.selectedCategory === 'Toutes' ? 'bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-600/20' : 'bg-slate-50/70 text-slate-700 border-slate-200/80 hover:border-blue-400'}">
+          <div class="h-10 w-10 rounded-xl flex items-center justify-center mb-1.5 ${state.selectedCategory === 'Toutes' ? 'bg-white/20 text-white' : 'bg-blue-100/80 text-blue-700'}">
+            <i data-lucide="layout-grid" class="w-5 h-5"></i>
+          </div>
+          <span class="text-xs font-extrabold">Tout Gamba</span>
+          <span class="text-[10px] opacity-80">${activeListings.length} offres</span>
+        </button>
+      `;
+      CATEGORIES.forEach(cat => {
+        const isSel = state.selectedCategory === cat.id;
+        const count = activeListings.filter(l => l.category === cat.id).length;
+        catHTML += `
+          <button onclick="selectCategory('${cat.id}')" class="shrink-0 flex flex-col items-center justify-center rounded-2xl p-3 border text-center transition min-w-[106px] ${isSel ? 'bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-600/20' : 'bg-white text-slate-800 border-slate-200/80 hover:border-blue-400 hover:bg-blue-50/30'}">
+            <div class="h-10 w-10 rounded-xl flex items-center justify-center mb-1.5 border ${isSel ? 'bg-white/20 text-white border-transparent' : cat.color}">
+              <i data-lucide="${cat.icon}" class="w-5 h-5"></i>
+            </div>
+            <span class="text-xs font-extrabold truncate w-full">${cat.id}</span>
+            <span class="text-[10px] ${isSel ? 'text-blue-100' : 'text-slate-400'}">${count} offre(s)</span>
+          </button>
+        `;
+      });
+      catBar.innerHTML = catHTML;
+
+      // Bannière pub Business
+      const bannerListing = activeListings.find(l => l.hasHomeBanner || l.planTier === 'business') || activeListings[0];
+      const bannerSec = document.getElementById('home-banner-section');
+      if (bannerListing) {
+        bannerSec.innerHTML = `
+          <div class="relative rounded-3xl overflow-hidden shadow-xl border border-blue-200 bg-gamba-navy text-white">
+            <img src="${bannerListing.images[0]}" alt="${bannerListing.title}" class="absolute inset-0 w-full h-full object-cover opacity-30" />
+            <div class="absolute inset-0 bg-gradient-to-r from-gamba-navy via-gamba-navy/90 to-blue-900/60"></div>
+            <div class="relative z-10 p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-5">
+              <div class="space-y-2 text-center md:text-left max-w-2xl">
+                <span class="inline-flex items-center gap-1.5 rounded-full bg-blue-500/30 border border-sky-400/40 px-3 py-1 text-[10px] font-extrabold uppercase text-sky-200">
+                  👑 BANNIÈRE À LA UNE • OFFRE BUSINESS
+                </span>
+                <h3 class="text-xl sm:text-2xl font-heading font-black">${bannerListing.title}</h3>
+                <p class="text-xs sm:text-sm text-slate-200">
+                  📍 ${bannerListing.quartier} (${bannerListing.addressHint}) — Tarif : <strong class="text-sky-300 font-black">${formatXAF(bannerListing.price)} ${bannerListing.priceLabel || ''}</strong>
+                </p>
+              </div>
+              <div class="flex flex-wrap items-center justify-center gap-3 shrink-0">
+                <button onclick="navigateTo('detail', '${bannerListing.id}')" class="rounded-2xl bg-blue-600 hover:bg-blue-500 text-white font-heading font-extrabold text-xs sm:text-sm px-5 py-3.5 shadow-lg transition">
+                  Découvrir l'établissement →
+                </button>
+                <button onclick="openPaymentModal('business')" class="rounded-2xl bg-white/10 hover:bg-white/20 text-sky-200 font-bold text-xs px-4 py-3.5 border border-white/15 backdrop-blur-sm transition">
+                  Afficher ma bannière ici (15 000 F)
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      // Filtrage des annonces
+      const filtered = activeListings.filter(item => {
+        const matchQ = !query || item.title.toLowerCase().includes(query) || item.description.toLowerCase().includes(query) || item.sellerName.toLowerCase().includes(query);
+        const matchQuartier = quartier === 'Tous' || item.quartier === quartier;
+        const matchCat = state.selectedCategory === 'Toutes' || item.category === state.selectedCategory;
+        const matchPrice = state.maxPrice >= 100000 ? true : item.price <= state.maxPrice;
+        return matchQ && matchQuartier && matchCat && matchPrice;
+      });
+
+      const featured = filtered.filter(l => l.isBoosted || l.planTier !== 'free');
+      document.getElementById('featured-section').classList.toggle('hidden', featured.length === 0);
+      document.getElementById('featured-grid').innerHTML = featured.map(createListingCardHTML).join('');
+
+      document.getElementById('results-counter').textContent =
+        `${filtered.length} commerce(s) et service(s) disponibles${quartier !== 'Tous' ? ' au quartier ' + quartier : ' à Gamba'}`;
+
+      document.getElementById('latest-grid').innerHTML = filtered.length
+        ? filtered.map(createListingCardHTML).join('')
+        : `<div class="col-span-full rounded-3xl bg-white border border-slate-200 p-10 text-center space-y-3">
+             <p class="font-heading font-bold text-slate-800 text-base">Aucune annonce ne correspond à ce filtre.</p>
+             <button onclick="resetAllFilters()" class="rounded-xl bg-blue-600 text-white font-bold text-xs px-5 py-2.5">Réinitialiser la recherche</button>
+           </div>`;
+
+      lucide.createIcons();
+    }
+
+    function recordWhatsApp(id) {
+      const item = state.listings.find(l => l.id === id);
+      if (item) {
+        item.whatsappClicks += 1;
+        saveState();
+      }
+    }
+
+    function renderDetailView(id) {
+      const item = state.listings.find(l => l.id === id);
+      if (!item) return navigateTo('home');
+      item.views += 1;
+      saveState();
+
+      const waUrl = buildWhatsAppUrl(item.whatsapp, item.title, item.price);
+      const container = document.getElementById('view-detail');
+      container.innerHTML = `
+        <div class="flex items-center justify-between">
+          <button onclick="navigateTo('home')" class="inline-flex items-center gap-2 rounded-xl bg-white border border-slate-200 px-4 py-2.5 text-xs font-bold text-slate-700 shadow-sm hover:border-blue-400">
+            ← Retour aux annonces de Gamba
+          </button>
+          <span class="text-xs font-semibold text-slate-500">👁️ ${item.views} vues • 💬 ${item.whatsappClicks} clics WhatsApp</span>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <div class="lg:col-span-7 space-y-6">
+            <div class="rounded-3xl bg-white border border-slate-200 overflow-hidden shadow-sm">
+              <div class="relative h-72 sm:h-[420px] bg-slate-900">
+                <img id="detail-main-img" src="${item.images[0]}" class="h-full w-full object-cover" />
+              </div>
+              ${item.images.length > 1 ? `
+                <div class="p-3.5 bg-slate-50 flex gap-2.5 overflow-x-auto">
+                  ${item.images.map(img => `<img onclick="document.getElementById('detail-main-img').src='${img}'" src="${img}" class="h-16 w-24 rounded-xl object-cover cursor-pointer border-2 border-white hover:border-blue-600 shadow-sm" />`).join('')}
+                </div>
+              ` : ''}
+            </div>
+
+            <div class="rounded-3xl bg-white p-6 sm:p-8 border border-slate-200 shadow-sm space-y-4">
+              <h2 class="text-lg font-heading font-black text-slate-900">Présentation &amp; Détails</h2>
+              <p class="text-sm text-slate-700 leading-relaxed">${item.description}</p>
+              <div class="pt-4 border-t border-slate-100 flex flex-wrap gap-2.5 text-xs">
+                <span class="rounded-xl bg-blue-50 text-blue-800 px-3.5 py-2 font-bold">📍 Quartier : ${item.quartier}</span>
+                <span class="rounded-xl bg-slate-100 text-slate-800 px-3.5 py-2 font-bold">🏷️ Catégorie : ${item.category}</span>
+                <span class="rounded-xl bg-slate-100 text-slate-800 px-3.5 py-2 font-bold">🧭 Repère : ${item.addressHint}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="lg:col-span-5 space-y-5">
+            <div class="rounded-3xl bg-white p-6 sm:p-7 border-2 border-slate-200 shadow-lg space-y-5">
+              <div>
+                <span class="rounded-full bg-blue-50 text-blue-700 border border-blue-200 px-3 py-1 text-xs font-extrabold">${item.category} • ${item.quartier}</span>
+                <h1 class="text-xl sm:text-2xl font-heading font-black text-slate-900 mt-3 leading-snug">${item.title}</h1>
+                <p class="text-3xl font-heading font-black text-blue-700 mt-3">
+                  ${formatXAF(item.price)}
+                  <small class="text-sm font-semibold text-slate-400">${item.priceLabel || ''}</small>
+                </p>
+              </div>
+
+              <div class="rounded-2xl bg-slate-50 p-4 border border-slate-200/80 flex items-center justify-between">
+                <div>
+                  <h3 class="font-heading font-bold text-sm text-slate-900">${item.sellerName} ${item.sellerVerified ? '✅' : ''}</h3>
+                  <p class="text-xs text-slate-500 mt-0.5">📍 ${item.addressHint}</p>
+                </div>
+                ${item.hasProBadge ? `<span class="rounded-full bg-blue-100 text-blue-800 border border-blue-200 px-2.5 py-1 text-[10px] font-extrabold">PRO VÉRIFIÉ</span>` : ''}
+              </div>
+
+              <div class="space-y-3">
+                <a href="${waUrl}" target="_blank" onclick="recordWhatsApp('${item.id}')" class="w-full flex items-center justify-center gap-2 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-heading font-extrabold text-base py-4 px-5 shadow-lg shadow-emerald-600/20 transition">
+                  💬 Contacter sur WhatsApp
+                </a>
+                <a href="tel:${item.phone}" class="w-full flex items-center justify-center gap-2 rounded-2xl bg-gamba-navy hover:bg-slate-800 text-white font-heading font-extrabold text-base py-3.5 px-5 shadow transition">
+                  📞 Appeler (${item.phone})
+                </a>
+                <a href="${item.mapsUrl}" target="_blank" class="w-full flex items-center justify-center gap-2 rounded-2xl bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold text-xs py-3 px-4 transition">
+                  🗺️ Ouvrir l'itinéraire Google Maps à Gamba
+                </a>
+              </div>
+
+              <div class="rounded-2xl bg-blue-50/70 p-4 border border-blue-200 space-y-2">
+                <p class="text-xs font-extrabold text-slate-900">⚡ Vous êtes le responsable de cet établissement ?</p>
+                <button onclick="openPaymentModal('pro', '${item.id}')" class="w-full rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs py-2.5 px-4 shadow-sm transition">
+                  Mettre en avant via Airtel Money / Moov Money
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderFormPhotos() {
+      document.getElementById('photo-count-label').textContent = `${state.formPhotos.length} / 4 photos`;
+      const grid = document.getElementById('form-photos-grid');
+      let html = state.formPhotos.map((img, i) => `
+        <div class="relative h-28 rounded-2xl overflow-hidden border border-slate-200 bg-slate-900">
+          <img src="${img}" class="h-full w-full object-cover" />
+          <button type="button" onclick="removeFormPhoto(${i})" class="absolute top-1.5 right-1.5 h-6 w-6 rounded-full bg-rose-600 text-white text-xs font-bold shadow">✕</button>
+        </div>
+      `).join('');
+
+      if (state.formPhotos.length < 4) {
+        html += `
+          <label class="h-28 rounded-2xl border-2 border-dashed border-blue-300 hover:border-blue-600 bg-blue-50/40 flex flex-col items-center justify-center cursor-pointer p-2 text-center transition">
+            <span class="text-xs font-extrabold text-blue-700">+ Ajouter photo</span>
+            <span class="text-[10px] text-slate-500">Galerie ou Caméra</span>
+            <input type="file" accept="image/*" onchange="handleFileSelect(event)" class="hidden" />
+          </label>
+        `;
+      }
+      grid.innerHTML = html;
+    }
+
+    function handleFileSelect(e) {
+      const file = e.target.files[0];
+      if (!file || state.formPhotos.length >= 4) return;
+      const reader = new FileReader();
+      reader.onload = ev => {
+        state.formPhotos.push(ev.target.result);
+        renderFormPhotos();
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function addPresetPhoto(url) {
+      if (state.formPhotos.length < 4) state.formPhotos.push(url);
+      else state.formPhotos[0] = url;
+      renderFormPhotos();
+    }
+
+    function removeFormPhoto(idx) {
+      state.formPhotos.splice(idx, 1);
+      renderFormPhotos();
+    }
+
+    function detectGambaGPS() {
+      const fb = document.getElementById('gps-feedback');
+      fb.classList.remove('hidden');
+      fb.textContent = 'Coordonnées GPS Gamba (Ndougou) enregistrées ✓';
+    }
+
+    function selectFormPlan(planId) {
+      document.getElementById('form-plan').value = planId;
+      ['free', 'decouverte', 'pro', 'business'].forEach(p => {
+        const el = document.getElementById('plan-card-' + p);
+        el.className = p === planId
+          ? 'cursor-pointer rounded-2xl p-4 border-2 border-blue-600 bg-blue-50/60 shadow-sm'
+          : 'cursor-pointer rounded-2xl p-4 border-2 border-slate-200';
+      });
+      const btn = document.getElementById('form-submit-btn');
+      if (planId === 'free') {
+        btn.textContent = 'Publier mon annonce gratuite (2 jours)';
+      } else {
+        btn.textContent = `Publier et Payer ${formatXAF(PLANS[planId].priceXAF)} via Airtel / Moov Money`;
+      }
+    }
+
+    function handleCreateListing(e) {
+      e.preventDefault();
+      const planId = document.getElementById('form-plan').value;
+      const newListing = {
+        id: 'gamba-' + Date.now(),
+        title: document.getElementById('form-title').value,
+        sellerName: document.getElementById('form-seller').value,
+        category: document.getElementById('form-category').value,
+        quartier: document.getElementById('form-quartier').value,
+        price: Number(document.getElementById('form-price').value) || 0,
+        priceLabel: document.getElementById('form-pricelabel').value,
+        description: document.getElementById('form-desc').value,
+        whatsapp: document.getElementById('form-whatsapp').value,
+        phone: '+241 ' + document.getElementById('form-whatsapp').value,
+        mapsUrl: document.getElementById('form-maps').value,
+        addressHint: document.getElementById('form-address').value,
+        images: state.formPhotos.length ? [...state.formPhotos] : ['https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=900&q=80'],
+        sellerVerified: false,
+        planTier: 'free',
+        isBoosted: false,
+        hasProBadge: false,
+        hasHomeBanner: false,
+        views: 1,
+        whatsappClicks: 0,
+        createdAt: new Date().toISOString(),
+        expiresAt: new Date(Date.now() + 2 * dayMs).toISOString(), // 2 JOURS GRATUITS
+        isOwner: true,
+      };
+
+      state.listings.unshift(newListing);
+      saveState();
+
+      if (planId !== 'free') {
+        openPaymentModal(planId, newListing.id);
+      } else {
+        navigateTo('detail', newListing.id);
+      }
+    }
+
+    function renderDashboard() {
+      const myListings = state.listings.filter(l => l.isOwner);
+      const activeCount = myListings.filter(l => getDaysRemaining(l.expiresAt) > 0).length;
+      const expiredCount = myListings.length - activeCount;
+
+      const container = document.getElementById('view-mes-annonces');
+      container.innerHTML = `
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm">
+          <div>
+            <span class="rounded-full bg-blue-50 text-blue-700 border border-blue-200 px-3 py-1 text-xs font-extrabold uppercase">ESPACE COMMERÇANT GAMBA</span>
+            <h1 class="text-2xl sm:text-3xl font-heading font-black text-slate-900 mt-2">Mes annonces publiées</h1>
+            <p class="text-xs sm:text-sm text-slate-500">${activeCount} annonce(s) active(s) en ligne • ${expiredCount} annonce(s) expirée(s)</p>
+          </div>
+          <div class="flex flex-wrap gap-2.5">
+            <button onclick="openPaymentModal('pro')" class="rounded-xl bg-gamba-navy hover:bg-slate-800 text-white font-bold text-xs px-4 py-3">👑 Passer en PRO (5 000 F)</button>
+            <button onclick="navigateTo('publier')" class="rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-4 py-3 shadow-md shadow-blue-600/20">+ Nouvelle annonce</button>
+          </div>
+        </div>
+
+        <div class="space-y-3">
+          ${myListings.map(item => {
+            const days = getDaysRemaining(item.expiresAt);
+            const expired = days <= 0;
+            return `
+              <div class="rounded-3xl bg-white p-4 sm:p-5 border ${expired ? 'border-rose-300 bg-rose-50/20' : 'border-slate-200'} flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-sm">
+                <div class="flex items-center gap-4">
+                  <img src="${item.images[0]}" class="h-20 w-24 rounded-2xl object-cover bg-slate-900 shrink-0" />
+                  <div>
+                    <span class="rounded-full px-2.5 py-0.5 text-[10px] font-extrabold uppercase ${expired ? 'bg-rose-100 text-rose-700' : 'bg-emerald-100 text-emerald-800'}">
+                      ${expired ? 'EXPIRÉE (ESSAI 2 JOURS TERMINÉ)' : `EN LIGNE • ${days} JOUR(S) RESTANT(S) (${item.planTier.toUpperCase()})`}
+                    </span>
+                    <h3 onclick="navigateTo('detail', '${item.id}')" class="cursor-pointer font-heading font-bold text-slate-900 hover:text-blue-600 text-sm sm:text-base mt-1">${item.title}</h3>
+                    <p class="text-xs text-slate-500 mt-0.5">📍 ${item.quartier} • <strong class="text-blue-700">${formatXAF(item.price)}</strong> • 👁️ ${item.views} vues • 💬 ${item.whatsappClicks} contacts WhatsApp</p>
+                  </div>
+                </div>
+                <div class="flex gap-2 w-full md:w-auto justify-end">
+                  <button onclick="openPaymentModal('${expired ? 'decouverte' : 'pro'}', '${item.id}')" class="rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-4 py-2.5 shadow-sm transition">
+                    ${expired ? '📱 Réactiver (2 000 FCFA)' : '🚀 Booster en PRO (5 000 FCFA)'}
+                  </button>
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+    }
+
+    function openPaymentModal(planId, targetListingId = null) {
+      state.modalPlan = planId || 'pro';
+      state.modalTargetId = targetListingId;
+      const plan = PLANS[state.modalPlan];
+
+      document.getElementById('modal-plan-name').textContent = `${plan.name} (${plan.durationDays} JOURS)`;
+      document.getElementById('modal-plan-price').textContent = formatXAF(plan.priceXAF);
+
+      const target = targetListingId ? state.listings.find(l => l.id === targetListingId) : null;
+      document.getElementById('modal-target-title').textContent = target
+        ? `Boost : ${target.title}`
+        : 'Activation immédiate sur votre compte vendeur';
+
+      document.getElementById('modal-step-form').classList.remove('hidden');
+      document.getElementById('modal-step-ussd').classList.add('hidden');
+      document.getElementById('modal-step-success').classList.add('hidden');
+      document.getElementById('payment-modal').classList.remove('hidden');
+      selectOperator(state.modalOperator);
+      lucide.createIcons();
+    }
+
+    function closePaymentModal() {
+      document.getElementById('payment-modal').classList.add('hidden');
+    }
+
+    function backToModalForm() {
+      document.getElementById('modal-step-ussd').classList.add('hidden');
+      document.getElementById('modal-step-form').classList.remove('hidden');
+    }
+
+    function selectOperator(op) {
+      state.modalOperator = op;
+      const isAirtel = op === 'airtel';
+
+      document.getElementById('op-airtel').className = isAirtel
+        ? 'relative flex flex-col items-center justify-center rounded-2xl p-4 border-2 border-[#E60000] bg-red-50/50 shadow-md transition group'
+        : 'relative flex flex-col items-center justify-center rounded-2xl p-4 border-2 border-slate-200 bg-white hover:border-red-300 transition group';
+
+      document.getElementById('op-moov').className = !isAirtel
+        ? 'relative flex flex-col items-center justify-center rounded-2xl p-4 border-2 border-[#0055A5] bg-blue-50/50 shadow-md transition group'
+        : 'relative flex flex-col items-center justify-center rounded-2xl p-4 border-2 border-slate-200 bg-white hover:border-blue-400 transition group';
+
+      document.getElementById('check-airtel').classList.toggle('hidden', !isAirtel);
+      document.getElementById('check-moov').classList.toggle('hidden', isAirtel);
+
+      const pill = document.getElementById('modal-op-pill');
+      const payBtn = document.getElementById('modal-pay-btn');
+
+      if (isAirtel) {
+        pill.textContent = 'Airtel Money Gabon';
+        pill.className = 'rounded-full bg-red-100 text-[#E60000] px-2.5 py-0.5 text-[10px] font-extrabold';
+        document.getElementById('modal-phone').value = '077 45 12 89';
+        payBtn.className = 'w-full flex items-center justify-center gap-2 rounded-2xl bg-[#E60000] hover:opacity-95 text-white font-heading font-extrabold py-4 px-5 shadow-lg shadow-red-600/25 transition text-sm';
+        payBtn.innerHTML = '<span>Payer avec Airtel Money (*150#)</span><i data-lucide="arrow-right" class="w-4 h-4"></i>';
+      } else {
+        pill.textContent = 'Moov Money Africa';
+        pill.className = 'rounded-full bg-blue-100 text-[#0055A5] px-2.5 py-0.5 text-[10px] font-extrabold';
+        document.getElementById('modal-phone').value = '066 89 23 41';
+        payBtn.className = 'w-full flex items-center justify-center gap-2 rounded-2xl bg-[#0055A5] hover:opacity-95 text-white font-heading font-extrabold py-4 px-5 shadow-lg shadow-blue-600/25 transition text-sm';
+        payBtn.innerHTML = '<span>Payer avec Moov Money (*555#)</span><i data-lucide="arrow-right" class="w-4 h-4"></i>';
+      }
+      lucide.createIcons();
+    }
+
+    function goToUssdStep() {
+      const plan = PLANS[state.modalPlan];
+      const phone = document.getElementById('modal-phone').value;
+      const ussd = state.modalOperator === 'airtel' ? '*150#' : '*555#';
+      const opName = state.modalOperator === 'airtel' ? 'Airtel Money' : 'Moov Money';
+
+      document.getElementById('modal-ussd-headline').innerHTML =
+        `Paiement Mobile Money : Composez <span class="text-blue-600 underline">${ussd}</span> pour payer`;
+      document.getElementById('modal-ussd-code-badge').textContent = ussd;
+      document.getElementById('modal-ussd-sub').innerHTML =
+        `Requête CinetPay de <strong>${formatXAF(plan.priceXAF)}</strong> envoyée au <strong>+241 ${phone}</strong> (${opName}).`;
+
+      document.getElementById('modal-step-form').classList.add('hidden');
+      document.getElementById('modal-step-ussd').classList.remove('hidden');
+    }
+
+    function confirmMobileMoneyPayment() {
+      const plan = PLANS[state.modalPlan];
+      const newExpiry = new Date(Date.now() + plan.durationDays * dayMs).toISOString();
+      const isProOrBus = plan.id === 'pro' || plan.id === 'business';
+
+      state.listings = state.listings.map(item => {
+        if ((state.modalTargetId && item.id === state.modalTargetId) || (!state.modalTargetId && item.isOwner)) {
+          return {
+            ...item,
+            planTier: plan.id,
+            isBoosted: true,
+            hasProBadge: isProOrBus || item.hasProBadge,
+            hasHomeBanner: plan.id === 'business' || item.hasHomeBanner,
+            sellerVerified: isProOrBus || item.sellerVerified,
+            expiresAt: newExpiry
+          };
+        }
+        return item;
+      });
+
+      saveState();
+      document.getElementById('nav-plan-badge').textContent = plan.id.toUpperCase();
+      document.getElementById('nav-plan-badge').classList.remove('hidden');
+
+      document.getElementById('modal-success-desc').innerHTML =
+        `Votre paiement de <strong>${formatXAF(plan.priceXAF)}</strong> est validé. Votre annonce est propulsée en tête de GAMBA BUSINESS pendant <strong>${plan.durationDays} jours</strong> !`;
+
+      document.getElementById('modal-step-ussd').classList.add('hidden');
+      document.getElementById('modal-step-success').classList.remove('hidden');
+      renderHomeListings();
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      renderHomeListings();
+      lucide.createIcons();
+    });
+  </script>
+</body>
+</html>
