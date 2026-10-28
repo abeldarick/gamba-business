@@ -97,15 +97,19 @@ export default function Navbar() {
       {/* Header principal Bleu & Blanc (Glassmorphism Pro) */}
       <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 h-16 sm:h-20 flex items-center justify-between gap-3">
-          {/* Logo GAMBA BUSINESS */}
+          {/* Logo Officiel GAMBA BUSINESS */}
           <Link href="/" className="flex items-center gap-3 group shrink-0">
-            <div className="h-10 w-10 sm:h-11 sm:w-11 rounded-2xl bg-gradient-to-br from-blue-700 via-blue-600 to-sky-500 flex items-center justify-center text-white font-black text-base sm:text-lg shadow-lg shadow-blue-600/25 group-hover:scale-105 transition">
-              GB
+            <div className="h-11 w-11 sm:h-12 sm:w-12 rounded-2xl overflow-hidden bg-[#1E2229] border border-teal-400/40 flex items-center justify-center shadow-lg shadow-blue-900/20 group-hover:scale-105 transition">
+              <img
+                src="/images/logo-gamba-icon.jpg"
+                alt="Logo Gamba Business"
+                className="h-full w-full object-cover"
+              />
             </div>
             <div>
               <div className="flex items-center gap-2">
                 <span className="font-extrabold text-base sm:text-xl tracking-tight text-slate-900">
-                  GAMBA <span className="text-blue-600">BUSINESS</span>
+                  Gamba <span className="text-emerald-600">business</span>
                 </span>
                 {subscription.currentPlan !== 'free' && (
                   <span className="rounded-full bg-blue-50 border border-blue-200 px-2 py-0.5 text-[10px] font-extrabold text-blue-700 uppercase">
