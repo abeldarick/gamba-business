@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
@@ -14,9 +14,9 @@ import {
   FileSpreadsheet,
   Users,
   ShieldCheck,
-  UserCheck,
-  LogIn,
+  User,
   LogOut,
+  ChevronDown,
 } from 'lucide-react';
 import { useGamba } from '@/context/GambaContext';
 
@@ -30,6 +30,9 @@ export default function Navbar() {
     logoutUser,
   } = useGamba();
 
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
   // Enregistrement du Service Worker PWA pour installation Android à Gamba
   useEffect(() => {
     if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
@@ -37,14 +40,34 @@ export default function Navbar() {
     }
   }, []);
 
+  // Fermer le menu profil quand on clique en dehors
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setProfileMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // Navigation publique propre (sans exposer le Back-End Admin au public)
   const navItems = [
-    { href: '/', label: 'Accueil', shortLabel: 'Accueil', icon: LayoutGrid },
+    { href: '/', label: 'Explorer', shortLabel: 'Accueil', icon: LayoutGrid },
     { href: '/facturation', label: 'Facturation', shortLabel: 'Factures', icon: FileSpreadsheet },
-    { href: '/admin', label: 'Back-End Admin', shortLabel: 'Admin', icon: ShieldCheck },
-    { href: '/publier', label: 'Publier', shortLabel: 'Publier', icon: Plus, highlight: true },
+    { href: '/publier', label: 'Publier une annonce', shortLabel: 'Publier', icon: Plus, highlight: true },
     { href: '/mes-annonces', label: 'Mes Annonces', shortLabel: 'Annonces', icon: Briefcase },
     { href: '/tarifs', label: 'Tarifs', shortLabel: 'Tarifs', icon: Award },
   ];
+
+  // Initiales de l'utilisateur connecté pour l'avatar professionnel
+  const getUserInitials = (name: string) => {
+    const parts = name.trim().split(/\s+/);
+    if (parts.length >= 2) {
+      return (parts[0][0] + parts[1][0]).toUpperCase();
+    }
+    return name.slice(0, 2).toUpperCase();
+  };
 
   return (
     <>
@@ -56,25 +79,16 @@ export default function Navbar() {
               🇬🇦 GAMBA • DÉPARTEMENT DE NDOUGOU
             </span>
             <span className="text-slate-300 font-medium hidden sm:inline">
-              Inscription rapide par Téléphone (+241) ou par Mail • 1ère annonce GRATUITE 2 jours !
+              1ère annonce 100% GRATUITE pendant 2 jours pour tous les commerçants de Gamba !
             </span>
           </div>
           <div className="flex items-center gap-3 ml-auto">
-            <Link
-              href="/admin"
-              className="inline-flex items-center gap-1 text-emerald-300 hover:text-white font-extrabold transition"
-            >
-              <ShieldCheck className="h-3.5 w-3.5" />
-              <span>Back-End Admin</span>
-            </Link>
-            <span className="text-blue-800">|</span>
             <button
               onClick={() => openPaymentModal('pro')}
               className="flex items-center gap-1.5 text-sky-300 hover:text-white font-semibold transition"
             >
               <Zap className="h-3.5 w-3.5 text-amber-400" />
-              <span className="hidden sm:inline">Airtel (*150#) / Moov (*555#)</span>
-              <span className="sm:hidden">Booster PRO</span>
+              <span>Booster via Airtel Money (*150#) / Moov (*555#)</span>
             </button>
           </div>
         </div>
@@ -85,12 +99,12 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-4 h-16 sm:h-20 flex items-center justify-between gap-3">
           {/* Logo GAMBA BUSINESS */}
           <Link href="/" className="flex items-center gap-3 group shrink-0">
-            <div className="h-11 w-11 rounded-2xl bg-gradient-to-br from-blue-700 via-blue-600 to-sky-500 flex items-center justify-center text-white font-black text-lg shadow-lg shadow-blue-600/25 group-hover:scale-105 transition">
+            <div className="h-10 w-10 sm:h-11 sm:w-11 rounded-2xl bg-gradient-to-br from-blue-700 via-blue-600 to-sky-500 flex items-center justify-center text-white font-black text-base sm:text-lg shadow-lg shadow-blue-600/25 group-hover:scale-105 transition">
               GB
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-extrabold text-lg sm:text-xl tracking-tight text-slate-900">
+                <span className="font-extrabold text-base sm:text-xl tracking-tight text-slate-900">
                   GAMBA <span className="text-blue-600">BUSINESS</span>
                 </span>
                 {subscription.currentPlan !== 'free' && (
@@ -100,104 +114,146 @@ export default function Navbar() {
                 )}
               </div>
               <p className="text-[11px] text-slate-500 hidden sm:flex items-center gap-1 font-medium">
-                <Compass className="h-3 w-3 text-blue-600" /> Portail Officiel des Commerces de Gamba
+                <Compass className="h-3 w-3 text-blue-600" /> Le Portail Officiel des Commerces de Gamba
               </p>
             </div>
           </Link>
 
-          {/* Navigation Desktop */}
+          {/* Navigation Desktop Centrale */}
           <nav className="hidden lg:flex items-center gap-1">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = pathname === item.href;
-              if (item.highlight) {
+            {navItems
+              .filter((i) => !i.highlight)
+              .map((item) => {
+                const Icon = item.icon;
+                const isActive = pathname === item.href;
                 return (
                   <Link
                     key={item.href}
                     href={item.href}
-                    className="flex items-center gap-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs xl:text-sm px-4 py-2.5 shadow-md shadow-blue-600/20 transition mx-1"
+                    className={`flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-sm font-semibold transition ${
+                      isActive
+                        ? 'bg-blue-50 text-blue-700'
+                        : 'text-slate-600 hover:text-blue-700 hover:bg-slate-100/70'
+                    }`}
                   >
-                    <PlusCircle className="h-4 w-4" />
+                    <Icon className="h-4 w-4 text-blue-600" />
                     <span>{item.label}</span>
                   </Link>
                 );
-              }
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`flex items-center gap-1.5 rounded-xl px-3 py-2.5 text-xs xl:text-sm font-bold transition ${
-                    isActive
-                      ? 'bg-blue-50/90 text-blue-700 border border-blue-200/60'
-                      : 'text-slate-700 hover:text-blue-700 hover:bg-slate-100/80'
-                  }`}
-                >
-                  <Icon className="h-4 w-4 text-blue-600" />
-                  <span>{item.label}</span>
-                </Link>
-              );
-            })}
+              })}
+          </nav>
 
-            {/* BOUTON DE CONNEXION / INSCRIPTION (2 MODES : MAIL & TÉLÉPHONE) */}
+          {/* Zone Droite Professionnelle : Compte Utilisateur + Bouton Publier */}
+          <div className="flex items-center gap-2 sm:gap-2.5" ref={dropdownRef}>
             {currentUser ? (
-              <div className="flex items-center gap-1.5 ml-2 pl-2 border-l border-slate-200">
-                <span className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-50 border border-emerald-200 px-3 py-2 text-xs font-extrabold text-emerald-800">
-                  <UserCheck className="h-3.5 w-3.5 text-emerald-600" />
-                  <span className="max-w-[120px] truncate">{currentUser.fullName}</span>
-                </span>
+              <div className="relative">
                 <button
-                  onClick={logoutUser}
-                  className="rounded-xl bg-slate-100 hover:bg-rose-50 hover:text-rose-600 p-2 text-slate-600 transition"
-                  title="Se déconnecter"
+                  type="button"
+                  onClick={() => setProfileMenuOpen(!profileMenuOpen)}
+                  className="flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50/80 hover:bg-white hover:border-blue-300 pl-1.5 pr-3 py-1.5 transition shadow-sm"
                 >
-                  <LogOut className="h-4 w-4" />
+                  <div className="h-7 w-7 rounded-full bg-gradient-to-br from-blue-600 to-indigo-700 text-white text-xs font-extrabold flex items-center justify-center shadow-sm">
+                    {getUserInitials(currentUser.fullName)}
+                  </div>
+                  <span className="text-xs font-bold text-slate-800 max-w-[90px] sm:max-w-[130px] truncate">
+                    {currentUser.fullName}
+                  </span>
+                  <ChevronDown className="h-3.5 w-3.5 text-slate-400" />
                 </button>
+
+                {/* Menu Déroulant Compte Professionnel */}
+                {profileMenuOpen && (
+                  <div className="absolute right-0 mt-2 w-64 rounded-2xl bg-white border border-slate-200 shadow-2xl py-2 z-50">
+                    <div className="px-4 py-3 border-b border-slate-100">
+                      <p className="text-xs font-extrabold text-slate-900 truncate">
+                        {currentUser.fullName}
+                      </p>
+                      <p className="text-[11px] text-slate-500 truncate mt-0.5">
+                        {currentUser.email || currentUser.phone}
+                      </p>
+                      <div className="flex items-center gap-1.5 mt-2">
+                        <span className="rounded-md bg-blue-50 text-blue-700 border border-blue-200 px-2 py-0.5 text-[10px] font-extrabold uppercase">
+                          Forfait {currentUser.planTier}
+                        </span>
+                        <span className="text-[10px] text-slate-400">
+                          📍 {currentUser.quartier}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="py-1.5 px-1.5 space-y-0.5">
+                      <Link
+                        href="/mes-annonces"
+                        onClick={() => setProfileMenuOpen(false)}
+                        className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-blue-600 transition"
+                      >
+                        <Briefcase className="h-4 w-4 text-blue-600" />
+                        <span>Mes annonces publiées</span>
+                      </Link>
+                      <Link
+                        href="/facturation"
+                        onClick={() => setProfileMenuOpen(false)}
+                        className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-blue-600 transition"
+                      >
+                        <FileSpreadsheet className="h-4 w-4 text-blue-600" />
+                        <span>Facturation &amp; Devis (TVA 18%)</span>
+                      </Link>
+                      <Link
+                        href="/facturation?tab=clients"
+                        onClick={() => setProfileMenuOpen(false)}
+                        className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-blue-600 transition"
+                      >
+                        <Users className="h-4 w-4 text-blue-600" />
+                        <span>Mon fichier clients</span>
+                      </Link>
+
+                      {/* Visible UNIQUEMENT si l'utilisateur connecté est l'Administrateur */}
+                      {currentUser.role === 'admin' && (
+                        <Link
+                          href="/admin"
+                          onClick={() => setProfileMenuOpen(false)}
+                          className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-extrabold text-emerald-700 bg-emerald-50/70 hover:bg-emerald-100 transition mt-1"
+                        >
+                          <ShieldCheck className="h-4 w-4 text-emerald-600" />
+                          <span>Console Super-Admin</span>
+                        </Link>
+                      )}
+                    </div>
+
+                    <div className="border-t border-slate-100 pt-1.5 px-1.5">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setProfileMenuOpen(false);
+                          logoutUser();
+                        }}
+                        className="w-full flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-bold text-rose-600 hover:bg-rose-50 transition"
+                      >
+                        <LogOut className="h-4 w-4" />
+                        <span>Se déconnecter</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             ) : (
               <button
+                type="button"
                 onClick={openAuthModal}
-                className="flex items-center gap-1.5 rounded-xl bg-[#0B192C] hover:bg-slate-800 text-white font-extrabold text-xs xl:text-sm px-4 py-2.5 shadow-sm transition ml-1"
+                className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 hover:border-blue-300 text-slate-800 font-bold text-xs sm:text-sm px-3.5 py-2.5 shadow-sm transition"
               >
-                <LogIn className="h-4 w-4 text-sky-400" />
-                <span>Connexion / Inscription</span>
+                <User className="h-4 w-4 text-blue-600" />
+                <span>Se connecter</span>
               </button>
             )}
-          </nav>
-
-          {/* Boutons rapides Mobile & Tablette */}
-          <div className="flex lg:hidden items-center gap-1.5">
-            {currentUser ? (
-              <button
-                onClick={logoutUser}
-                className="flex items-center gap-1 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 font-extrabold text-[11px] px-2.5 py-2"
-              >
-                <UserCheck className="h-3.5 w-3.5 text-emerald-600" />
-                <span className="max-w-[75px] truncate">{currentUser.fullName}</span>
-              </button>
-            ) : (
-              <button
-                onClick={openAuthModal}
-                className="flex items-center gap-1 rounded-xl bg-[#0B192C] text-white font-extrabold text-[11px] px-2.5 py-2 shadow-sm"
-              >
-                <LogIn className="h-3.5 w-3.5 text-sky-400" />
-                <span>Connexion</span>
-              </button>
-            )}
-
-            <Link
-              href="/admin"
-              className="flex items-center gap-1 rounded-xl bg-blue-50 border border-blue-200 text-blue-700 font-extrabold text-[11px] px-2.5 py-2"
-            >
-              <ShieldCheck className="h-3.5 w-3.5" />
-              <span>Admin</span>
-            </Link>
 
             <Link
               href="/publier"
-              className="flex items-center gap-1 rounded-xl bg-blue-600 active:bg-blue-700 text-white font-bold text-[11px] px-3 py-2 shadow-md shadow-blue-600/20"
+              className="inline-flex items-center gap-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs sm:text-sm px-3.5 sm:px-4 py-2.5 shadow-md shadow-blue-600/20 transition"
             >
-              <Plus className="h-3.5 w-3.5" />
-              <span>Publier</span>
+              <PlusCircle className="h-4 w-4" />
+              <span className="hidden sm:inline">Publier une annonce</span>
+              <span className="sm:hidden">Publier</span>
             </Link>
           </div>
         </div>
