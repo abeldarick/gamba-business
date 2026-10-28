@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500">
+  <defs>
+    <linearGradient id="bg6" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1E3A8A"/>
+      <stop offset="100%" stop-color="#172554"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#bg6)"/>
+  <circle cx="400" cy="220" r="115" fill="#3B82F6" opacity="0.25"/>
+  <!-- Snowflake / Tech icon -->
+  <circle cx="400" cy="220" r="85" fill="#EFF6FF"/>
+  <path d="M400 155 V285 M335 220 H465 M355 175 L445 265 M445 175 L355 265" stroke="#1D4ED8" stroke-width="12" stroke-linecap="round"/>
+  <rect x="0" y="420" width="800" height="80" fill="#0B132B"/>
+  <text x="400" y="468" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#93C5FD" text-anchor="middle">SERVICES PRO • FROID &amp; CLIMATISATION • DÉPANNAGE 24H/7</text>
+</svg>
