@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1E293B"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#FF6B00"/>
+      <stop offset="100%" stop-color="#F59E0B"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#bg)"/>
+  <circle cx="680" cy="100" r="80" fill="#FF6B00" opacity="0.25"/>
+  <!-- Building / Bungalow -->
+  <rect x="180" y="210" width="440" height="210" rx="16" fill="#334155"/>
+  <polygon points="150,220 400,100 650,220" fill="url(#accent)"/>
+  <!-- Windows & Door -->
+  <rect x="355" y="290" width="90" height="130" rx="8" fill="#F8FAFC"/>
+  <rect x="225" y="260" width="90" height="80" rx="8" fill="#38BDF8" opacity="0.85"/>
+  <rect x="485" y="260" width="90" height="80" rx="8" fill="#38BDF8" opacity="0.85"/>
+  <!-- Badge -->
+  <rect x="270" y="165" width="260" height="44" rx="22" fill="#111827"/>
+  <text x="400" y="194" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#FF6B00" text-anchor="middle">MOTEL • CLIMATISÉ • WIFI</text>
+  <!-- Bottom bar -->
+  <rect x="0" y="420" width="800" height="80" fill="#090D16"/>
+  <text x="400" y="468" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#FFFFFF" text-anchor="middle">HÉBERGEMENT &amp; SÉJOUR À GAMBA (NDVOUGOU)</text>
+</svg>
