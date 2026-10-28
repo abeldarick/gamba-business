@@ -224,7 +224,7 @@ export default function HomePage() {
           {/* Raccourcis de quartiers rapides */}
           <div className="flex items-center justify-center flex-wrap gap-1.5 pt-1 text-xs">
             <span className="text-gray-400 font-medium mr-1">Quartiers populaires :</span>
-            {(['Centre-ville', 'Plaine', 'Camp Yenzi', 'Quartier Fougamou', 'Mayonami'] as QuartierGamba[]).map(
+            {(['Plaine 1', 'Plaine 2', 'Plaine 3', 'Plaine 4', 'Plaine 5', 'Le Couloir', 'Centre-ville'] as QuartierGamba[]).map(
               (q) => (
                 <button
                   key={q}
