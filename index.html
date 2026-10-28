@@ -55,7 +55,10 @@
       -webkit-backdrop-filter: blur(16px);
     }
     .hero-overlay {
-      background: linear-gradient(180deg, rgba(11, 25, 44, 0.72) 0%, rgba(11, 25, 44, 0.88) 65%, #0B192C 100%);
+      background: linear-gradient(180deg, rgba(11, 25, 44, 0.42) 0%, rgba(11, 25, 44, 0.55) 55%, rgba(11, 25, 44, 0.94) 100%);
+    }
+    .hero-slide-img {
+      transition: opacity 1500ms ease-out, transform 4500ms ease-out;
     }
   </style>
 </head>
@@ -207,29 +210,58 @@
     <!-- ==================== VUE 1 : ACCUEIL (LANDING PAGE PRO) ==================== -->
     <div id="view-home" class="space-y-10 sm:space-y-14 pb-12">
 
-      <!-- 1. HERO IMMERSIF AVEC VRAIE PHOTO DE LAGUNE TROPICALE / CÔTE GABONAISE -->
-      <section class="relative overflow-hidden bg-gamba-navy text-white pt-10 pb-16 sm:pt-16 sm:pb-24 px-4">
-        <img
-          src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&q=80"
-          alt="Lagune Ndougou et Plages de Gamba, Gabon"
-          class="absolute inset-0 w-full h-full object-cover object-center opacity-35 scale-105"
-        />
-        <div class="absolute inset-0 hero-overlay"></div>
+      <!-- 1. HERO IMMERSIF AVEC LES 3 PHOTOS AUTHENTIQUES DE GAMBA ANIMÉES EN FOND -->
+      <section class="relative overflow-hidden bg-gamba-navy text-white pt-10 pb-20 sm:pt-16 sm:pb-24 px-4">
+        <!-- Diaporama des 3 photos animées (Crossfade + Zoom Ken Burns) -->
+        <div class="absolute inset-0 z-0 overflow-hidden">
+          <img
+            id="hero-bg-0"
+            src="/images/gamba-hero-1.jpg"
+            alt="Bars, Maquis et Terrasses Régab à Gamba"
+            class="hero-slide-img absolute inset-0 w-full h-full object-cover object-center opacity-70 scale-110"
+          />
+          <img
+            id="hero-bg-1"
+            src="/images/gamba-hero-2.jpg"
+            alt="Commerces, Sandwichs et Saveurs des Quartiers de Gamba"
+            class="hero-slide-img absolute inset-0 w-full h-full object-cover object-center opacity-0 scale-100 pointer-events-none"
+          />
+          <img
+            id="hero-bg-2"
+            src="/images/gamba-hero-3.jpg"
+            alt="Poisson Frais et Fumé de la Lagune Ndougou à Gamba"
+            class="hero-slide-img absolute inset-0 w-full h-full object-cover object-center opacity-0 scale-100 pointer-events-none"
+          />
+        </div>
+        <div class="absolute inset-0 z-[1] hero-overlay"></div>
 
         <div class="max-w-5xl mx-auto text-center space-y-6 relative z-10">
           <!-- Badge de confiance local avec les vrais quartiers de Gamba -->
-          <div class="inline-flex items-center gap-2 rounded-full bg-blue-500/20 border border-sky-400/30 backdrop-blur-md px-4 py-1.5 text-xs font-semibold text-sky-200 shadow-sm">
+          <div class="inline-flex items-center gap-2 rounded-full bg-gamba-navy/65 border border-sky-400/40 backdrop-blur-md px-4 py-1.5 text-xs font-semibold text-sky-200 shadow-lg">
             <span class="h-2 w-2 rounded-full bg-sky-400 animate-ping"></span>
             <span>PLAINE 1 À 5 • LE COULOIR • CENTRE-VILLE • CAMP YENZI • MAYONAMI</span>
           </div>
 
-          <h1 class="text-3xl sm:text-5xl md:text-6xl font-heading font-black tracking-tight leading-[1.12]">
+          <h1 class="text-3xl sm:text-5xl md:text-6xl font-heading font-black tracking-tight leading-[1.12] drop-shadow-[0_4px_18px_rgba(0,0,0,0.65)]">
             Tout <span class="text-transparent bg-clip-text bg-gradient-to-r from-sky-300 via-blue-200 to-white">Gamba</span> dans votre poche.
           </h1>
 
-          <p class="text-sm sm:text-lg text-slate-200 max-w-2xl mx-auto font-normal leading-relaxed">
-            La plateforme de référence pour trouver les meilleurs <strong class="text-white font-semibold">Motels, Restaurants de poisson braisé, Bars, Boutiques, Salons et Techniciens</strong> à Gamba. Contact direct par WhatsApp.
+          <p class="text-sm sm:text-lg text-white/95 max-w-2xl mx-auto font-medium leading-relaxed drop-shadow-[0_2px_10px_rgba(0,0,0,0.7)]">
+            La plateforme de référence pour trouver les meilleurs <strong class="text-sky-300 font-extrabold">Motels, Restaurants de poisson braisé, Bars, Boutiques, Salons et Techniciens</strong> à Gamba. Contact direct par WhatsApp.
           </p>
+
+          <!-- Indicateur interactif des 3 photos animées en temps réel -->
+          <div class="flex flex-col sm:flex-row items-center justify-center gap-3 pt-1">
+            <div class="inline-flex items-center gap-2 rounded-full bg-gamba-navy/75 border border-white/20 backdrop-blur-md px-3.5 py-1.5 text-xs font-bold text-white shadow-md">
+              <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-400"></i>
+              <span id="hero-slide-caption">Bars, Maquis &amp; Terrasses Régab à Gamba</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <button type="button" onclick="setHeroSlide(0)" id="hero-dot-0" class="h-2.5 w-9 rounded-full bg-sky-400 shadow-[0_0_12px_rgba(56,189,248,0.9)] transition-all duration-500" aria-label="Photo 1"></button>
+              <button type="button" onclick="setHeroSlide(1)" id="hero-dot-1" class="h-2.5 w-2.5 rounded-full bg-white/45 hover:bg-white/80 transition-all duration-500" aria-label="Photo 2"></button>
+              <button type="button" onclick="setHeroSlide(2)" id="hero-dot-2" class="h-2.5 w-2.5 rounded-full bg-white/45 hover:bg-white/80 transition-all duration-500" aria-label="Photo 3"></button>
+            </div>
+          </div>
 
           <!-- MOTEUR DE RECHERCHE BLANC & BLEU (VRAIS QUARTIERS DE GAMBA) -->
           <div class="bg-white p-2.5 sm:p-3 rounded-2xl sm:rounded-3xl shadow-2xl shadow-blue-950/50 max-w-4xl mx-auto border border-slate-100 text-left">
@@ -370,48 +402,48 @@
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <!-- Carte Réalité 1 : Hébergement & Lagune Ndougou -->
-          <div onclick="selectCategory('Motels')" class="group cursor-pointer relative h-52 rounded-3xl overflow-hidden shadow-md border border-slate-200">
+          <!-- Carte Réalité 1 : Bars, Maquis & Motels à Gamba -->
+          <div onclick="selectCategory('Bars')" class="group cursor-pointer relative h-52 rounded-3xl overflow-hidden shadow-md border border-slate-200">
             <img
-              src="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=900&q=80"
-              alt="Motels et Résidences à Gamba"
+              src="/images/gamba-hero-1.jpg"
+              alt="Bars, Maquis et Motels à Gamba"
               class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
             />
             <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/35 to-transparent"></div>
             <div class="absolute bottom-4 left-4 right-4 text-white">
-              <span class="rounded-full bg-blue-600 px-2.5 py-0.5 text-[10px] font-bold uppercase">Séjour &amp; Missions</span>
-              <h3 class="text-lg font-heading font-bold mt-1">Motels &amp; Résidences Climatisées</h3>
+              <span class="rounded-full bg-blue-600 px-2.5 py-0.5 text-[10px] font-bold uppercase">Détente &amp; Séjours</span>
+              <h3 class="text-lg font-heading font-bold mt-1">Bars, Maquis &amp; Motels de Gamba</h3>
               <p class="text-xs text-slate-200">Centre-ville, Plaine 1 à 5 &amp; Le Couloir</p>
             </div>
           </div>
 
-          <!-- Carte Réalité 2 : Gastronomie Gabonaise & Poisson Braisé -->
+          <!-- Carte Réalité 2 : Gastronomie Gabonaise & Poisson Braisé/Fumé -->
           <div onclick="selectCategory('Restaurants')" class="group cursor-pointer relative h-52 rounded-3xl overflow-hidden shadow-md border border-slate-200">
             <img
-              src="https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=900&q=80"
-              alt="Poisson braisé et Grillades à Gamba"
+              src="/images/gamba-hero-3.jpg"
+              alt="Poisson braisé et fumé de la lagune à Gamba"
               class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
             />
             <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/35 to-transparent"></div>
             <div class="absolute bottom-4 left-4 right-4 text-white">
-              <span class="rounded-full bg-sky-500 px-2.5 py-0.5 text-[10px] font-bold uppercase">Saveurs Locales</span>
-              <h3 class="text-lg font-heading font-bold mt-1">Poisson Braisé, Coupé-Coupé &amp; Restos</h3>
-              <p class="text-xs text-slate-200">Carpe fraîche de la lagune, plantain &amp; livraison</p>
+              <span class="rounded-full bg-sky-500 px-2.5 py-0.5 text-[10px] font-bold uppercase">Saveurs de la Lagune</span>
+              <h3 class="text-lg font-heading font-bold mt-1">Poisson Braisé, Fumé &amp; Restaurants</h3>
+              <p class="text-xs text-slate-200">Pêche fraîche de Ndougou, grillades &amp; livraison</p>
             </div>
           </div>
 
-          <!-- Carte Réalité 3 : Boutiques, Marché & Services -->
-          <div onclick="selectCategory('Services')" class="group cursor-pointer relative h-52 rounded-3xl overflow-hidden shadow-md border border-slate-200">
+          <!-- Carte Réalité 3 : Sandwichs, Boutiques & Services -->
+          <div onclick="selectCategory('Alimentation')" class="group cursor-pointer relative h-52 rounded-3xl overflow-hidden shadow-md border border-slate-200">
             <img
-              src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?auto=format&fit=crop&w=900&q=80"
-              alt="Salons de coiffure et Services techniques à Gamba"
+              src="/images/gamba-hero-2.jpg"
+              alt="Sandwichs, Commerces et Boutiques à Gamba"
               class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
             />
             <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/35 to-transparent"></div>
             <div class="absolute bottom-4 left-4 right-4 text-white">
-              <span class="rounded-full bg-indigo-600 px-2.5 py-0.5 text-[10px] font-bold uppercase">Beauté &amp; Artisans</span>
-              <h3 class="text-lg font-heading font-bold mt-1">Salons VIP, Froid/Clim &amp; Boutiques</h3>
-              <p class="text-xs text-slate-200">Coiffure, dépannage 24h/7 et commerce général</p>
+              <span class="rounded-full bg-indigo-600 px-2.5 py-0.5 text-[10px] font-bold uppercase">Commerces &amp; Quartiers</span>
+              <h3 class="text-lg font-heading font-bold mt-1">Sandwichs, Boutiques &amp; Services</h3>
+              <p class="text-xs text-slate-200">Alimentation, coiffure et commerce général</p>
             </div>
           </div>
         </div>
@@ -2825,9 +2857,50 @@
       renderAdminBackend();
     }
 
+    // Animation automatique des 3 photos en arrière-plan du Hero (toutes les 4 secondes)
+    const HERO_CAPTIONS = [
+      'Bars, Maquis & Terrasses Régab à Gamba',
+      'Commerces, Sandwichs & Saveurs des Quartiers',
+      'Poisson Frais & Fumé de la Lagune Ndougou'
+    ];
+    let currentHeroSlide = 0;
+    let heroIntervalId = null;
+
+    function setHeroSlide(index) {
+      currentHeroSlide = index % 3;
+      for (let i = 0; i < 3; i++) {
+        const img = document.getElementById('hero-bg-' + i);
+        const dot = document.getElementById('hero-dot-' + i);
+        if (img) {
+          if (i === currentHeroSlide) {
+            img.className = 'hero-slide-img absolute inset-0 w-full h-full object-cover object-center opacity-70 scale-110';
+          } else {
+            img.className = 'hero-slide-img absolute inset-0 w-full h-full object-cover object-center opacity-0 scale-100 pointer-events-none';
+          }
+        }
+        if (dot) {
+          if (i === currentHeroSlide) {
+            dot.className = 'h-2.5 w-9 rounded-full bg-sky-400 shadow-[0_0_12px_rgba(56,189,248,0.9)] transition-all duration-500';
+          } else {
+            dot.className = 'h-2.5 w-2.5 rounded-full bg-white/45 hover:bg-white/80 transition-all duration-500';
+          }
+        }
+      }
+      const captionEl = document.getElementById('hero-slide-caption');
+      if (captionEl) captionEl.textContent = HERO_CAPTIONS[currentHeroSlide];
+    }
+
+    function startHeroSlideshow() {
+      if (heroIntervalId) clearInterval(heroIntervalId);
+      heroIntervalId = setInterval(() => {
+        setHeroSlide((currentHeroSlide + 1) % 3);
+      }, 4000);
+    }
+
     window.addEventListener('DOMContentLoaded', () => {
       updateHeaderAuthLabel();
       renderHomeListings();
+      startHeroSlideshow();
       lucide.createIcons();
     });
   </script>
