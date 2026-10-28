@@ -12,12 +12,16 @@ export default function Footer() {
         {/* Colonne 1 (4 cols) : Marque & Réseaux Sociaux Officiels */}
         <div className="lg:col-span-4 space-y-4">
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-2xl bg-gradient-to-br from-blue-600 to-sky-500 flex items-center justify-center text-white font-black text-base shadow-lg">
-              GB
+            <div className="h-12 w-12 rounded-2xl overflow-hidden bg-[#1E2229] border border-teal-400/40 flex items-center justify-center shadow-lg">
+              <img
+                src="/images/logo-gamba-icon.jpg"
+                alt="Logo Gamba Business"
+                className="h-full w-full object-cover"
+              />
             </div>
             <div>
               <span className="font-extrabold text-xl text-white">
-                GAMBA <span className="text-sky-400">BUSINESS</span>
+                Gamba <span className="text-emerald-400">business</span>
               </span>
               <p className="text-[11px] text-sky-300/80">Le Bon Coin de Gamba, Gabon 🇬🇦</p>
             </div>
