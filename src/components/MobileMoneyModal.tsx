@@ -3,14 +3,11 @@
 import React, { useState, useEffect } from 'react';
 import {
   CheckCircle2,
-  Lock,
   Phone,
   ShieldCheck,
-  Smartphone,
   Sparkles,
   X,
   ArrowRight,
-  Loader2,
 } from 'lucide-react';
 import { useGamba } from '@/context/GambaContext';
 import { PRICING_PLANS, formatXAF } from '@/lib/mockData';
@@ -27,14 +24,11 @@ export default function MobileMoneyModal() {
   const [operator, setOperator] = useState<MobileMoneyOperator>('airtel');
   const [phoneNumber, setPhoneNumber] = useState('077 45 12 89');
   const [step, setStep] = useState<'form' | 'ussd' | 'success'>('form');
-  const [ussdTimer, setUssdTimer] = useState(3);
   const [txReference, setTxReference] = useState('');
 
-  // Réinitialiser l'état à chaque ouverture du popup
   useEffect(() => {
     if (paymentModalState.isOpen) {
       setStep('form');
-      setUssdTimer(3);
     }
   }, [paymentModalState.isOpen, paymentModalState.planId]);
 
@@ -47,9 +41,8 @@ export default function MobileMoneyModal() {
     ? listings.find((l) => l.id === paymentModalState.targetListingId)
     : undefined;
 
-  // Code USSD officiel Gabon selon l'opérateur
   const ussdCode = operator === 'airtel' ? '*150#' : '*555#';
-  const operatorName = operator === 'airtel' ? 'Airtel Money Gabon' : 'Moov Money (Moov Africa)';
+  const operatorName = operator === 'airtel' ? 'Airtel Money Gabon' : 'Moov Money Africa';
 
   const handleInitiatePayment = (e: React.FormEvent) => {
     e.preventDefault();
@@ -69,108 +62,194 @@ export default function MobileMoneyModal() {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4 overflow-y-auto">
-      <div className="relative w-full max-w-md rounded-2xl bg-white shadow-2xl border border-gray-100 overflow-hidden my-auto animate-in fade-in zoom-in-95 duration-200">
-        {/* En-tête CinetPay / Mobile Money Gabon */}
-        <div className="bg-gradient-to-r from-gray-900 via-gray-800 to-black px-5 py-4 text-white flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gamba-orange text-white font-black text-sm shadow">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-4 overflow-y-auto">
+      <div className="relative w-full max-w-md rounded-3xl bg-white shadow-2xl border border-slate-200 overflow-hidden my-auto">
+        {/* En-tête CinetPay Gabon */}
+        <div className="bg-gradient-to-r from-[#0B192C] via-blue-950 to-blue-900 px-6 py-4 text-white flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-sky-400 text-white font-black text-sm shadow-md">
               CP
             </div>
             <div>
-              <div className="flex items-center gap-1.5">
-                <span className="font-bold text-sm tracking-wide">CinetPay Gabon</span>
-                <span className="rounded-full bg-emerald-500/20 px-2 py-0.5 text-[10px] font-semibold text-emerald-300 border border-emerald-500/30">
-                  SÉCURISÉ
+              <div className="flex items-center gap-2">
+                <span className="font-extrabold text-sm tracking-wide">CinetPay Gabon</span>
+                <span className="rounded-full bg-emerald-500/20 px-2 py-0.5 text-[10px] font-bold text-emerald-300 border border-emerald-400/30">
+                  🔒 SSL SÉCURISÉ
                 </span>
               </div>
-              <p className="text-xs text-gray-300">Guichet Airtel Money &amp; Moov Money</p>
+              <p className="text-[11px] text-sky-200">Paiement Mobile Money Instantané • Gamba</p>
             </div>
           </div>
           <button
             onClick={closePaymentModal}
-            className="rounded-lg p-1.5 text-gray-400 hover:bg-white/10 hover:text-white transition"
+            className="rounded-xl p-1.5 text-slate-300 hover:bg-white/10 hover:text-white transition"
             aria-label="Fermer"
           >
             <X className="h-5 w-5" />
           </button>
         </div>
 
-        {/* Résumé de la commande */}
-        <div className="bg-orange-50/80 border-b border-orange-100 px-5 py-3 flex items-center justify-between">
+        {/* Bandeau Récapitulatif de la Commande */}
+        <div className="bg-slate-50 border-b border-slate-200/80 px-6 py-3.5 flex items-center justify-between">
           <div>
-            <span className="text-[11px] font-bold uppercase tracking-wider text-orange-700 block">
-              {selectedPlan.name} ({selectedPlan.durationDays} jours)
+            <span className="text-[11px] font-extrabold uppercase tracking-wider text-blue-700 block">
+              {selectedPlan.name} ({selectedPlan.durationDays} JOURS)
             </span>
-            <p className="text-xs text-gray-600 line-clamp-1">
+            <p className="text-xs text-slate-500 font-medium line-clamp-1">
               {targetListing
                 ? `Boost : ${targetListing.title}`
-                : 'Activation immédiate sur votre compte vendeur'}
+                : 'Activation immédiate sur votre compte'}
             </p>
           </div>
           <div className="text-right">
-            <span className="text-lg font-black text-gray-900">
+            <span className="text-[10px] font-bold uppercase text-slate-400 block">
+              Total à payer
+            </span>
+            <span className="text-lg font-black text-slate-900">
               {formatXAF(selectedPlan.priceXAF)}
             </span>
           </div>
         </div>
 
-        {/* ÉTAPE 1 : CHOIX OPÉRATEUR ET NUMÉRO GABON */}
+        {/* ÉTAPE 1 : FORMULAIRE DESIGN AVEC VRAIS LOGOS AIRTEL MONEY & MOOV MONEY */}
         {step === 'form' && (
-          <form onSubmit={handleInitiatePayment} className="p-5 space-y-4">
+          <form onSubmit={handleInitiatePayment} className="p-6 space-y-5">
             <div>
-              <label className="block text-xs font-bold uppercase text-gray-700 mb-2">
-                1. Choisissez votre opérateur Mobile Money :
+              <label className="block text-xs font-extrabold uppercase tracking-wider text-slate-700 mb-2.5">
+                1. Sélectionnez votre opérateur Mobile Money :
               </label>
-              <div className="grid grid-cols-2 gap-3">
-                {/* Bouton Airtel Money */}
+              <div className="grid grid-cols-2 gap-3.5">
+                {/* Carte Opérateur AIRTEL MONEY GABON avec Logo Officiel SVG */}
                 <button
                   type="button"
                   onClick={() => {
                     setOperator('airtel');
                     if (phoneNumber.startsWith('06')) setPhoneNumber('077 45 12 89');
                   }}
-                  className={`flex flex-col items-center justify-center rounded-xl p-3 border-2 transition ${
+                  className={`relative flex flex-col items-center justify-center rounded-2xl p-4 border-2 transition ${
                     operator === 'airtel'
-                      ? 'border-red-600 bg-red-50/70 shadow-sm'
-                      : 'border-gray-200 hover:border-gray-300 bg-white'
+                      ? 'border-[#E60000] bg-red-50/50 shadow-md'
+                      : 'border-slate-200 bg-white hover:border-red-300'
                   }`}
                 >
-                  <div className="flex items-center gap-1.5">
-                    <span className="h-3 w-3 rounded-full bg-red-600 inline-block" />
-                    <span className="font-black text-sm text-red-600">Airtel Money</span>
+                  {operator === 'airtel' && (
+                    <div className="absolute top-2.5 right-2.5 h-5 w-5 rounded-full bg-[#E60000] text-white flex items-center justify-center text-[11px] font-black shadow">
+                      ✓
+                    </div>
+                  )}
+                  <div className="h-12 w-28 rounded-xl bg-[#E60000] flex flex-col items-center justify-center px-3 py-1.5 shadow-sm mb-2">
+                    <svg viewBox="0 0 140 42" className="w-full h-full">
+                      <path
+                        d="M18 8 C10 8, 6 15, 10 22 C14 28, 24 26, 26 18 C28 12, 24 8, 18 8 Z"
+                        fill="none"
+                        stroke="#FFFFFF"
+                        strokeWidth="3.5"
+                        strokeLinecap="round"
+                      />
+                      <text
+                        x="76"
+                        y="21"
+                        fontFamily="Arial, sans-serif"
+                        fontSize="17"
+                        fontWeight="900"
+                        fill="#FFFFFF"
+                        textAnchor="middle"
+                        letterSpacing="0.5"
+                      >
+                        airtel
+                      </text>
+                      <text
+                        x="76"
+                        y="34"
+                        fontFamily="Arial, sans-serif"
+                        fontSize="10"
+                        fontWeight="800"
+                        fill="#FFE4E6"
+                        textAnchor="middle"
+                        letterSpacing="1.5"
+                      >
+                        MONEY
+                      </text>
+                    </svg>
                   </div>
-                  <span className="text-[11px] text-gray-500 mt-1">Numéros 074 / 077 / 076</span>
+                  <span className="font-extrabold text-xs text-slate-900">Airtel Money</span>
+                  <span className="text-[10px] font-semibold text-slate-500 mt-0.5">
+                    074 • 077 • 076 (*150#)
+                  </span>
                 </button>
 
-                {/* Bouton Moov Money */}
+                {/* Carte Opérateur MOOV MONEY GABON avec Logo Officiel SVG */}
                 <button
                   type="button"
                   onClick={() => {
                     setOperator('moov');
                     if (phoneNumber.startsWith('07')) setPhoneNumber('066 89 23 41');
                   }}
-                  className={`flex flex-col items-center justify-center rounded-xl p-3 border-2 transition ${
+                  className={`relative flex flex-col items-center justify-center rounded-2xl p-4 border-2 transition ${
                     operator === 'moov'
-                      ? 'border-blue-600 bg-blue-50/70 shadow-sm'
-                      : 'border-gray-200 hover:border-gray-300 bg-white'
+                      ? 'border-[#0055A5] bg-blue-50/50 shadow-md'
+                      : 'border-slate-200 bg-white hover:border-blue-400'
                   }`}
                 >
-                  <div className="flex items-center gap-1.5">
-                    <span className="h-3 w-3 rounded-full bg-blue-600 inline-block" />
-                    <span className="font-black text-sm text-blue-700">Moov Money</span>
+                  {operator === 'moov' && (
+                    <div className="absolute top-2.5 right-2.5 h-5 w-5 rounded-full bg-[#0055A5] text-white flex items-center justify-center text-[11px] font-black shadow">
+                      ✓
+                    </div>
+                  )}
+                  <div className="h-12 w-28 rounded-xl bg-gradient-to-r from-[#0055A5] to-[#003B73] flex flex-col items-center justify-center px-3 py-1.5 shadow-sm mb-2 relative overflow-hidden">
+                    <div className="absolute -bottom-2 -right-2 h-7 w-7 rounded-full bg-[#FF6B00]" />
+                    <svg viewBox="0 0 140 42" className="w-full h-full relative z-10">
+                      <text
+                        x="68"
+                        y="20"
+                        fontFamily="Arial, sans-serif"
+                        fontSize="16"
+                        fontWeight="900"
+                        fill="#FFFFFF"
+                        textAnchor="middle"
+                      >
+                        Moov
+                      </text>
+                      <text
+                        x="68"
+                        y="34"
+                        fontFamily="Arial, sans-serif"
+                        fontSize="10"
+                        fontWeight="800"
+                        fill="#FF9E44"
+                        textAnchor="middle"
+                        letterSpacing="1.2"
+                      >
+                        MONEY
+                      </text>
+                    </svg>
                   </div>
-                  <span className="text-[11px] text-gray-500 mt-1">Numéros 062 / 066 / 065</span>
+                  <span className="font-extrabold text-xs text-slate-900">Moov Money</span>
+                  <span className="text-[10px] font-semibold text-slate-500 mt-0.5">
+                    062 • 066 • 065 (*555#)
+                  </span>
                 </button>
               </div>
             </div>
 
+            {/* Champ Numéro de téléphone avec indicateur d'opérateur dynamique */}
             <div>
-              <label className="block text-xs font-bold uppercase text-gray-700 mb-1.5">
-                2. Numéro de téléphone {operator === 'airtel' ? 'Airtel' : 'Moov'} (Gabon) :
-              </label>
-              <div className="relative flex items-center">
-                <span className="inline-flex items-center gap-1 rounded-l-xl border border-r-0 border-gray-300 bg-gray-100 px-3 py-3 text-sm font-bold text-gray-700">
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="text-xs font-extrabold uppercase tracking-wider text-slate-700">
+                  2. Numéro de téléphone à débiter :
+                </label>
+                <span
+                  className={`rounded-full px-2.5 py-0.5 text-[10px] font-extrabold ${
+                    operator === 'airtel'
+                      ? 'bg-red-100 text-[#E60000]'
+                      : 'bg-blue-100 text-[#0055A5]'
+                  }`}
+                >
+                  {operatorName}
+                </span>
+              </div>
+              <div className="flex rounded-2xl shadow-sm">
+                <span className="inline-flex items-center gap-1.5 rounded-l-2xl border border-r-0 border-slate-300 bg-slate-100 px-3.5 py-3.5 text-sm font-extrabold text-slate-700">
                   🇬🇦 +241
                 </span>
                 <input
@@ -179,22 +258,26 @@ export default function MobileMoneyModal() {
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
                   placeholder={operator === 'airtel' ? '077 00 00 00' : '066 00 00 00'}
-                  className="w-full rounded-r-xl border border-gray-300 px-3.5 py-3 text-sm font-semibold text-gray-900 focus:border-gamba-orange focus:outline-none"
+                  className="w-full rounded-r-2xl border border-slate-300 px-4 py-3.5 text-base font-bold text-slate-900 focus:border-blue-600 focus:outline-none"
                 />
               </div>
-              <p className="mt-1.5 text-[11px] text-gray-500 flex items-center gap-1">
-                <Lock className="h-3 w-3 text-emerald-600" />
-                Aucun frais caché. Montant exact débité :{' '}
-                <strong>{formatXAF(selectedPlan.priceXAF)}</strong>
+              <p className="mt-1.5 text-[11px] text-slate-500 flex items-center gap-1">
+                <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" />
+                <span>Aucun frais supplémentaire. Activation automatique après confirmation.</span>
               </p>
             </div>
 
             <button
               type="submit"
-              className="w-full flex items-center justify-center gap-2 rounded-xl bg-gamba-orange hover:bg-gamba-darkOrange text-white font-black py-3.5 px-4 shadow-lg shadow-orange-500/25 transition text-sm"
+              className={`w-full flex items-center justify-center gap-2 rounded-2xl text-white font-extrabold py-4 px-5 shadow-lg transition text-sm ${
+                operator === 'airtel'
+                  ? 'bg-[#E60000] hover:opacity-95 shadow-red-600/25'
+                  : 'bg-[#0055A5] hover:opacity-95 shadow-blue-600/25'
+              }`}
             >
-              <Smartphone className="h-4 w-4" />
-              Continuer vers le paiement ({formatXAF(selectedPlan.priceXAF)})
+              <span>
+                Payer avec {operator === 'airtel' ? 'Airtel Money (*150#)' : 'Moov Money (*555#)'}
+              </span>
               <ArrowRight className="h-4 w-4" />
             </button>
           </form>
@@ -203,41 +286,39 @@ export default function MobileMoneyModal() {
         {/* ÉTAPE 2 : POPUP USSD "Paiement Mobile Money : Composez *150# ou *555# pour payer" */}
         {step === 'ussd' && (
           <div className="p-6 text-center space-y-4">
-            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-orange-100 text-gamba-orange animate-pulse">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-50 border border-blue-200 text-blue-600 animate-pulse">
               <Phone className="h-8 w-8" />
             </div>
 
             <div className="space-y-1">
-              <span className="inline-block rounded-full bg-amber-100 text-amber-800 text-xs font-extrabold px-3 py-1">
-                VALIDATION MOBILE MONEY EN COURS
+              <span className="inline-block rounded-full bg-blue-100 text-blue-800 text-xs font-extrabold px-3 py-1">
+                ATTENTE DE VALIDATION SUR VOTRE TÉLÉPHONE
               </span>
-              <h3 className="text-lg font-black text-gray-900 pt-1">
+              <h3 className="text-lg font-black text-slate-900 pt-1">
                 Paiement Mobile Money : Composez{' '}
-                <span className="text-gamba-orange underline">{ussdCode}</span> pour payer
+                <span className="text-blue-600 underline">{ussdCode}</span> pour payer
               </h3>
-              <p className="text-xs text-gray-600">
-                Une demande Push CinetPay de <strong>{formatXAF(selectedPlan.priceXAF)}</strong> a été
-                envoyée sur votre numéro <strong>+241 {phoneNumber}</strong> ({operatorName}).
+              <p className="text-xs text-slate-600">
+                Demande Push CinetPay de <strong>{formatXAF(selectedPlan.priceXAF)}</strong> envoyée
+                sur le <strong>+241 {phoneNumber}</strong> ({operatorName}).
               </p>
             </div>
 
-            {/* Boîte d'instruction USSD claire pour Gamba */}
-            <div className="rounded-xl bg-gray-900 text-white p-4 text-left space-y-2 border border-gray-800">
-              <p className="text-xs text-gray-300 font-medium">
-                📱 <strong>Instructions sur votre téléphone :</strong>
-              </p>
-              <ol className="text-xs text-gray-200 space-y-1.5 list-decimal list-inside">
+            <div className="rounded-2xl bg-[#0B192C] text-white p-4 text-left space-y-2 border border-blue-900">
+              <p className="text-xs text-sky-300 font-bold">Instructions simples :</p>
+              <ol className="text-xs text-slate-200 space-y-1.5 list-decimal list-inside">
                 <li>
-                  Validez le message automatique affiché sur votre écran ou composez{' '}
-                  <span className="rounded bg-gamba-orange px-1.5 py-0.5 font-mono font-bold text-white">
+                  Composez{' '}
+                  <span className="rounded bg-blue-600 px-2 py-0.5 font-mono font-bold text-white">
                     {ussdCode}
-                  </span>
+                  </span>{' '}
+                  ou validez la fenêtre Push CinetPay sur votre téléphone.
                 </li>
                 <li>
-                  Entrez votre code secret <strong>{operatorName}</strong> pour confirmer{' '}
+                  Saisissez votre code PIN secret <strong>{operatorName}</strong> pour valider{' '}
                   <strong>{formatXAF(selectedPlan.priceXAF)}</strong>.
                 </li>
-                <li>Cliquez sur le bouton vert ci-dessous dès que c&apos;est fait.</li>
+                <li>Cliquez sur le bouton vert ci-dessous dès que c&apos;est validé !</li>
               </ol>
             </div>
 
@@ -245,17 +326,17 @@ export default function MobileMoneyModal() {
               <button
                 type="button"
                 onClick={handleConfirmUssdPayment}
-                className="w-full flex items-center justify-center gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black py-3.5 px-4 shadow-lg shadow-emerald-600/25 transition text-sm"
+                className="w-full flex items-center justify-center gap-2 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-4 px-4 shadow-lg shadow-emerald-600/25 transition text-sm"
               >
                 <CheckCircle2 className="h-5 w-5" />
-                J&apos;ai validé le paiement sur mon téléphone
+                <span>J&apos;ai validé le paiement sur mon téléphone</span>
               </button>
               <button
                 type="button"
                 onClick={() => setStep('form')}
-                className="text-xs font-semibold text-gray-500 hover:text-gray-800 py-1.5"
+                className="text-xs font-semibold text-slate-500 hover:text-slate-800 py-1"
               >
-                ← Changer de numéro ou d&apos;opérateur
+                ← Changer d&apos;opérateur ou de numéro
               </button>
             </div>
           </div>
@@ -272,51 +353,39 @@ export default function MobileMoneyModal() {
               <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-800">
                 <Sparkles className="h-3.5 w-3.5" /> PAIEMENT CONFIRMÉ
               </span>
-              <h3 className="text-xl font-black text-gray-900 mt-2">
-                Félicitations ! Votre annonce est boostée 🚀
+              <h3 className="text-xl font-black text-slate-900 mt-2">
+                Paiement confirmé ! Annonce boostée 🚀
               </h3>
-              <p className="text-xs text-gray-600 mt-1">
+              <p className="text-xs text-slate-600 mt-1">
                 Votre paiement <strong>{operatorName}</strong> de{' '}
                 <strong>{formatXAF(selectedPlan.priceXAF)}</strong> a été validé avec succès.
               </p>
             </div>
 
-            <div className="rounded-xl bg-gray-50 p-3.5 border border-gray-200 text-left text-xs space-y-1.5">
+            <div className="rounded-2xl bg-slate-50 p-3.5 border border-slate-200 text-left text-xs space-y-1.5">
               <div className="flex justify-between">
-                <span className="text-gray-500">Référence CinetPay :</span>
-                <span className="font-mono font-bold text-gray-900">{txReference}</span>
+                <span className="text-slate-500">Référence CinetPay :</span>
+                <span className="font-mono font-bold text-slate-900">{txReference}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-500">Offre activée :</span>
-                <span className="font-bold text-gamba-orange">{selectedPlan.name}</span>
+                <span className="text-slate-500">Offre activée :</span>
+                <span className="font-bold text-blue-600">{selectedPlan.name}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-500">Durée de visibilité :</span>
-                <span className="font-bold text-gray-900">{selectedPlan.durationDays} jours</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-500">Statut :</span>
-                <span className="font-bold text-emerald-600">En haut des résultats ✓</span>
+                <span className="text-slate-500">Durée de visibilité :</span>
+                <span className="font-bold text-slate-900">{selectedPlan.durationDays} jours</span>
               </div>
             </div>
 
             <button
               type="button"
               onClick={closePaymentModal}
-              className="w-full rounded-xl bg-gray-900 hover:bg-black text-white font-bold py-3.5 px-4 text-sm transition"
+              className="w-full rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold py-3.5 px-4 text-sm transition shadow-md"
             >
-              Parfait, voir mes annonces boostées
+              Voir mes annonces boostées
             </button>
           </div>
         )}
-
-        {/* Pied de popup rassurant */}
-        <div className="bg-gray-50 px-5 py-2.5 border-t border-gray-100 flex items-center justify-between text-[11px] text-gray-500">
-          <span className="flex items-center gap-1">
-            <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" /> Support Gamba 7j/7
-          </span>
-          <span>Airtel Money • Moov Money</span>
-        </div>
       </div>
     </div>
   );
