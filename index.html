@@ -109,29 +109,45 @@
       </button>
 
       <!-- Navigation Desktop -->
-      <nav class="hidden md:flex items-center gap-1.5">
-        <button onclick="navigateTo('home')" id="nav-home" class="flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold text-blue-700 bg-blue-50/80 transition">
+      <nav class="hidden lg:flex items-center gap-1">
+        <button onclick="navigateTo('home')" id="nav-home" class="flex items-center gap-1.5 rounded-xl px-3.5 py-2.5 text-xs xl:text-sm font-bold text-blue-700 bg-blue-50/80 transition">
           <i data-lucide="layout-grid" class="w-4 h-4"></i>
-          <span>Explorer Gamba</span>
+          <span>Accueil</span>
         </button>
-        <button onclick="navigateTo('tarifs')" id="nav-tarifs" class="flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-600 hover:text-blue-700 hover:bg-slate-100/80 transition">
+        <button onclick="openBillingView('invoices')" id="nav-facturation" class="flex items-center gap-1.5 rounded-xl px-3.5 py-2.5 text-xs xl:text-sm font-bold text-slate-700 hover:text-blue-700 hover:bg-slate-100/80 transition">
+          <i data-lucide="file-spreadsheet" class="w-4 h-4 text-blue-600"></i>
+          <span>Dashboard &amp; Factures</span>
+        </button>
+        <button onclick="openBillingView('clients')" id="nav-clients" class="flex items-center gap-1.5 rounded-xl px-3.5 py-2.5 text-xs xl:text-sm font-bold text-slate-700 hover:text-blue-700 hover:bg-slate-100/80 transition">
+          <i data-lucide="users" class="w-4 h-4 text-blue-600"></i>
+          <span>Gestion Clients</span>
+        </button>
+        <button onclick="navigateTo('mes-annonces')" id="nav-mes-annonces" class="flex items-center gap-1.5 rounded-xl px-3.5 py-2.5 text-xs xl:text-sm font-bold text-slate-700 hover:text-blue-700 hover:bg-slate-100/80 transition">
+          <i data-lucide="briefcase" class="w-4 h-4 text-blue-600"></i>
+          <span>Mes Annonces</span>
+        </button>
+        <button onclick="navigateTo('tarifs')" id="nav-tarifs" class="flex items-center gap-1.5 rounded-xl px-3.5 py-2.5 text-xs xl:text-sm font-bold text-slate-700 hover:text-blue-700 hover:bg-slate-100/80 transition">
           <i data-lucide="award" class="w-4 h-4 text-blue-600"></i>
-          <span>Tarifs &amp; Visibilité</span>
+          <span>Tarifs</span>
         </button>
-        <button onclick="navigateTo('mes-annonces')" id="nav-mes-annonces" class="flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-600 hover:text-blue-700 hover:bg-slate-100/80 transition">
-          <i data-lucide="briefcase" class="w-4 h-4"></i>
-          <span>Espace Vendeur</span>
-        </button>
-        <button onclick="navigateTo('publier')" class="flex items-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm px-5 py-2.5 shadow-md shadow-blue-600/20 transition ml-2">
+        <button onclick="navigateTo('publier')" class="flex items-center gap-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs xl:text-sm px-4 py-2.5 shadow-md shadow-blue-600/20 transition ml-1">
           <i data-lucide="plus-circle" class="w-4 h-4"></i>
-          <span>Publier une annonce</span>
+          <span>Publier</span>
         </button>
       </nav>
 
       <!-- Bouton rapide Mobile -->
-      <div class="flex md:hidden items-center gap-2">
-        <button onclick="navigateTo('publier')" class="flex items-center gap-1.5 rounded-xl bg-blue-600 active:bg-blue-700 text-white font-bold text-xs px-3.5 py-2.5 shadow-md shadow-blue-600/20">
-          <i data-lucide="plus" class="w-4 h-4"></i>
+      <div class="flex lg:hidden items-center gap-1.5">
+        <button onclick="openBillingView('invoices')" class="flex items-center gap-1 rounded-xl bg-blue-50 border border-blue-200 text-blue-700 font-extrabold text-[11px] px-2.5 py-2">
+          <i data-lucide="file-spreadsheet" class="w-3.5 h-3.5"></i>
+          <span>Dashboard</span>
+        </button>
+        <button onclick="openBillingView('clients')" class="flex items-center gap-1 rounded-xl bg-slate-100 border border-slate-200 text-slate-800 font-extrabold text-[11px] px-2.5 py-2">
+          <i data-lucide="users" class="w-3.5 h-3.5 text-blue-600"></i>
+          <span>Clients</span>
+        </button>
+        <button onclick="navigateTo('publier')" class="flex items-center gap-1 rounded-xl bg-blue-600 active:bg-blue-700 text-white font-bold text-[11px] px-3 py-2 shadow-md shadow-blue-600/20">
+          <i data-lucide="plus" class="w-3.5 h-3.5"></i>
           <span>Publier</span>
         </button>
       </div>
@@ -277,8 +293,40 @@
         </div>
       </section>
 
-      <!-- 2. BARRE DES 7 CATÉGORIES (STYLE MODERNE BLEU & BLANC) -->
-      <section class="max-w-7xl mx-auto px-4 -mt-14 relative z-20">
+      <!-- 1B. BANNIÈRE ACCÈS DIRECT : DASHBOARD FACTURATION (4 STATS) & GESTION CLIENTS -->
+      <section class="max-w-7xl mx-auto px-4 -mt-14 relative z-20 space-y-5">
+        <div class="rounded-3xl bg-gradient-to-r from-[#0B192C] via-blue-950 to-blue-900 text-white p-5 sm:p-6 shadow-xl border border-blue-700/50 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div class="space-y-1">
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="inline-flex items-center gap-1 rounded-full bg-emerald-500/20 border border-emerald-400/30 px-2.5 py-0.5 text-[10px] font-extrabold text-emerald-300 uppercase">
+                NOUVEAU • MODULE ERP COMMERÇANTS GAMBA (RLS SÉCURISÉ)
+              </span>
+              <span class="rounded-full bg-blue-500/20 border border-sky-400/30 px-2.5 py-0.5 text-[10px] font-bold text-sky-200 uppercase">
+                TVA 18% FCFA
+              </span>
+            </div>
+            <h2 class="text-lg sm:text-xl font-heading font-black text-white">
+              📊 Dashboard Facturation (4 Stats), Factures TVA 18% &amp; Gestion Clients
+            </h2>
+            <p class="text-xs text-sky-200/90">
+              Créez vos factures avec lignes dynamiques en FCFA, suivez votre chiffre d'affaires TTC, votre TVA 18% et gérez votre fichier clients à Gamba.
+            </p>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2.5 shrink-0">
+            <button onclick="openBillingView('invoices')" class="inline-flex items-center gap-2 rounded-2xl bg-blue-500 hover:bg-blue-400 text-white font-extrabold text-xs sm:text-sm px-4 py-3 shadow-lg shadow-blue-500/30 transition">
+              <span>📊 Dashboard &amp; Factures</span>
+            </button>
+            <button onclick="openBillingView('create')" class="inline-flex items-center gap-2 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs sm:text-sm px-4 py-3 shadow-lg shadow-emerald-600/30 transition">
+              <span>➕ Créer Facture (TVA 18%)</span>
+            </button>
+            <button onclick="openBillingView('clients')" class="inline-flex items-center gap-2 rounded-2xl bg-white text-slate-900 hover:bg-sky-50 font-extrabold text-xs sm:text-sm px-4 py-3 shadow-md transition">
+              <span>👥 Gestion Clients</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 2. BARRE DES 7 CATÉGORIES (STYLE MODERNE BLEU & BLANC) -->
         <div class="bg-white rounded-3xl p-4 sm:p-6 shadow-xl shadow-slate-900/5 border border-slate-200/80">
           <div class="flex items-center justify-between mb-4">
             <div class="flex items-center gap-2">
@@ -705,6 +753,9 @@
     <!-- ==================== VUE 5 : TABLEAU DE BORD VENDEUR (/mes-annonces) ==================== -->
     <div id="view-mes-annonces" class="hidden max-w-7xl mx-auto px-4 py-8 space-y-8"></div>
 
+    <!-- ==================== VUE 6 : MODULE FACTURATION & GESTION CLIENTS (/facturation) ==================== -->
+    <div id="view-facturation" class="hidden max-w-7xl mx-auto px-4 py-8 space-y-8"></div>
+
   </main>
 
   <!-- ====================================================================
@@ -1008,24 +1059,32 @@
   <!-- ====================================================================
        BARRE DE NAVIGATION BASSE ANDROID / MOBILE RESPONSIVE (BLEU & BLANC)
        ==================================================================== -->
-  <nav class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 shadow-[0_-4px_20px_rgba(15,23,42,0.08)] px-2 py-1.5 flex items-center justify-around">
-    <button onclick="navigateTo('home')" class="flex flex-col items-center justify-center py-1 px-2 text-[11px] font-bold text-blue-600">
-      <i data-lucide="layout-grid" class="w-5 h-5"></i>
+  <nav class="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 shadow-[0_-4px_20px_rgba(15,23,42,0.08)] px-1 py-1.5 flex items-center justify-around">
+    <button onclick="navigateTo('home')" class="flex flex-col items-center justify-center py-1 px-1.5 text-[10px] font-bold text-blue-600">
+      <i data-lucide="layout-grid" class="w-4 h-4"></i>
       <span>Accueil</span>
     </button>
-    <button onclick="navigateTo('publier')" class="flex flex-col items-center justify-center py-1 px-2 text-[11px] font-bold text-blue-700">
-      <div class="bg-blue-600 text-white rounded-2xl p-2.5 -mt-5 shadow-lg shadow-blue-600/30 border-2 border-white">
-        <i data-lucide="plus" class="w-5 h-5"></i>
+    <button onclick="openBillingView('invoices')" class="flex flex-col items-center justify-center py-1 px-1.5 text-[10px] font-bold text-slate-700">
+      <i data-lucide="file-spreadsheet" class="w-4 h-4 text-blue-600"></i>
+      <span>Dashboard</span>
+    </button>
+    <button onclick="openBillingView('clients')" class="flex flex-col items-center justify-center py-1 px-1.5 text-[10px] font-bold text-slate-700">
+      <i data-lucide="users" class="w-4 h-4 text-blue-600"></i>
+      <span>Clients</span>
+    </button>
+    <button onclick="navigateTo('publier')" class="flex flex-col items-center justify-center py-1 px-1.5 text-[10px] font-bold text-blue-700">
+      <div class="bg-blue-600 text-white rounded-2xl p-2 -mt-4 shadow-lg shadow-blue-600/30 border-2 border-white">
+        <i data-lucide="plus" class="w-4 h-4"></i>
       </div>
       <span>Publier</span>
     </button>
-    <button onclick="navigateTo('tarifs')" class="flex flex-col items-center justify-center py-1 px-2 text-[11px] font-bold text-slate-600">
-      <i data-lucide="award" class="w-5 h-5 text-blue-600"></i>
-      <span>Tarifs</span>
+    <button onclick="navigateTo('mes-annonces')" class="flex flex-col items-center justify-center py-1 px-1.5 text-[10px] font-bold text-slate-600">
+      <i data-lucide="briefcase" class="w-4 h-4"></i>
+      <span>Annonces</span>
     </button>
-    <button onclick="navigateTo('mes-annonces')" class="flex flex-col items-center justify-center py-1 px-2 text-[11px] font-bold text-slate-600">
-      <i data-lucide="briefcase" class="w-5 h-5"></i>
-      <span>Mes Annonces</span>
+    <button onclick="navigateTo('tarifs')" class="flex flex-col items-center justify-center py-1 px-1.5 text-[10px] font-bold text-slate-600">
+      <i data-lucide="award" class="w-4 h-4 text-blue-600"></i>
+      <span>Tarifs</span>
     </button>
   </nav>
 
@@ -1311,17 +1370,25 @@
     }
 
     function navigateTo(view, listingId = null) {
-      ['home', 'detail', 'publier', 'tarifs', 'mes-annonces'].forEach(v => {
-        document.getElementById('view-' + v).classList.add('hidden');
+      ['home', 'detail', 'publier', 'tarifs', 'mes-annonces', 'facturation'].forEach(v => {
+        const el = document.getElementById('view-' + v);
+        if (el) el.classList.add('hidden');
       });
-      document.getElementById('view-' + view).classList.remove('hidden');
+      const targetEl = document.getElementById('view-' + view);
+      if (targetEl) targetEl.classList.remove('hidden');
       window.scrollTo({ top: 0, behavior: 'smooth' });
 
       if (view === 'home') renderHomeListings();
       if (view === 'detail' && listingId) renderDetailView(listingId);
       if (view === 'publier') renderFormPhotos();
       if (view === 'mes-annonces') renderDashboard();
+      if (view === 'facturation') renderBillingModule();
       lucide.createIcons();
+    }
+
+    function openBillingView(subTab = 'invoices') {
+      billingState.activeTab = subTab;
+      navigateTo('facturation');
     }
 
     function toggleBudgetDrawer() {
@@ -1865,6 +1932,674 @@
       document.getElementById('modal-step-ussd').classList.add('hidden');
       document.getElementById('modal-step-success').classList.remove('hidden');
       renderHomeListings();
+    }
+
+    // =========================================================================
+    // MODULE COMPLET FACTURATION TVA 18% FCFA + GESTION CLIENTS + RLS SUPABASE
+    // =========================================================================
+    const DEFAULT_BILLING_CLIENTS = [
+      {
+        id: 'cli-1',
+        userId: 'usr-gamba-pro-01',
+        name: 'M. Jean-Bosco Ndong (Logistique)',
+        company: 'Assala Gabon — Base Yenzi Gamba',
+        phone: '+241 077 91 02 34',
+        email: 'logistique.gamba@assalaenergy.com',
+        quartier: 'Camp Yenzi',
+        nif: 'NIF: 092341-A / RCCM: LBV-01',
+      },
+      {
+        id: 'cli-2',
+        userId: 'usr-gamba-pro-01',
+        name: 'Mme Clarisse Moussavou',
+        company: 'Restaurant Chez Clarisse & Traiteur',
+        phone: '+241 066 89 23 41',
+        email: 'clarisse.traiteur@gamba.ga',
+        quartier: 'Plaine 2',
+        nif: 'NIF: 445812-C',
+      },
+      {
+        id: 'cli-3',
+        userId: 'usr-gamba-pro-01',
+        name: 'M. Patrick Obiang',
+        company: 'Établissement Obiang & Fils BTP',
+        phone: '+241 074 55 90 11',
+        email: 'contact@obiang-btp.ga',
+        quartier: 'Le Couloir',
+        nif: 'NIF: 883102-B',
+      },
+      {
+        id: 'cli-4',
+        userId: 'usr-gamba-pro-01',
+        name: 'Mme Sylvie Koumba',
+        company: 'Coopérative Pêcherie de Mayonami',
+        phone: '+241 062 40 18 90',
+        email: 'pecherie.mayonami@gamba.ga',
+        quartier: 'Mayonami',
+        nif: 'AGRÉMENT COOP-NDG-2024',
+      }
+    ];
+
+    const DEFAULT_BILLING_INVOICES = [
+      {
+        id: 'inv-101',
+        userId: 'usr-gamba-pro-01',
+        invoiceNumber: 'FAC-2026-001',
+        clientId: 'cli-1',
+        clientName: 'Assala Gabon — Base Yenzi (M. Jean-Bosco Ndong)',
+        clientPhone: '+241 077 91 02 34',
+        clientQuartier: 'Camp Yenzi',
+        clientNif: 'NIF: 092341-A / RCCM: LBV-01',
+        issueDate: '2026-10-15',
+        dueDate: '2026-10-30',
+        status: 'PAYEE',
+        paymentMethod: 'Airtel Money',
+        applyTva: true,
+        items: [
+          { id: 'l-1', description: 'Hébergement Chambre Climatisée VIP (5 nuitées mission)', quantity: 5, unitPrice: 25000 },
+          { id: 'l-2', description: 'Forfait Restauration complète (Poisson braisé & boissons)', quantity: 5, unitPrice: 7000 }
+        ],
+        subtotalHt: 160000,
+        tvaAmount: 28800,
+        totalTtc: 188800,
+        notes: 'Facture réglée par Airtel Money (*150#). Merci pour votre confiance à Gamba.'
+      },
+      {
+        id: 'inv-102',
+        userId: 'usr-gamba-pro-01',
+        invoiceNumber: 'FAC-2026-002',
+        clientId: 'cli-2',
+        clientName: 'Restaurant Chez Clarisse (Mme Clarisse Moussavou)',
+        clientPhone: '+241 066 89 23 41',
+        clientQuartier: 'Plaine 2',
+        clientNif: 'NIF: 445812-C',
+        issueDate: '2026-10-22',
+        dueDate: '2026-11-05',
+        status: 'EN_ATTENTE',
+        paymentMethod: 'Moov Money',
+        applyTva: true,
+        items: [
+          { id: 'l-3', description: 'Location Salle Événementielle Climatisée (Week-end)', quantity: 1, unitPrice: 75000 },
+          { id: 'l-4', description: 'Forfait Sonorisation & Groupe Électrogène de secours', quantity: 1, unitPrice: 25000 }
+        ],
+        subtotalHt: 100000,
+        tvaAmount: 18000,
+        totalTtc: 118000,
+        notes: 'Payable par Moov Money (*555#) ou Airtel Money (*150#) avant échéance.'
+      },
+      {
+        id: 'inv-103',
+        userId: 'usr-gamba-pro-01',
+        invoiceNumber: 'FAC-2026-003',
+        clientId: 'cli-3',
+        clientName: 'Établissement Obiang & Fils (M. Patrick Obiang)',
+        clientPhone: '+241 074 55 90 11',
+        clientQuartier: 'Le Couloir',
+        clientNif: 'NIF: 883102-B',
+        issueDate: '2026-10-05',
+        dueDate: '2026-10-18',
+        status: 'RETARD',
+        paymentMethod: 'Airtel Money',
+        applyTva: true,
+        items: [
+          { id: 'l-5', description: 'Maintenance Climatiseurs Split & Recharge Gaz Fréon', quantity: 4, unitPrice: 15000 }
+        ],
+        subtotalHt: 60000,
+        tvaAmount: 10800,
+        totalTtc: 70800,
+        notes: 'Relance WhatsApp envoyée. Merci de régulariser via Airtel Money.'
+      }
+    ];
+
+    let billingState = {
+      rlsAuthenticated: true,
+      merchant: {
+        userId: 'usr-gamba-pro-01',
+        businessName: 'Complexe & Motel La Lagune SARL',
+        email: 'direction@motellagune-gamba.ga',
+        nif: 'NIF: 789451-G / RCCM: RG-POG-2024-B12',
+        quartier: 'Centre-ville'
+      },
+      activeTab: 'invoices', // 'invoices' | 'create' | 'clients'
+      clients: JSON.parse(localStorage.getItem('gamba_billing_clients_v1') || 'null') || DEFAULT_BILLING_CLIENTS,
+      invoices: JSON.parse(localStorage.getItem('gamba_billing_invoices_v1') || 'null') || DEFAULT_BILLING_INVOICES,
+      searchQuery: '',
+      statusFilter: 'TOUTES',
+      quartierFilter: 'Tous',
+      editingInvoiceId: null,
+      editingClientId: null,
+      formInvoiceNumber: 'FAC-2026-004',
+      formClientId: 'cli-1',
+      formIssueDate: '2026-10-28',
+      formDueDate: '2026-11-12',
+      formStatus: 'EN_ATTENTE',
+      formPaymentMethod: 'Airtel Money',
+      formApplyTva: true,
+      formNotes: 'Paiement accepté par Airtel Money (*150#) ou Moov Money (*555#).',
+      formLines: [
+        { id: 'item-1', description: 'Prestation de service / Marchandise à Gamba', quantity: 1, unitPrice: 25000 }
+      ],
+      cliFormName: '',
+      cliFormCompany: '',
+      cliFormPhone: '+241 077 ',
+      cliFormEmail: '',
+      cliFormQuartier: 'Plaine 1',
+      cliFormNif: ''
+    };
+
+    function saveBillingData() {
+      localStorage.setItem('gamba_billing_clients_v1', JSON.stringify(billingState.clients));
+      localStorage.setItem('gamba_billing_invoices_v1', JSON.stringify(billingState.invoices));
+    }
+
+    function formatAmountFCFA(val) {
+      return new Intl.NumberFormat('fr-FR').format(Math.round(val || 0)) + ' FCFA';
+    }
+
+    function renderBillingModule() {
+      const container = document.getElementById('view-facturation');
+      if (!container) return;
+
+      if (!billingState.rlsAuthenticated) {
+        container.innerHTML = `
+          <div class="max-w-md mx-auto py-10">
+            <div class="rounded-3xl bg-white border border-slate-200 shadow-xl overflow-hidden">
+              <div class="bg-gradient-to-r from-[#0B192C] via-blue-950 to-blue-900 p-6 text-white text-center space-y-2">
+                <span class="inline-block rounded-full bg-emerald-500/20 border border-emerald-400/30 px-3 py-0.5 text-[10px] font-extrabold text-emerald-300 uppercase">
+                  PROTECTION SUPABASE RLS ACTIVÉE
+                </span>
+                <h1 class="text-xl font-heading font-black">Connexion Espace Facturation</h1>
+                <p class="text-xs text-sky-200">Vos clients et factures TVA 18% sont protégés par Row Level Security (RLS).</p>
+              </div>
+              <form onsubmit="event.preventDefault(); billingState.rlsAuthenticated = true; renderBillingModule();" class="p-6 space-y-4">
+                <div>
+                  <label class="block text-xs font-extrabold uppercase text-slate-700 mb-1">Entreprise à Gamba *</label>
+                  <input type="text" required value="${billingState.merchant.businessName}" oninput="billingState.merchant.businessName = this.value" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-semibold" />
+                </div>
+                <div>
+                  <label class="block text-xs font-extrabold uppercase text-slate-700 mb-1">Email Professionnel *</label>
+                  <input type="email" required value="${billingState.merchant.email}" oninput="billingState.merchant.email = this.value" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-semibold" />
+                </div>
+                <div>
+                  <label class="block text-xs font-extrabold uppercase text-slate-700 mb-1">Mot de passe RLS *</label>
+                  <input type="password" required value="gamba2026" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-semibold" />
+                </div>
+                <button type="submit" class="w-full rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-heading font-extrabold text-sm py-3.5 px-4 shadow-lg">
+                  Se connecter à mon espace Facturation →
+                </button>
+              </form>
+            </div>
+          </div>
+        `;
+        lucide.createIcons();
+        return;
+      }
+
+      // Calcul des 4 statistiques du Dashboard
+      const paidList = billingState.invoices.filter(i => i.status === 'PAYEE');
+      const pendingList = billingState.invoices.filter(i => i.status === 'EN_ATTENTE' || i.status === 'RETARD');
+      const overdueList = billingState.invoices.filter(i => i.status === 'RETARD');
+
+      const totalPaidTtc = paidList.reduce((acc, i) => acc + i.totalTtc, 0);
+      const totalPendingTtc = pendingList.reduce((acc, i) => acc + i.totalTtc, 0);
+      const totalTva18 = billingState.invoices.filter(i => i.status !== 'BROUILLON').reduce((acc, i) => acc + i.tvaAmount, 0);
+
+      // Filtrage de la liste des factures
+      const filteredInvoices = billingState.invoices.filter(inv => {
+        const q = billingState.searchQuery.trim().toLowerCase();
+        const matchQ = !q || inv.invoiceNumber.toLowerCase().includes(q) || inv.clientName.toLowerCase().includes(q);
+        const matchStatus = billingState.statusFilter === 'TOUTES' || inv.status === billingState.statusFilter;
+        const matchQuartier = billingState.quartierFilter === 'Tous' || inv.clientQuartier === billingState.quartierFilter;
+        return matchQ && matchStatus && matchQuartier;
+      });
+
+      // Calcul dynamique du formulaire de création de facture
+      const formSubtotalHt = billingState.formLines.reduce((s, l) => s + (Number(l.quantity) || 0) * (Number(l.unitPrice) || 0), 0);
+      const formTva18 = billingState.formApplyTva ? Math.round(formSubtotalHt * 0.18) : 0;
+      const formTotalTtc = formSubtotalHt + formTva18;
+
+      const quartiersOptions = ['Plaine 1','Plaine 2','Plaine 3','Plaine 4','Plaine 5','Le Couloir','Centre-ville','Camp Yenzi','Mayonami','Pont Dick','Voungou','Terminal / Aéroport'];
+
+      container.innerHTML = `
+        <!-- EN-TÊTE RLS & ACTIONS RAPIDES -->
+        <div class="rounded-3xl bg-gradient-to-r from-[#0B192C] via-blue-950 to-blue-900 text-white p-6 sm:p-8 shadow-xl border border-blue-800/50 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+          <div class="space-y-2">
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/20 border border-emerald-400/30 px-3 py-1 text-[11px] font-extrabold text-emerald-300">
+                🔒 SESSION RLS SÉCURISÉE • ${billingState.merchant.email}
+              </span>
+              <span class="rounded-full bg-blue-500/20 border border-sky-400/30 px-3 py-1 text-[11px] font-bold text-sky-200">
+                TVA GABON 18% (FCFA)
+              </span>
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-heading font-black">
+              Dashboard Facturation &amp; Gestion Clients — ${billingState.merchant.businessName}
+            </h1>
+            <p class="text-xs sm:text-sm text-sky-200/90">
+              ${billingState.merchant.nif} • Quartier ${billingState.merchant.quartier}, Gamba • Paiements Airtel Money &amp; Moov Money
+            </p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2.5">
+            <button onclick="startNewInvoice()" class="rounded-2xl bg-blue-500 hover:bg-blue-400 text-white font-extrabold text-xs sm:text-sm px-5 py-3.5 shadow-lg transition">
+              + Nouvelle Facture (TVA 18%)
+            </button>
+            <button onclick="billingState.activeTab = 'clients'; renderBillingModule();" class="rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs sm:text-sm px-4 py-3.5 border border-white/15 transition">
+              👥 Gestion Clients (${billingState.clients.length})
+            </button>
+            <button onclick="billingState.rlsAuthenticated = false; renderBillingModule();" class="rounded-2xl bg-rose-500/20 hover:bg-rose-500/30 text-rose-200 border border-rose-400/30 font-bold text-xs px-3.5 py-3.5 transition" title="Verrouiller RLS">
+              Verrouiller RLS
+            </button>
+          </div>
+        </div>
+
+        <!-- DASHBOARD 4 STATS OBLIGATOIRES -->
+        <div class="space-y-3">
+          <h2 class="text-base sm:text-lg font-heading font-black text-slate-900 uppercase tracking-tight">
+            📊 Dashboard Financier — 4 Statistiques Clés (FCFA)
+          </h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="rounded-3xl bg-white p-5 border-2 border-emerald-500/20 shadow-sm space-y-1.5">
+              <span class="text-xs font-extrabold uppercase text-slate-500">1. CA Encaissé (TTC)</span>
+              <p class="text-2xl font-heading font-black text-slate-900">${formatAmountFCFA(totalPaidTtc)}</p>
+              <span class="text-[11px] font-bold text-emerald-600 block">✓ ${paidList.length} facture(s) réglée(s)</span>
+            </div>
+            <div class="rounded-3xl bg-white p-5 border-2 border-amber-500/20 shadow-sm space-y-1.5">
+              <span class="text-xs font-extrabold uppercase text-slate-500">2. Reste à Encaisser</span>
+              <p class="text-2xl font-heading font-black text-amber-600">${formatAmountFCFA(totalPendingTtc)}</p>
+              <span class="text-[11px] font-bold text-rose-600 block">dont ${overdueList.length} facture(s) en retard</span>
+            </div>
+            <div class="rounded-3xl bg-white p-5 border-2 border-blue-500/20 shadow-sm space-y-1.5">
+              <span class="text-xs font-extrabold uppercase text-slate-500">3. TVA 18% Collectée</span>
+              <p class="text-2xl font-heading font-black text-blue-700">${formatAmountFCFA(totalTva18)}</p>
+              <span class="text-[11px] font-semibold text-slate-500 block">Taux légal Gabon : 18%</span>
+            </div>
+            <div onclick="billingState.activeTab = 'clients'; renderBillingModule();" class="cursor-pointer rounded-3xl bg-white p-5 border-2 border-indigo-500/20 hover:border-blue-600 shadow-sm space-y-1.5 transition">
+              <span class="text-xs font-extrabold uppercase text-slate-500">4. Factures &amp; Clients</span>
+              <p class="text-2xl font-heading font-black text-slate-900">${billingState.invoices.length} Factures • ${billingState.clients.length} Clients</p>
+              <span class="text-[11px] font-extrabold text-blue-600 underline block">Ouvrir la Gestion Clients →</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ONGLETS DE NAVIGATION INTERNE -->
+        <div class="flex flex-wrap items-center gap-2 border-b border-slate-200 pb-3">
+          <button onclick="billingState.activeTab = 'invoices'; renderBillingModule();" class="rounded-2xl px-5 py-2.5 text-xs sm:text-sm font-extrabold transition ${billingState.activeTab === 'invoices' ? 'bg-blue-600 text-white shadow-md' : 'bg-white text-slate-600 border border-slate-200'}">
+            📄 Liste des Factures &amp; Filtres (${billingState.invoices.length})
+          </button>
+          <button onclick="billingState.activeTab = 'create'; renderBillingModule();" class="rounded-2xl px-5 py-2.5 text-xs sm:text-sm font-extrabold transition ${billingState.activeTab === 'create' ? 'bg-blue-600 text-white shadow-md' : 'bg-white text-slate-600 border border-slate-200'}">
+            ➕ ${billingState.editingInvoiceId ? 'Modifier la Facture' : 'Créer une Facture (TVA 18%)'}
+          </button>
+          <button onclick="billingState.activeTab = 'clients'; renderBillingModule();" class="rounded-2xl px-5 py-2.5 text-xs sm:text-sm font-extrabold transition ${billingState.activeTab === 'clients' ? 'bg-blue-600 text-white shadow-md' : 'bg-white text-slate-600 border border-slate-200'}">
+            👥 Gestion Clients (${billingState.clients.length})
+          </button>
+        </div>
+
+        <!-- CONTENU DE L'ONGLET SÉLECTIONNÉ -->
+        ${billingState.activeTab === 'invoices' ? `
+          <div class="space-y-4">
+            <!-- Filtres -->
+            <div class="rounded-3xl bg-white p-4 border border-slate-200 shadow-sm grid grid-cols-1 md:grid-cols-12 gap-3">
+              <div class="md:col-span-5">
+                <input type="text" value="${billingState.searchQuery}" oninput="billingState.searchQuery = this.value; renderBillingModule();" placeholder="Rechercher N° Facture ou Client..." class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm font-medium" />
+              </div>
+              <div class="md:col-span-4">
+                <select onchange="billingState.statusFilter = this.value; renderBillingModule();" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm font-bold">
+                  <option value="TOUTES" ${billingState.statusFilter === 'TOUTES' ? 'selected' : ''}>Statut : Toutes les factures</option>
+                  <option value="PAYEE" ${billingState.statusFilter === 'PAYEE' ? 'selected' : ''}>✓ Payées uniquement</option>
+                  <option value="EN_ATTENTE" ${billingState.statusFilter === 'EN_ATTENTE' ? 'selected' : ''}>⏳ En attente de règlement</option>
+                  <option value="RETARD" ${billingState.statusFilter === 'RETARD' ? 'selected' : ''}>⚠️ En retard</option>
+                </select>
+              </div>
+              <div class="md:col-span-3">
+                <select onchange="billingState.quartierFilter = this.value; renderBillingModule();" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm font-bold">
+                  <option value="Tous">Quartier : Tout Gamba</option>
+                  ${quartiersOptions.map(q => `<option value="${q}" ${billingState.quartierFilter === q ? 'selected' : ''}>${q}</option>`).join('')}
+                </select>
+              </div>
+            </div>
+
+            <!-- Liste des factures -->
+            <div class="space-y-3">
+              ${filteredInvoices.map(inv => `
+                <div class="rounded-3xl bg-white p-5 border border-slate-200 shadow-sm flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+                  <div class="space-y-1">
+                    <div class="flex flex-wrap items-center gap-2">
+                      <span class="rounded-lg bg-slate-900 text-white px-2.5 py-1 text-xs font-mono font-extrabold">${inv.invoiceNumber}</span>
+                      <span class="rounded-full px-3 py-0.5 text-[11px] font-extrabold ${inv.status === 'PAYEE' ? 'bg-emerald-100 text-emerald-800' : inv.status === 'RETARD' ? 'bg-rose-100 text-rose-700' : 'bg-amber-100 text-amber-800'}">
+                        ${inv.status === 'PAYEE' ? '✓ PAYÉE' : inv.status === 'RETARD' ? '⚠️ EN RETARD' : '⏳ EN ATTENTE'}
+                      </span>
+                      <span class="text-xs font-bold text-blue-700">📱 ${inv.paymentMethod}</span>
+                    </div>
+                    <h3 class="text-base font-heading font-extrabold text-slate-900">${inv.clientName}</h3>
+                    <p class="text-xs text-slate-500">📍 ${inv.clientQuartier} • Émise le ${inv.issueDate} • Échéance : ${inv.dueDate}</p>
+                  </div>
+                  <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto justify-between lg:justify-end border-t lg:border-t-0 pt-3 lg:pt-0">
+                    <div class="text-right">
+                      <span class="text-[11px] text-slate-400 block">HT: ${formatAmountFCFA(inv.subtotalHt)} | TVA 18%: ${formatAmountFCFA(inv.tvaAmount)}</span>
+                      <span class="text-lg font-heading font-black text-blue-700">${formatAmountFCFA(inv.totalTtc)} TTC</span>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                      <button onclick="toggleBillingInvoicePaid('${inv.id}')" class="rounded-xl px-3 py-2 text-xs font-extrabold ${inv.status === 'PAYEE' ? 'bg-slate-100 text-slate-700' : 'bg-emerald-600 text-white'}">
+                        ${inv.status === 'PAYEE' ? 'Remettre en attente' : '✓ Marquer Payée'}
+                      </button>
+                      <button onclick="editBillingInvoice('${inv.id}')" class="rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold text-xs px-3 py-2">
+                        Modifier
+                      </button>
+                      <button onclick="deleteBillingInvoice('${inv.id}')" class="rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold text-xs px-3 py-2">
+                        Supprimer
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        ` : ''}
+
+        ${billingState.activeTab === 'create' ? `
+          <form onsubmit="saveBillingInvoiceForm(event)" class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <div class="lg:col-span-8 space-y-5">
+              <div class="rounded-3xl bg-white p-6 border border-slate-200 shadow-sm space-y-4">
+                <h2 class="text-lg font-heading font-black text-slate-900">
+                  ${billingState.editingInvoiceId ? 'Modifier la Facture' : 'Nouvelle Facture Client (TVA 18% FCFA)'}
+                </h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-xs font-extrabold uppercase text-slate-700 mb-1">N° de Facture *</label>
+                    <input type="text" required value="${billingState.formInvoiceNumber}" oninput="billingState.formInvoiceNumber = this.value" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-mono font-bold" />
+                  </div>
+                  <div>
+                    <label class="block text-xs font-extrabold uppercase text-slate-700 mb-1">Client à Gamba *</label>
+                    <select onchange="billingState.formClientId = this.value" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-semibold">
+                      ${billingState.clients.map(c => `<option value="${c.id}" ${billingState.formClientId === c.id ? 'selected' : ''}>${c.company ? c.company + ' (' + c.name + ')' : c.name} — ${c.quartier}</option>`).join('')}
+                    </select>
+                  </div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div>
+                    <label class="block text-xs font-extrabold uppercase text-slate-700 mb-1">Date d'émission</label>
+                    <input type="date" value="${billingState.formIssueDate}" onchange="billingState.formIssueDate = this.value" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm" />
+                  </div>
+                  <div>
+                    <label class="block text-xs font-extrabold uppercase text-slate-700 mb-1">Échéance</label>
+                    <input type="date" value="${billingState.formDueDate}" onchange="billingState.formDueDate = this.value" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm" />
+                  </div>
+                  <div>
+                    <label class="block text-xs font-extrabold uppercase text-slate-700 mb-1">Statut</label>
+                    <select onchange="billingState.formStatus = this.value" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-bold">
+                      <option value="EN_ATTENTE" ${billingState.formStatus === 'EN_ATTENTE' ? 'selected' : ''}>⏳ En attente</option>
+                      <option value="PAYEE" ${billingState.formStatus === 'PAYEE' ? 'selected' : ''}>✓ Payée</option>
+                      <option value="RETARD" ${billingState.formStatus === 'RETARD' ? 'selected' : ''}>⚠️ En retard</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Lignes dynamiques -->
+              <div class="rounded-3xl bg-white p-6 border border-slate-200 shadow-sm space-y-4">
+                <div class="flex items-center justify-between">
+                  <h3 class="text-base font-heading font-black text-slate-900">Lignes de facturation dynamiques (FCFA)</h3>
+                  <button type="button" onclick="addBillingLine()" class="rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 font-extrabold text-xs px-3.5 py-2">
+                    + Ajouter une ligne
+                  </button>
+                </div>
+                <div class="space-y-3">
+                  ${billingState.formLines.map((line, idx) => `
+                    <div class="grid grid-cols-1 sm:grid-cols-12 gap-2.5 items-center bg-slate-50 p-3 rounded-2xl border border-slate-200">
+                      <div class="sm:col-span-6">
+                        <input type="text" required value="${line.description}" oninput="updateBillingLine(${idx}, 'description', this.value)" placeholder="Désignation article / prestation" class="w-full rounded-xl bg-white border border-slate-300 px-3 py-2 text-xs sm:text-sm font-semibold" />
+                      </div>
+                      <div class="sm:col-span-2">
+                        <input type="number" min="1" required value="${line.quantity}" oninput="updateBillingLine(${idx}, 'quantity', this.value)" class="w-full rounded-xl bg-white border border-slate-300 px-3 py-2 text-xs sm:text-sm font-bold" />
+                      </div>
+                      <div class="sm:col-span-3">
+                        <input type="number" min="0" step="500" required value="${line.unitPrice}" oninput="updateBillingLine(${idx}, 'unitPrice', this.value)" class="w-full rounded-xl bg-white border border-slate-300 px-3 py-2 text-xs sm:text-sm font-bold text-blue-700" />
+                      </div>
+                      <div class="sm:col-span-1 text-right">
+                        <button type="button" onclick="removeBillingLine(${idx})" class="rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 px-2.5 py-2 text-xs font-bold">✕</button>
+                      </div>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            </div>
+
+            <!-- Résumé TVA 18% FCFA -->
+            <div class="lg:col-span-4 space-y-5">
+              <div class="rounded-3xl bg-[#0B192C] text-white p-6 shadow-xl border border-blue-900 space-y-5">
+                <h3 class="text-base font-heading font-black text-sky-300 uppercase">Calcul Automatique FCFA</h3>
+                <label class="flex items-center justify-between cursor-pointer bg-white/5 p-3.5 rounded-2xl border border-white/10">
+                  <span class="text-xs font-bold">Appliquer la TVA Gabon (18%)</span>
+                  <input type="checkbox" ${billingState.formApplyTva ? 'checked' : ''} onchange="billingState.formApplyTva = this.checked; renderBillingModule();" class="h-5 w-5 accent-blue-500" />
+                </label>
+                <div class="space-y-2.5 pt-2 border-t border-white/10 text-xs">
+                  <div class="flex justify-between text-slate-300">
+                    <span>Sous-total HT :</span>
+                    <span class="font-bold text-white">${formatAmountFCFA(formSubtotalHt)}</span>
+                  </div>
+                  <div class="flex justify-between text-sky-300">
+                    <span>TVA (18%) :</span>
+                    <span class="font-bold">${formatAmountFCFA(formTva18)}</span>
+                  </div>
+                  <div class="flex justify-between items-baseline pt-3 border-t border-white/15">
+                    <span class="text-sm font-extrabold uppercase">NET À PAYER TTC :</span>
+                    <span class="text-2xl font-heading font-black text-emerald-400">${formatAmountFCFA(formTotalTtc)}</span>
+                  </div>
+                </div>
+                <button type="submit" class="w-full rounded-2xl bg-blue-600 hover:bg-blue-500 text-white font-heading font-extrabold text-sm py-4 px-5 shadow-lg transition">
+                  ✓ Enregistrer la Facture
+                </button>
+              </div>
+            </div>
+          </form>
+        ` : ''}
+
+        ${billingState.activeTab === 'clients' ? `
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <!-- Formulaire Ajout / Modification Client -->
+            <div class="lg:col-span-4">
+              <form onsubmit="saveBillingClientForm(event)" class="rounded-3xl bg-white p-6 border border-slate-200 shadow-sm space-y-4">
+                <h2 class="text-base font-heading font-black text-slate-900">
+                  ${billingState.editingClientId ? '✏️ Modifier le Client' : '➕ Nouveau Client à Gamba'}
+                </h2>
+                <div>
+                  <label class="block text-xs font-extrabold uppercase text-slate-700 mb-1">Nom du contact *</label>
+                  <input type="text" required value="${billingState.cliFormName}" oninput="billingState.cliFormName = this.value" placeholder="Ex: M. Jean-Bosco Ndong" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-semibold" />
+                </div>
+                <div>
+                  <label class="block text-xs font-extrabold uppercase text-slate-700 mb-1">Société / Commerce</label>
+                  <input type="text" value="${billingState.cliFormCompany}" oninput="billingState.cliFormCompany = this.value" placeholder="Ex: Assala Gabon" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-semibold" />
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                  <div>
+                    <label class="block text-xs font-extrabold uppercase text-slate-700 mb-1">Téléphone *</label>
+                    <input type="text" required value="${billingState.cliFormPhone}" oninput="billingState.cliFormPhone = this.value" class="w-full rounded-xl border border-slate-300 px-3 py-2.5 text-xs font-bold" />
+                  </div>
+                  <div>
+                    <label class="block text-xs font-extrabold uppercase text-slate-700 mb-1">Quartier *</label>
+                    <select onchange="billingState.cliFormQuartier = this.value" class="w-full rounded-xl border border-slate-300 px-2.5 py-2.5 text-xs font-bold">
+                      ${quartiersOptions.map(q => `<option value="${q}" ${billingState.cliFormQuartier === q ? 'selected' : ''}>${q}</option>`).join('')}
+                    </select>
+                  </div>
+                </div>
+                <div>
+                  <label class="block text-xs font-extrabold uppercase text-slate-700 mb-1">N° NIF / RCCM</label>
+                  <input type="text" value="${billingState.cliFormNif}" oninput="billingState.cliFormNif = this.value" placeholder="Ex: NIF 092341-A" class="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-xs" />
+                </div>
+                <button type="submit" class="w-full rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-heading font-extrabold text-xs sm:text-sm py-3.5 px-4 shadow-md transition">
+                  ${billingState.editingClientId ? 'Mettre à jour le client' : 'Enregistrer le client'}
+                </button>
+              </form>
+            </div>
+
+            <!-- Liste des clients avec Modifier / Supprimer -->
+            <div class="lg:col-span-8 space-y-3">
+              ${billingState.clients.map(c => `
+                <div class="rounded-3xl bg-white p-5 border border-slate-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div class="space-y-1">
+                    <div class="flex items-center gap-2">
+                      <span class="rounded-full bg-blue-50 text-blue-700 border border-blue-200 px-2.5 py-0.5 text-[10px] font-extrabold">📍 ${c.quartier}</span>
+                      ${c.nif ? `<span class="text-[11px] font-mono text-slate-500">${c.nif}</span>` : ''}
+                    </div>
+                    <h3 class="text-base font-heading font-extrabold text-slate-900">${c.company || c.name}</h3>
+                    <p class="text-xs text-slate-600">Contact : <strong>${c.name}</strong> • 📞 ${c.phone}</p>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <button onclick="billingState.formClientId = '${c.id}'; startNewInvoice();" class="rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs px-3.5 py-2">
+                      + Facturer
+                    </button>
+                    <button onclick="editBillingClient('${c.id}')" class="rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs px-3 py-2">
+                      Modifier
+                    </button>
+                    <button onclick="deleteBillingClient('${c.id}')" class="rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold text-xs px-3 py-2">
+                      Supprimer
+                    </button>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        ` : ''}
+      `;
+      lucide.createIcons();
+    }
+
+    function startNewInvoice() {
+      billingState.editingInvoiceId = null;
+      billingState.formInvoiceNumber = 'FAC-2026-00' + (billingState.invoices.length + 1);
+      billingState.formLines = [{ id: 'l-' + Date.now(), description: 'Prestation / Marchandise à Gamba', quantity: 1, unitPrice: 25000 }];
+      billingState.activeTab = 'create';
+      renderBillingModule();
+    }
+
+    function addBillingLine() {
+      billingState.formLines.push({ id: 'l-' + Date.now(), description: '', quantity: 1, unitPrice: 10000 });
+      renderBillingModule();
+    }
+
+    function removeBillingLine(idx) {
+      if (billingState.formLines.length <= 1) return;
+      billingState.formLines.splice(idx, 1);
+      renderBillingModule();
+    }
+
+    function updateBillingLine(idx, field, val) {
+      if (field === 'description') {
+        billingState.formLines[idx].description = val;
+      } else {
+        billingState.formLines[idx][field] = Number(val) || 0;
+        renderBillingModule();
+      }
+    }
+
+    function saveBillingInvoiceForm(e) {
+      e.preventDefault();
+      const cli = billingState.clients.find(c => c.id === billingState.formClientId) || billingState.clients[0];
+      const subtotalHt = billingState.formLines.reduce((s, l) => s + (Number(l.quantity) || 0) * (Number(l.unitPrice) || 0), 0);
+      const tvaAmount = billingState.formApplyTva ? Math.round(subtotalHt * 0.18) : 0;
+      const totalTtc = subtotalHt + tvaAmount;
+
+      const invObj = {
+        id: billingState.editingInvoiceId || ('inv-' + Date.now()),
+        userId: billingState.merchant.userId,
+        invoiceNumber: billingState.formInvoiceNumber,
+        clientId: cli.id,
+        clientName: cli.company ? `${cli.company} (${cli.name})` : cli.name,
+        clientPhone: cli.phone,
+        clientQuartier: cli.quartier,
+        clientNif: cli.nif,
+        issueDate: billingState.formIssueDate,
+        dueDate: billingState.formDueDate,
+        status: billingState.formStatus,
+        paymentMethod: billingState.formPaymentMethod,
+        applyTva: billingState.formApplyTva,
+        items: [...billingState.formLines],
+        subtotalHt,
+        tvaAmount,
+        totalTtc,
+        notes: billingState.formNotes
+      };
+
+      if (billingState.editingInvoiceId) {
+        billingState.invoices = billingState.invoices.map(i => i.id === billingState.editingInvoiceId ? invObj : i);
+      } else {
+        billingState.invoices.unshift(invObj);
+      }
+      billingState.editingInvoiceId = null;
+      billingState.activeTab = 'invoices';
+      saveBillingData();
+      renderBillingModule();
+    }
+
+    function toggleBillingInvoicePaid(id) {
+      billingState.invoices = billingState.invoices.map(i => i.id === id ? { ...i, status: i.status === 'PAYEE' ? 'EN_ATTENTE' : 'PAYEE' } : i);
+      saveBillingData();
+      renderBillingModule();
+    }
+
+    function editBillingInvoice(id) {
+      const inv = billingState.invoices.find(i => i.id === id);
+      if (!inv) return;
+      billingState.editingInvoiceId = inv.id;
+      billingState.formInvoiceNumber = inv.invoiceNumber;
+      billingState.formClientId = inv.clientId;
+      billingState.formIssueDate = inv.issueDate;
+      billingState.formDueDate = inv.dueDate;
+      billingState.formStatus = inv.status;
+      billingState.formApplyTva = inv.applyTva;
+      billingState.formLines = inv.items.map(x => ({ ...x }));
+      billingState.activeTab = 'create';
+      renderBillingModule();
+    }
+
+    function deleteBillingInvoice(id) {
+      billingState.invoices = billingState.invoices.filter(i => i.id !== id);
+      saveBillingData();
+      renderBillingModule();
+    }
+
+    function saveBillingClientForm(e) {
+      e.preventDefault();
+      const cliObj = {
+        id: billingState.editingClientId || ('cli-' + Date.now()),
+        userId: billingState.merchant.userId,
+        name: billingState.cliFormName,
+        company: billingState.cliFormCompany,
+        phone: billingState.cliFormPhone,
+        email: billingState.cliFormEmail,
+        quartier: billingState.cliFormQuartier,
+        nif: billingState.cliFormNif
+      };
+      if (billingState.editingClientId) {
+        billingState.clients = billingState.clients.map(c => c.id === billingState.editingClientId ? cliObj : c);
+      } else {
+        billingState.clients.unshift(cliObj);
+      }
+      billingState.editingClientId = null;
+      billingState.cliFormName = '';
+      billingState.cliFormCompany = '';
+      billingState.cliFormPhone = '+241 077 ';
+      billingState.cliFormNif = '';
+      saveBillingData();
+      renderBillingModule();
+    }
+
+    function editBillingClient(id) {
+      const c = billingState.clients.find(x => x.id === id);
+      if (!c) return;
+      billingState.editingClientId = c.id;
+      billingState.cliFormName = c.name;
+      billingState.cliFormCompany = c.company || '';
+      billingState.cliFormPhone = c.phone;
+      billingState.cliFormQuartier = c.quartier;
+      billingState.cliFormNif = c.nif || '';
+      renderBillingModule();
+    }
+
+    function deleteBillingClient(id) {
+      billingState.clients = billingState.clients.filter(c => c.id !== id);
+      saveBillingData();
+      renderBillingModule();
     }
 
     window.addEventListener('DOMContentLoaded', () => {
