@@ -64,19 +64,11 @@ export default function MesAnnoncesPage() {
           </h1>
           <p className="text-xs sm:text-sm text-slate-500">
             Gérez vos annonces actives (2 jours d&apos;essai gratuit), suivez vos contacts WhatsApp et
-            accédez à votre module de facturation TVA 18%.
+            renouvelez vos annonces via Airtel Money ou Moov Money.
           </p>
         </div>
 
         <div className="flex flex-wrap gap-2.5">
-          <Link
-            href="/facturation"
-            className="inline-flex items-center gap-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-700 font-bold text-xs sm:text-sm px-4 py-3 transition"
-          >
-            <FileSpreadsheet className="h-4 w-4 text-blue-600" />
-            <span>Facturation TVA 18%</span>
-          </Link>
-
           <button
             onClick={() => openPaymentModal('pro')}
             className="inline-flex items-center gap-1.5 rounded-xl bg-[#0B192C] hover:bg-slate-800 text-white font-bold text-xs sm:text-sm px-4 py-3 transition"
