@@ -270,54 +270,9 @@ export default function HomePage() {
       </section>
 
       {/* =====================================================================
-          1B. ACCÈS DIRECT : DASHBOARD FACTURATION (4 STATS) & GESTION CLIENTS
+          2. BARRE DES 7 CATÉGORIES (STYLE MODERNE BLEU & BLANC)
           ===================================================================== */}
-      <section className="max-w-7xl mx-auto px-4 -mt-14 relative z-20 space-y-5">
-        <div className="rounded-3xl bg-gradient-to-r from-[#0B192C] via-blue-950 to-blue-900 text-white p-5 sm:p-6 shadow-xl border border-blue-700/50 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-          <div className="space-y-1">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/20 border border-emerald-400/30 px-2.5 py-0.5 text-[10px] font-extrabold text-emerald-300 uppercase">
-                NOUVEAU • MODULE ERP COMMERÇANTS GAMBA (RLS SÉCURISÉ)
-              </span>
-              <span className="rounded-full bg-blue-500/20 border border-sky-400/30 px-2.5 py-0.5 text-[10px] font-bold text-sky-200 uppercase">
-                TVA 18% FCFA
-              </span>
-            </div>
-            <h2 className="text-lg sm:text-xl font-black text-white">
-              📊 Dashboard Facturation (4 Stats), Factures TVA 18% &amp; Gestion Clients
-            </h2>
-            <p className="text-xs text-sky-200/90">
-              Créez vos factures avec lignes dynamiques en FCFA, suivez votre chiffre d&apos;affaires TTC, votre TVA 18% et gérez votre fichier clients à Gamba.
-            </p>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2.5 shrink-0">
-            <button
-              onClick={openAuthModal}
-              className="inline-flex items-center gap-2 rounded-2xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-extrabold text-xs sm:text-sm px-4 py-3 shadow-lg transition"
-            >
-              <span>
-                {currentUser
-                  ? `✓ Connecté : ${currentUser.fullName}`
-                  : '🔐 Connexion / Inscription (Mail ou Tél)'}
-              </span>
-            </button>
-            <Link
-              href="/admin"
-              className="inline-flex items-center gap-2 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs sm:text-sm px-4 py-3 shadow-lg shadow-emerald-600/30 transition"
-            >
-              <span>⚙️ Back-End Admin (Utilisateurs &amp; Paiements)</span>
-            </Link>
-            <Link
-              href="/facturation"
-              className="inline-flex items-center gap-2 rounded-2xl bg-blue-500 hover:bg-blue-400 text-white font-extrabold text-xs sm:text-sm px-4 py-3 shadow-lg shadow-blue-500/30 transition"
-            >
-              <span>📊 Facturation &amp; Clients</span>
-            </Link>
-          </div>
-        </div>
-
-        {/* BARRE DES 7 CATÉGORIES (STYLE MODERNE BLEU & BLANC) */}
+      <section className="max-w-7xl mx-auto px-4 -mt-14 relative z-20">
         <div className="bg-white rounded-3xl p-4 sm:p-6 shadow-xl shadow-slate-900/5 border border-slate-200/80">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
