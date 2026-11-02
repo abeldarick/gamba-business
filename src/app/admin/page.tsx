@@ -221,7 +221,7 @@ export default function AdminBackendPage() {
               <ShieldCheck className="h-3.5 w-3.5" /> BACK-END SUPER-ADMIN • CONTRÔLE TOTAL
             </span>
             <span className="rounded-full bg-teal-500/20 border border-teal-400/30 px-3 py-1 text-[11px] font-mono font-bold text-teal-200">
-              🔑 API Mobile Money : sk_live__fe4zzbW•••••••• (Auto-Validation Pubs ACTIVE)
+              🔒 API SasPay (airtel_ga / moov_ga) • Vérification GET /verify/ === SUCCESS
             </span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black tracking-tight">
