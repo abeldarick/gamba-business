@@ -65,6 +65,7 @@ export interface Listing {
   isBoosted: boolean; // Affiché dans "Annonces à la une"
   hasProBadge: boolean; // Badge "PRO VÉRIFIÉ"
   hasHomeBanner: boolean; // Bannière publicitaire sur l'accueil (Offre Business)
+  paymentStatus?: 'FREE_TRIAL' | 'PENDING_PAYMENT' | 'PAID_AUTO_APPROVED'; // Statut de validation automatique après paiement
   views: number;
   whatsappClicks: number;
   createdAt: string; // ISO date
