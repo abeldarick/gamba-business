@@ -34,8 +34,9 @@ export async function POST(req: NextRequest) {
 
     // Montant strictement en chaine decimale ("2500.00"), jamais de flottant
     const decimalAmount = formatDecimalAmount(amount);
-    const formattedPhone = formatGabonPhone(phoneNumber);
-    const networkCode = operator === 'moov' ? 'moov_ga' : 'airtel_ga';
+    const networkCode =
+      operator === 'moov' || operator === 'moov_ga' ? 'moov_ga' : 'airtel_ga';
+    const formattedPhone = formatGabonPhone(phoneNumber, networkCode);
 
     // Generation ou reutilisation de l'Idempotency-Key obligatoire pour les routes qui deplacent de l'argent
     const idempotencyKey =
@@ -68,7 +69,7 @@ export async function POST(req: NextRequest) {
         payload.otp = String(otp);
       }
 
-      const result = await sasPayRequest<Record<string, unknown>>(
+      let result = await sasPayRequest<Record<string, unknown>>(
         '/payments/softpay/',
         {
           method: 'POST',
@@ -76,6 +77,82 @@ export async function POST(req: NextRequest) {
           idempotencyKey,
         }
       );
+
+      // Si moov_ga ou airtel_ga renvoie 422 (ex: format de numero alternatif ou session USSD deja ouverte sur ce numero)
+      if (!result.ok && result.httpStatus === 422) {
+        const rawDigits = String(phoneNumber || '').replace(/\D/g, '');
+        const nat = rawDigits.startsWith('241') ? rawDigits.slice(3) : rawDigits;
+        const sub = nat.startsWith('0') ? nat.slice(1) : nat;
+        const altPhone = formattedPhone.startsWith('+2410')
+          ? `+241${sub}`
+          : `+2410${sub}`;
+
+        const altPayload: Record<string, unknown> = {
+          ...payload,
+          customer: {
+            email: customerEmail,
+            first_name: customerFirstName,
+            last_name: customerLastName,
+            phone: altPhone,
+          },
+        };
+
+        result = await sasPayRequest<Record<string, unknown>>(
+          '/payments/softpay/',
+          {
+            method: 'POST',
+            body: altPayload,
+            idempotencyKey: crypto.randomUUID(),
+          }
+        );
+      }
+
+      // Si un push USSD est deja en attente sur ce meme numero Moov/Airtel (422 no_route_available),
+      // basculer automatiquement sur une session SasPay /checkout-sessions/ pour ne jamais bloquer le client
+      if (!result.ok && result.httpStatus === 422) {
+        const appUrl = (
+          process.env.APP_URL || 'https://gamba-business.vercel.app'
+        ).replace(/\/$/, '');
+
+        const sessionRes = await sasPayRequest<Record<string, unknown>>(
+          '/checkout-sessions/',
+          {
+            method: 'POST',
+            body: {
+              amount: decimalAmount,
+              currency,
+              description: `Gamba Business - Forfait ${String(planId).toUpperCase()} (${listingTitle})`,
+              customer_email: customerEmail,
+              customer_name: `${customerFirstName} ${customerLastName}`.trim(),
+              country,
+              customer_phone: formattedPhone,
+              return_url: `${appUrl}/mes-annonces?payment_check=1`,
+              fee_charge_mode: feeChargeMode,
+              metadata: {
+                listing_id: listingId,
+                plan_id: planId,
+              },
+            },
+          }
+        );
+
+        if (sessionRes.ok && sessionRes.data) {
+          const sData = sessionRes.data;
+          return NextResponse.json({
+            success: true,
+            paymentId: String(sData.id || ''),
+            status: 'PENDING',
+            checkout_url: '',
+            hosted_checkout_url: String(sData.checkout_url || ''),
+            redirectRequired: false,
+            charged: decimalAmount,
+            net_amount: decimalAmount,
+            currency,
+            network: networkCode,
+            idempotencyKey,
+          });
+        }
+      }
 
       if (!result.ok) {
         return NextResponse.json(
