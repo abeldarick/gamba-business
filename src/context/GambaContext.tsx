@@ -77,6 +77,7 @@ interface GambaContextType {
     phoneNumber: string;
     planId: PlanTier;
     targetListingId?: string;
+    reference?: string;
   }) => MobileMoneyTransaction;
   openPaymentModal: (planId: PlanTier, targetListingId?: string) => void;
   closePaymentModal: () => void;
@@ -470,23 +471,22 @@ export function GambaProvider({ children }: { children: React.ReactNode }) {
     >
   ): Listing => {
     const now = new Date();
-    const planObj = PRICING_PLANS.find((p) => p.id === data.planTier);
-    const durationDays = planObj ? planObj.durationDays : 2; // 2 jours gratuits par défaut
-    const expiresAt = new Date(
-      now.getTime() + durationDays * 24 * 60 * 60 * 1000
-    ).toISOString();
-
     const isPaid = data.planTier !== 'free';
-    const isProOrBus = data.planTier === 'pro' || data.planTier === 'business';
+    // Si l'annonce demande un forfait payant, elle est en attente de validation du paiement Mobile Money.
+    // Dès que le paiement Mobile Money est validé, elle s'active et se publie à la une automatiquement !
+    const expiresAt = isPaid
+      ? new Date(now.getTime() - 60 * 1000).toISOString() // En attente de paiement
+      : new Date(now.getTime() + 2 * 24 * 60 * 60 * 1000).toISOString(); // 2 jours d'essai gratuit
 
     const newListing: Listing = {
       ...data,
       id: 'gamba-' + Date.now(),
       userId: currentUser?.id,
-      sellerVerified: isProOrBus,
-      isBoosted: isPaid,
-      hasProBadge: isProOrBus,
-      hasHomeBanner: data.planTier === 'business',
+      sellerVerified: false,
+      isBoosted: false,
+      hasProBadge: false,
+      hasHomeBanner: false,
+      paymentStatus: isPaid ? 'PENDING_PAYMENT' : 'FREE_TRIAL',
       views: 1,
       whatsappClicks: 0,
       createdAt: now.toISOString(),
@@ -533,11 +533,13 @@ export function GambaProvider({ children }: { children: React.ReactNode }) {
     phoneNumber,
     planId,
     targetListingId,
+    reference,
   }: {
     operator: MobileMoneyOperator;
     phoneNumber: string;
     planId: PlanTier;
     targetListingId?: string;
+    reference?: string;
   }): MobileMoneyTransaction => {
     const plan = PRICING_PLANS.find((p) => p.id === planId) || PRICING_PLANS[1];
     const now = new Date();
@@ -547,7 +549,8 @@ export function GambaProvider({ children }: { children: React.ReactNode }) {
 
     const tx: MobileMoneyTransaction = {
       id: 'tx-' + Date.now(),
-      reference: `CP-GA-${Math.floor(100000 + Math.random() * 900000)}`,
+      reference:
+        reference || `GB-LIVE-${Math.floor(100000 + Math.random() * 900000)}`,
       userId: currentUser?.id,
       userName: currentUser?.fullName || 'Vendeur Gamba',
       operator,
@@ -577,6 +580,7 @@ export function GambaProvider({ children }: { children: React.ReactNode }) {
       adminUpdateUserPlan(currentUser.id, planId);
     }
 
+    // VALIDATION & ACTIVATION AUTOMATIQUE DE LA PUB DÈS CONFIRMATION DU PAIEMENT MOBILE MONEY
     const isProOrBus = planId === 'pro' || planId === 'business';
     const updatedListings = listings.map((item) => {
       if (targetListingId && item.id === targetListingId) {
@@ -586,7 +590,8 @@ export function GambaProvider({ children }: { children: React.ReactNode }) {
           isBoosted: true,
           hasProBadge: isProOrBus || item.hasProBadge,
           hasHomeBanner: planId === 'business' || item.hasHomeBanner,
-          sellerVerified: isProOrBus || item.sellerVerified,
+          sellerVerified: true,
+          paymentStatus: 'PAID_AUTO_APPROVED' as const,
           expiresAt: newExpiresAt,
         };
       }
@@ -597,7 +602,8 @@ export function GambaProvider({ children }: { children: React.ReactNode }) {
           isBoosted: true,
           hasProBadge: isProOrBus,
           hasHomeBanner: planId === 'business',
-          sellerVerified: isProOrBus,
+          sellerVerified: true,
+          paymentStatus: 'PAID_AUTO_APPROVED' as const,
           expiresAt: newExpiresAt,
         };
       }
