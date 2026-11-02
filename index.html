@@ -810,19 +810,12 @@
 
   </main>
 
-  <!-- MODAL CONNEXION / INSCRIPTION (2 MODES : PAR TÉLÉPHONE +241 OU PAR MAIL) -->
-  <div id="user-auth-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4 overflow-y-auto">
-    <div class="relative w-full max-w-md rounded-3xl bg-white shadow-2xl border border-slate-200 overflow-hidden my-auto">
-      <div class="bg-gradient-to-r from-[#0B192C] via-blue-950 to-blue-900 px-6 py-5 text-white flex items-center justify-between">
-        <div>
-          <span class="inline-block rounded-full bg-blue-500/20 border border-sky-400/30 px-2.5 py-0.5 text-[10px] font-extrabold text-sky-300 uppercase">
-            ESPACE MEMBRE &amp; VENDEUR GAMBA
-          </span>
-          <h2 id="auth-modal-title" class="text-lg font-heading font-black mt-1">Créer votre compte à Gamba</h2>
-        </div>
-        <button onclick="closeUserAuthModal()" class="rounded-full bg-white/10 p-2 text-slate-300 hover:bg-white/20 hover:text-white transition">✕</button>
-      </div>
-      <div class="p-6 space-y-4" id="user-auth-modal-body"></div>
+  <!-- ====================================================================
+       MODAL INSCRIPTION & CONNEXION MODÈLE ANNONCEPRO (DOUBLE VOLET BLEU & BLANC)
+       ==================================================================== -->
+  <div id="user-auth-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-950/75 backdrop-blur-md p-3 sm:p-6 overflow-y-auto">
+    <div id="user-auth-modal-container" class="relative w-full max-w-4xl rounded-3xl bg-white shadow-2xl border border-slate-200/80 overflow-hidden my-auto flex flex-col md:flex-row min-h-[580px]">
+      <!-- Le contenu est généré dynamiquement par renderUserAuthModal() -->
     </div>
   </div>
 
@@ -2705,102 +2698,242 @@
     }
 
     function renderUserAuthModal() {
-      const body = document.getElementById('user-auth-modal-body');
+      const container = document.getElementById('user-auth-modal-container');
       const isReg = state.authMode === 'register';
-      const isPhone = state.authMethod === 'phone';
-      document.getElementById('auth-modal-title').textContent = isReg
-        ? 'Créer votre compte à Gamba'
-        : 'Connexion à votre compte';
 
-      body.innerHTML = `
-        <div class="grid grid-cols-2 gap-1.5 rounded-2xl bg-slate-100 p-1.5">
-          <button type="button" onclick="state.authMode = 'register'; renderUserAuthModal();" class="rounded-xl py-2.5 text-xs font-extrabold ${isReg ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-600'}">
-            Inscription (Nouveau)
-          </button>
-          <button type="button" onclick="state.authMode = 'login'; renderUserAuthModal();" class="rounded-xl py-2.5 text-xs font-extrabold ${!isReg ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-600'}">
-            Se Connecter
-          </button>
-        </div>
+      container.innerHTML = `
+        <!-- ==================== VOLET GAUCHE BLEU ÉCLATANT (MODÈLE ANNONCEPRO) ==================== -->
+        <div class="relative md:w-5/12 bg-gradient-to-br from-[#1E6BFF] via-[#155CE6] to-[#0A47C2] p-6 sm:p-8 text-white flex flex-col justify-between overflow-hidden">
+          <div class="pointer-events-none absolute -top-16 -left-16 w-60 h-60 rounded-full bg-cyan-400/20 blur-2xl"></div>
+          <div class="pointer-events-none absolute -bottom-16 -right-16 w-60 h-60 rounded-full bg-blue-400/20 blur-2xl"></div>
 
-        <div class="space-y-1.5">
-          <label class="block text-[11px] font-extrabold uppercase text-slate-500">Choisissez votre mode :</label>
-          <div class="grid grid-cols-2 gap-2.5">
-            <button type="button" onclick="state.authMethod = 'phone'; renderUserAuthModal();" class="rounded-2xl p-3 border-2 text-xs font-extrabold ${isPhone ? 'border-blue-600 bg-blue-50 text-blue-700' : 'border-slate-200 text-slate-600'}">
-              📱 1. Par Téléphone (+241)
-            </button>
-            <button type="button" onclick="state.authMethod = 'email'; renderUserAuthModal();" class="rounded-2xl p-3 border-2 text-xs font-extrabold ${!isPhone ? 'border-blue-600 bg-blue-50 text-blue-700' : 'border-slate-200 text-slate-600'}">
-              ✉️ 2. Par Adresse Mail
-            </button>
+          <!-- En-tête avec Logo Officiel Gamba Business -->
+          <div class="relative z-10 flex items-center gap-2.5">
+            <div class="h-9 w-9 rounded-xl bg-white p-1 flex items-center justify-center shadow-md">
+              <img src="/images/logo-gamba-icon.jpg" alt="Logo Gamba Business" class="h-full w-full object-cover rounded-lg" />
+            </div>
+            <span class="font-heading font-extrabold text-lg tracking-tight text-white">
+              Gamba <span class="text-cyan-300 font-bold">Business</span>
+            </span>
+          </div>
+
+          <!-- Titre & Composition de Tuiles/Icônes 3D du Modèle -->
+          <div class="relative z-10 py-6 my-auto space-y-4">
+            <div class="space-y-1.5">
+              <h2 class="text-2xl sm:text-3xl font-heading font-black text-white leading-tight">
+                Rejoignez la communauté Gamba Business !
+              </h2>
+              <p class="text-sm text-blue-100 font-medium">
+                Inscrivez-vous gratuitement !
+              </p>
+            </div>
+
+            <!-- Grille des tuiles d'activités blanches avec icônes (comme sur la photo modèle) -->
+            <div class="grid grid-cols-4 gap-2.5 pt-2 max-w-[280px]">
+              <div class="h-12 w-12 rounded-2xl bg-white text-blue-600 shadow-lg flex items-center justify-center hover:scale-105 transition transform">
+                <i data-lucide="home" class="w-5 h-5"></i>
+              </div>
+              <div class="h-12 w-12 rounded-2xl bg-white text-cyan-600 shadow-lg flex items-center justify-center hover:scale-105 transition transform">
+                <i data-lucide="store" class="w-5 h-5"></i>
+              </div>
+              <div class="h-12 w-12 rounded-2xl bg-white text-blue-600 shadow-lg flex items-center justify-center hover:scale-105 transition transform">
+                <i data-lucide="car" class="w-5 h-5"></i>
+              </div>
+              <div class="h-12 w-12 rounded-2xl bg-white text-emerald-600 shadow-lg flex items-center justify-center hover:scale-105 transition transform">
+                <i data-lucide="credit-card" class="w-5 h-5"></i>
+              </div>
+              <div class="h-12 w-12 rounded-2xl bg-white text-amber-500 shadow-lg flex items-center justify-center hover:scale-105 transition transform">
+                <i data-lucide="tag" class="w-5 h-5"></i>
+              </div>
+              <div class="h-12 w-12 rounded-2xl bg-white text-indigo-600 shadow-lg flex items-center justify-center hover:scale-105 transition transform">
+                <i data-lucide="users" class="w-5 h-5"></i>
+              </div>
+              <div class="h-12 w-12 rounded-2xl bg-white text-rose-500 shadow-lg flex items-center justify-center hover:scale-105 transition transform">
+                <i data-lucide="map-pin" class="w-5 h-5"></i>
+              </div>
+              <div class="h-12 w-12 rounded-2xl bg-white text-cyan-500 shadow-lg flex items-center justify-center hover:scale-105 transition transform">
+                <i data-lucide="shield-check" class="w-5 h-5"></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- Badge du bas semi-transparent (comme sur le modèle photo) -->
+          <div class="relative z-10 rounded-2xl bg-white/15 backdrop-blur-md p-3.5 border border-white/20 text-white flex items-center gap-3 shadow-sm">
+            <div class="h-7 w-7 rounded-xl bg-white/25 flex items-center justify-center shrink-0">
+              <i data-lucide="shield-check" class="w-4 h-4 text-white"></i>
+            </div>
+            <p class="text-xs text-blue-50 font-medium leading-snug">
+              Découvrez des milliers d'annonces et publiez les vôtres en quelques clics
+            </p>
           </div>
         </div>
 
-        <form onsubmit="handleUserAuthSubmit(event)" class="space-y-3.5">
-          ${isReg ? `
-            <div>
-              <label class="block text-xs font-extrabold uppercase text-slate-700 mb-1">Votre Nom ou Nom du Commerce *</label>
-              <input id="auth-fullname" type="text" required placeholder="Ex: Boutique Maman Clarisse" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-semibold" />
+        <!-- ==================== VOLET DROIT BLANC ÉPURÉ (FORMULAIRE MODÈLE ANNONCEPRO) ==================== -->
+        <div class="relative md:w-7/12 bg-white p-6 sm:p-10 flex flex-col justify-between">
+          <!-- Ligne supérieure : Déjà inscrit ? Se connecter + Bouton Fermer -->
+          <div class="flex items-center justify-between pb-4">
+            <div class="text-xs text-slate-500 font-medium">
+              ${isReg ? `
+                Déjà inscrit ? <button type="button" onclick="state.authMode = 'login'; renderUserAuthModal();" class="font-bold text-[#1E6BFF] hover:underline">Se connecter</button>
+              ` : `
+                Pas encore de compte ? <button type="button" onclick="state.authMode = 'register'; renderUserAuthModal();" class="font-bold text-[#1E6BFF] hover:underline">Créer un compte</button>
+              `}
             </div>
-          ` : ''}
-
-          ${!isPhone ? `
-            <div>
-              <label class="block text-xs font-extrabold uppercase text-slate-700 mb-1">Adresse Email *</label>
-              <input id="auth-email" type="email" required placeholder="exemple@gamba.ga" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-semibold" />
-            </div>
-          ` : ''}
-
-          ${(isPhone || isReg) ? `
-            <div>
-              <label class="block text-xs font-extrabold uppercase text-slate-700 mb-1">Numéro de Téléphone Gabon (+241) *</label>
-              <input id="auth-phone" type="tel" required value="+241 077 " placeholder="+241 077 45 12 89" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-bold" />
-            </div>
-          ` : ''}
-
-          ${isReg ? `
-            <div>
-              <label class="block text-xs font-extrabold uppercase text-slate-700 mb-1">Votre Quartier à Gamba *</label>
-              <select id="auth-quartier" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-bold">
-                <option value="Plaine 1">Plaine 1</option>
-                <option value="Plaine 2">Plaine 2</option>
-                <option value="Plaine 3">Plaine 3</option>
-                <option value="Plaine 4">Plaine 4</option>
-                <option value="Plaine 5">Plaine 5</option>
-                <option value="Le Couloir">Le Couloir</option>
-                <option value="Centre-ville">Centre-ville</option>
-                <option value="Camp Yenzi">Camp Yenzi</option>
-                <option value="Mayonami">Mayonami</option>
-              </select>
-            </div>
-          ` : ''}
-
-          <div>
-            <label class="block text-xs font-extrabold uppercase text-slate-700 mb-1">${isPhone ? 'Code PIN secret *' : 'Mot de passe *'}</label>
-            <input id="auth-password" type="password" required placeholder="${isPhone ? 'Ex: 1234' : 'Mot de passe'}" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-semibold" />
+            <button onclick="closeUserAuthModal()" class="rounded-full p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition" aria-label="Fermer">
+              <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
           </div>
 
-          <button type="submit" class="w-full rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-heading font-extrabold text-sm py-3.5 px-5 shadow-lg transition">
-            ${isReg ? (isPhone ? "S'inscrire avec mon Numéro (+241) →" : "S'inscrire avec mon Adresse Mail →") : "Se connecter maintenant →"}
-          </button>
-        </form>
+          <div class="my-auto space-y-5">
+            <!-- Titre centré -->
+            <div class="text-center space-y-1">
+              <h3 class="text-2xl sm:text-3xl font-heading font-black text-slate-900 tracking-tight">
+                ${isReg ? 'Créer un compte' : 'Connexion à votre compte'}
+              </h3>
+            </div>
+
+            <!-- 2 Boutons Sociaux Rapides (Google & Apple) -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              <button type="button" onclick="quickSocialLogin('Google')" class="flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 py-2.5 px-3 text-xs font-bold text-slate-700 shadow-sm transition">
+                <svg class="h-4 w-4" viewBox="0 0 24 24">
+                  <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                  <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                  <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
+                  <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
+                </svg>
+                <span>S'inscrire avec Google</span>
+              </button>
+
+              <button type="button" onclick="quickSocialLogin('Apple')" class="flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 py-2.5 px-3 text-xs font-bold text-slate-700 shadow-sm transition">
+                <svg class="h-4 w-4 fill-current text-slate-900" viewBox="0 0 24 24">
+                  <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.38c.62-.75 1.04-1.8 0.92-2.85-.9.04-1.99.6-2.63 1.35-.58.67-.99 1.73-.85 2.76 1 .08 2.04-.51 2.56-1.26" />
+                </svg>
+                <span>S'inscrire avec Apple</span>
+              </button>
+            </div>
+
+            <!-- Séparateur horizontal "ou s'inscrire avec votre e-mail" -->
+            <div class="relative flex items-center justify-center">
+              <div class="w-full border-t border-slate-200"></div>
+              <span class="bg-white px-3 text-xs text-slate-400 font-medium whitespace-nowrap">
+                ou s'inscrire avec votre e-mail
+              </span>
+            </div>
+
+            <!-- Formulaire avec les champs exacts du modèle photo -->
+            <form onsubmit="handleUserAuthSubmit(event)" class="space-y-3">
+              ${isReg ? `
+                <div>
+                  <input id="auth-fullname" type="text" required placeholder="Prénom et Nom" class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:border-[#1E6BFF] focus:ring-1 focus:ring-[#1E6BFF] focus:outline-none transition shadow-sm" />
+                </div>
+              ` : ''}
+
+              <div>
+                <input id="auth-email" type="text" required placeholder="Adresse e-mail ou Téléphone (+241)" class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:border-[#1E6BFF] focus:ring-1 focus:ring-[#1E6BFF] focus:outline-none transition shadow-sm" />
+              </div>
+
+              ${isReg ? `
+                <div>
+                  <select id="auth-quartier" class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 focus:border-[#1E6BFF] focus:ring-1 focus:ring-[#1E6BFF] focus:outline-none transition shadow-sm cursor-pointer">
+                    <option value="Plaine 1">Quartier : Plaine 1 (Gamba)</option>
+                    <option value="Plaine 2">Quartier : Plaine 2 (Gamba)</option>
+                    <option value="Plaine 3">Quartier : Plaine 3 (Gamba)</option>
+                    <option value="Plaine 4">Quartier : Plaine 4 (Gamba)</option>
+                    <option value="Plaine 5">Quartier : Plaine 5 (Gamba)</option>
+                    <option value="Le Couloir">Quartier : Le Couloir (Gamba)</option>
+                    <option value="Centre-ville">Quartier : Centre-ville (Gamba)</option>
+                    <option value="Camp Yenzi">Quartier : Camp Yenzi (Gamba)</option>
+                    <option value="Mayonami">Quartier : Mayonami (Gamba)</option>
+                  </select>
+                </div>
+              ` : ''}
+
+              <!-- Champ Mot de passe avec œil à droite -->
+              <div class="relative flex items-center">
+                <input id="auth-password" type="password" required placeholder="Mot de passe" class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 pr-11 text-sm text-slate-900 placeholder-slate-400 focus:border-[#1E6BFF] focus:ring-1 focus:ring-[#1E6BFF] focus:outline-none transition shadow-sm" />
+                <button type="button" onclick="togglePasswordVisibility('auth-password')" class="absolute right-3.5 text-slate-400 hover:text-slate-600 transition" aria-label="Afficher ou masquer">
+                  <i data-lucide="eye" class="w-4 h-4"></i>
+                </button>
+              </div>
+
+              ${isReg ? `
+                <!-- Champ Confirmer le mot de passe -->
+                <div class="relative flex items-center">
+                  <input id="auth-password-confirm" type="password" required placeholder="Confirmer le mot de passe" class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:border-[#1E6BFF] focus:ring-1 focus:ring-[#1E6BFF] focus:outline-none transition shadow-sm" />
+                </div>
+
+                <!-- Case à cocher des conditions -->
+                <div class="flex items-start gap-2.5 pt-1">
+                  <input id="terms-check" type="checkbox" required checked class="mt-0.5 h-4 w-4 rounded border-slate-300 text-[#1E6BFF] focus:ring-[#1E6BFF] cursor-pointer" />
+                  <label for="terms-check" class="text-[11px] text-slate-600 font-medium leading-tight cursor-pointer">
+                    J'accepte les <span class="text-[#1E6BFF] underline">Conditions Générales d'Utilisation</span> et la <span class="text-[#1E6BFF] underline">Politique de Confidentialité</span>
+                  </label>
+                </div>
+              ` : ''}
+
+              <!-- Bouton d'action principal Bleu Royal -->
+              <button type="submit" class="w-full rounded-xl bg-[#1D63ED] hover:bg-blue-600 text-white font-bold text-sm py-3 px-5 shadow-md shadow-blue-600/25 transition mt-2">
+                ${isReg ? "S'inscrire" : "Se connecter"}
+              </button>
+            </form>
+          </div>
+        </div>
       `;
+
+      lucide.createIcons();
+    }
+
+    function togglePasswordVisibility(id) {
+      const el = document.getElementById(id);
+      if (el) {
+        el.type = el.type === 'password' ? 'text' : 'password';
+      }
+    }
+
+    function quickSocialLogin(provider) {
+      const newUser = {
+        id: 'usr-' + Date.now(),
+        fullName: provider + ' User',
+        authMethod: 'google',
+        email: 'user@gmail.com',
+        phone: '+241 077 00 00 00',
+        quartier: 'Centre-ville',
+        role: 'user',
+        planTier: 'free',
+        status: 'ACTIF',
+        createdAt: new Date().toISOString()
+      };
+      state.users.unshift(newUser);
+      state.currentUser = newUser;
+      saveState();
+      updateHeaderAuthLabel();
+      closeUserAuthModal();
     }
 
     function handleUserAuthSubmit(e) {
       e.preventDefault();
       const isReg = state.authMode === 'register';
-      const isPhone = state.authMethod === 'phone';
       const emailEl = document.getElementById('auth-email');
-      const phoneEl = document.getElementById('auth-phone');
+      const passEl = document.getElementById('auth-password');
+      const passConfEl = document.getElementById('auth-password-confirm');
       const nameEl = document.getElementById('auth-fullname');
       const quartierEl = document.getElementById('auth-quartier');
 
       if (isReg) {
+        if (passConfEl && passEl.value !== passConfEl.value) {
+          alert('Les deux mots de passe ne correspondent pas.');
+          return;
+        }
+
+        const inputVal = emailEl ? emailEl.value.trim() : '';
+        const isEmailFormat = inputVal.includes('@');
+
         const newUser = {
           id: 'usr-' + Date.now(),
           fullName: nameEl ? nameEl.value : 'Utilisateur Gamba',
-          authMethod: state.authMethod,
-          email: emailEl ? emailEl.value : '',
-          phone: phoneEl ? phoneEl.value : '+241 077 00 00 00',
+          authMethod: isEmailFormat ? 'email' : 'phone',
+          email: isEmailFormat ? inputVal : '',
+          phone: isEmailFormat ? '+241 077 00 00 00' : inputVal,
           quartier: quartierEl ? quartierEl.value : 'Plaine 1',
           role: 'user',
           planTier: 'free',
@@ -2810,8 +2943,11 @@
         state.users.unshift(newUser);
         state.currentUser = newUser;
       } else {
-        const idVal = isPhone ? (phoneEl ? phoneEl.value : '') : (emailEl ? emailEl.value : '');
-        const found = state.users.find(u => isPhone ? u.phone.includes(idVal.trim()) : (u.email && u.email.toLowerCase() === idVal.trim().toLowerCase()));
+        const idVal = emailEl ? emailEl.value.trim().toLowerCase() : '';
+        const found = state.users.find(u =>
+          (u.email && u.email.toLowerCase() === idVal) ||
+          (u.phone && u.phone.includes(idVal))
+        );
         state.currentUser = found || state.users[0];
       }
       saveState();
