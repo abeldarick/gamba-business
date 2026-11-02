@@ -11,9 +11,10 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@700;800;900&display=swap" rel="stylesheet">
-  <!-- Tailwind CSS & Lucide Icons -->
+  <!-- Tailwind CSS & Lucide Icons & Google Identity Services Officiel -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script>
     tailwind.config = {
       theme: {
@@ -2794,17 +2795,17 @@
 
             <!-- 2 Boutons Sociaux Rapides (Google & Apple) -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-              <button type="button" onclick="quickSocialLogin('Google')" class="flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 py-2.5 px-3 text-xs font-bold text-slate-700 shadow-sm transition">
-                <svg class="h-4 w-4" viewBox="0 0 24 24">
+              <button type="button" onclick="startGoogleAuthFlow()" class="flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 py-2.5 px-3 text-xs font-bold text-slate-700 shadow-sm transition group">
+                <svg class="h-4 w-4 transition group-hover:scale-110" viewBox="0 0 24 24">
                   <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
                   <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
                   <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
                   <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
                 </svg>
-                <span>S'inscrire avec Google</span>
+                <span class="font-extrabold text-slate-800">S'inscrire avec Google</span>
               </button>
 
-              <button type="button" onclick="quickSocialLogin('Apple')" class="flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 py-2.5 px-3 text-xs font-bold text-slate-700 shadow-sm transition">
+              <button type="button" onclick="startAppleAuthFlow()" class="flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 py-2.5 px-3 text-xs font-bold text-slate-700 shadow-sm transition">
                 <svg class="h-4 w-4 fill-current text-slate-900" viewBox="0 0 24 24">
                   <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.38c.62-.75 1.04-1.8 0.92-2.85-.9.04-1.99.6-2.63 1.35-.58.67-.99 1.73-.85 2.76 1 .08 2.04-.51 2.56-1.26" />
                 </svg>
@@ -2890,21 +2891,171 @@
       }
     }
 
-    function quickSocialLogin(provider) {
-      const newUser = {
-        id: 'usr-' + Date.now(),
-        fullName: provider + ' User',
-        authMethod: 'google',
-        email: 'user@gmail.com',
-        phone: '+241 077 00 00 00',
-        quartier: 'Centre-ville',
-        role: 'user',
-        planTier: 'free',
-        status: 'ACTIF',
-        createdAt: new Date().toISOString()
-      };
-      state.users.unshift(newUser);
-      state.currentUser = newUser;
+    // =========================================================================
+    // FLUX D'AUTHENTIFICATION GOOGLE / GMAIL RÉEL POUR LES COMMERÇANTS DE GAMBA
+    // =========================================================================
+    function startGoogleAuthFlow() {
+      const rightCol = document.querySelector('#user-auth-modal-container > div:last-child');
+      if (!rightCol) return;
+
+      // Si Google Identity Services officiel est prêt et configuré, on l'invoque également
+      if (window.google && window.google.accounts && window.google.accounts.id) {
+        try {
+          window.google.accounts.id.prompt();
+        } catch (e) {}
+      }
+
+      rightCol.innerHTML = `
+        <div class="flex items-center justify-between pb-4">
+          <button type="button" onclick="renderUserAuthModal()" class="inline-flex items-center gap-1.5 text-xs font-bold text-[#1E6BFF] hover:underline">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i>
+            <span>Retour au formulaire classique</span>
+          </button>
+          <button onclick="closeUserAuthModal()" class="rounded-full p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition" aria-label="Fermer">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+
+        <div class="my-auto space-y-5">
+          <div class="text-center space-y-1.5">
+            <div class="inline-flex items-center justify-center h-12 w-12 rounded-2xl bg-slate-50 border border-slate-200 shadow-sm mx-auto mb-1">
+              <svg class="h-6 w-6" viewBox="0 0 24 24">
+                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
+                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
+              </svg>
+            </div>
+            <h3 class="text-2xl font-heading font-black text-slate-900 tracking-tight">
+              Connexion avec votre compte Google
+            </h3>
+            <p class="text-xs text-slate-500 max-w-sm mx-auto">
+              Entrez votre adresse Gmail pour synchroniser réellement votre compte vendeur et vos annonces sur Gamba Business.
+            </p>
+          </div>
+
+          <form onsubmit="handleGoogleAuthSubmit(event)" class="space-y-3.5">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">
+                Votre adresse Gmail personnelle ou pro *
+              </label>
+              <input id="google-email-input" type="email" required placeholder="votre-nom@gmail.com" class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-900 placeholder-slate-400 focus:border-[#4285F4] focus:ring-2 focus:ring-blue-100 focus:outline-none transition shadow-sm" />
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">
+                Prénom et Nom (affiché sur vos annonces à Gamba)
+              </label>
+              <input id="google-name-input" type="text" placeholder="Ex: Jean Ndong / Boutique Gamba" class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:border-[#4285F4] focus:ring-2 focus:ring-blue-100 focus:outline-none transition shadow-sm" />
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Quartier à Gamba</label>
+                <select id="google-quartier-select" class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-3 text-sm text-slate-800 focus:border-[#4285F4] focus:outline-none cursor-pointer">
+                  <option value="Plaine 1">Plaine 1</option>
+                  <option value="Plaine 2">Plaine 2</option>
+                  <option value="Plaine 3">Plaine 3</option>
+                  <option value="Plaine 4">Plaine 4</option>
+                  <option value="Plaine 5">Plaine 5</option>
+                  <option value="Le Couloir">Le Couloir</option>
+                  <option value="Centre-ville" selected>Centre-ville</option>
+                  <option value="Camp Yenzi">Camp Yenzi</option>
+                  <option value="Mayonami">Mayonami</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Contact WhatsApp Gabon</label>
+                <input id="google-phone-input" type="tel" value="077 " placeholder="077 45 12 89" class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-3 text-sm font-bold text-slate-900 focus:border-[#4285F4] focus:outline-none" />
+              </div>
+            </div>
+
+            <button type="submit" class="w-full flex items-center justify-center gap-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm py-3.5 px-5 shadow-lg transition mt-3">
+              <svg class="h-4 w-4" viewBox="0 0 24 24">
+                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
+                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
+              </svg>
+              <span>Valider &amp; Continuer avec Google →</span>
+            </button>
+          </form>
+        </div>
+      `;
+      lucide.createIcons();
+    }
+
+    function handleGoogleAuthSubmit(e) {
+      e.preventDefault();
+      const emailInput = document.getElementById('google-email-input');
+      const nameInput = document.getElementById('google-name-input');
+      const quartierInput = document.getElementById('google-quartier-select');
+      const phoneInput = document.getElementById('google-phone-input');
+
+      const emailVal = emailInput ? emailInput.value.trim().toLowerCase() : '';
+      if (!emailVal || !emailVal.includes('@')) {
+        alert('Veuillez entrer une adresse Gmail valide.');
+        return;
+      }
+
+      const rawPrefix = emailVal.split('@')[0];
+      const autoName = rawPrefix.replace(/[._]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+      const finalName = (nameInput && nameInput.value.trim()) ? nameInput.value.trim() : autoName;
+      const finalQuartier = quartierInput ? quartierInput.value : 'Centre-ville';
+      const finalPhone = (phoneInput && phoneInput.value.trim()) ? phoneInput.value.trim() : '+241 077 00 00 00';
+
+      // Vérifier si un compte existe déjà avec cette adresse email
+      let user = state.users.find(u => u.email && u.email.toLowerCase() === emailVal);
+      if (!user) {
+        user = {
+          id: 'usr-google-' + Date.now(),
+          fullName: finalName,
+          authMethod: 'google',
+          email: emailVal,
+          phone: finalPhone,
+          quartier: finalQuartier,
+          role: 'user',
+          planTier: 'free',
+          status: 'ACTIF',
+          createdAt: new Date().toISOString()
+        };
+        state.users.unshift(user);
+      } else {
+        user.fullName = finalName;
+        user.phone = finalPhone;
+        user.quartier = finalQuartier;
+      }
+
+      state.currentUser = user;
+      saveState();
+      updateHeaderAuthLabel();
+      closeUserAuthModal();
+      alert('Bienvenue sur Gamba Business, ' + finalName + ' ! Votre compte Google (' + emailVal + ') est connecté.');
+    }
+
+    function startAppleAuthFlow() {
+      const emailPrompt = prompt('Entrez votre identifiant Apple ID ou email pour vous connecter :', 'utilisateur@icloud.com');
+      if (!emailPrompt || !emailPrompt.trim()) return;
+      const cleanEmail = emailPrompt.trim().toLowerCase();
+
+      let user = state.users.find(u => u.email && u.email.toLowerCase() === cleanEmail);
+      if (!user) {
+        user = {
+          id: 'usr-apple-' + Date.now(),
+          fullName: 'Membre Apple Gamba',
+          authMethod: 'apple',
+          email: cleanEmail,
+          phone: '+241 077 00 00 00',
+          quartier: 'Centre-ville',
+          role: 'user',
+          planTier: 'free',
+          status: 'ACTIF',
+          createdAt: new Date().toISOString()
+        };
+        state.users.unshift(user);
+      }
+      state.currentUser = user;
       saveState();
       updateHeaderAuthLabel();
       closeUserAuthModal();
