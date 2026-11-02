@@ -2892,18 +2892,18 @@
     }
 
     // =========================================================================
-    // FLUX D'AUTHENTIFICATION GOOGLE / GMAIL RÉEL POUR LES COMMERÇANTS DE GAMBA
+    // FLUX D'AUTHENTIFICATION GOOGLE / GMAIL AVEC ENVOI RÉEL DE CODE VIA RESEND
     // =========================================================================
+    let pendingOtpData = {
+      email: '',
+      fullName: '',
+      quartier: 'Centre-ville',
+      phone: '+241 077 00 00 00'
+    };
+
     function startGoogleAuthFlow() {
       const rightCol = document.querySelector('#user-auth-modal-container > div:last-child');
       if (!rightCol) return;
-
-      // Si Google Identity Services officiel est prêt et configuré, on l'invoque également
-      if (window.google && window.google.accounts && window.google.accounts.id) {
-        try {
-          window.google.accounts.id.prompt();
-        } catch (e) {}
-      }
 
       rightCol.innerHTML = `
         <div class="flex items-center justify-between pb-4">
@@ -2916,7 +2916,7 @@
           </button>
         </div>
 
-        <div class="my-auto space-y-5">
+        <div id="google-auth-content" class="my-auto space-y-5">
           <div class="text-center space-y-1.5">
             <div class="inline-flex items-center justify-center h-12 w-12 rounded-2xl bg-slate-50 border border-slate-200 shadow-sm mx-auto mb-1">
               <svg class="h-6 w-6" viewBox="0 0 24 24">
@@ -2930,11 +2930,11 @@
               Connexion avec votre compte Google
             </h3>
             <p class="text-xs text-slate-500 max-w-sm mx-auto">
-              Entrez votre adresse Gmail pour synchroniser réellement votre compte vendeur et vos annonces sur Gamba Business.
+              Un code de sécurité à 6 chiffres va être envoyé directement à votre adresse e-mail via <strong>Resend</strong>.
             </p>
           </div>
 
-          <form onsubmit="handleGoogleAuthSubmit(event)" class="space-y-3.5">
+          <form onsubmit="handleSendEmailOtp(event)" class="space-y-3.5">
             <div>
               <label class="block text-xs font-bold text-slate-700 mb-1">
                 Votre adresse Gmail personnelle ou pro *
@@ -2971,14 +2971,8 @@
               </div>
             </div>
 
-            <button type="submit" class="w-full flex items-center justify-center gap-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm py-3.5 px-5 shadow-lg transition mt-3">
-              <svg class="h-4 w-4" viewBox="0 0 24 24">
-                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
-                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
-              </svg>
-              <span>Valider &amp; Continuer avec Google →</span>
+            <button id="btn-send-email-otp" type="submit" class="w-full flex items-center justify-center gap-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm py-3.5 px-5 shadow-lg transition mt-3">
+              <span>📩 Recevoir mon code par e-mail →</span>
             </button>
           </form>
         </div>
@@ -2986,48 +2980,165 @@
       lucide.createIcons();
     }
 
-    function handleGoogleAuthSubmit(e) {
+    async function handleSendEmailOtp(e) {
       e.preventDefault();
       const emailInput = document.getElementById('google-email-input');
       const nameInput = document.getElementById('google-name-input');
       const quartierInput = document.getElementById('google-quartier-select');
       const phoneInput = document.getElementById('google-phone-input');
+      const btn = document.getElementById('btn-send-email-otp');
 
       const emailVal = emailInput ? emailInput.value.trim().toLowerCase() : '';
       if (!emailVal || !emailVal.includes('@')) {
-        alert('Veuillez entrer une adresse Gmail valide.');
+        alert('Veuillez entrer une adresse e-mail valide.');
         return;
       }
 
+      btn.disabled = true;
+      btn.innerHTML = '<span>⏳ Envoi du code en cours via Resend...</span>';
+
       const rawPrefix = emailVal.split('@')[0];
       const autoName = rawPrefix.replace(/[._]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-      const finalName = (nameInput && nameInput.value.trim()) ? nameInput.value.trim() : autoName;
-      const finalQuartier = quartierInput ? quartierInput.value : 'Centre-ville';
-      const finalPhone = (phoneInput && phoneInput.value.trim()) ? phoneInput.value.trim() : '+241 077 00 00 00';
+      pendingOtpData = {
+        email: emailVal,
+        fullName: (nameInput && nameInput.value.trim()) ? nameInput.value.trim() : autoName,
+        quartier: quartierInput ? quartierInput.value : 'Centre-ville',
+        phone: (phoneInput && phoneInput.value.trim()) ? phoneInput.value.trim() : '+241 077 00 00 00'
+      };
 
-      // Vérifier si un compte existe déjà avec cette adresse email
-      let user = state.users.find(u => u.email && u.email.toLowerCase() === emailVal);
-      if (!user) {
-        user = {
-          id: 'usr-google-' + Date.now(),
-          fullName: finalName,
-          authMethod: 'google',
-          email: emailVal,
-          phone: finalPhone,
-          quartier: finalQuartier,
-          role: 'user',
-          planTier: 'free',
-          status: 'ACTIF',
-          createdAt: new Date().toISOString()
-        };
-        state.users.unshift(user);
-      } else {
-        user.fullName = finalName;
-        user.phone = finalPhone;
-        user.quartier = finalQuartier;
+      try {
+        const res = await fetch('/api/auth/send-code', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: emailVal, fullName: pendingOtpData.fullName })
+        });
+        const data = await res.json();
+
+        renderOtpVerificationStep(data?.message || 'Code envoyé !', data?.devCode || data?.code);
+      } catch (err) {
+        alert('Erreur réseau lors de l’envoi du code. Veuillez réessayer.');
+        btn.disabled = false;
+        btn.innerHTML = '<span>📩 Recevoir mon code par e-mail →</span>';
+      }
+    }
+
+    function renderOtpVerificationStep(infoMessage, devCode = null) {
+      const content = document.getElementById('google-auth-content');
+      if (!content) return;
+
+      content.innerHTML = `
+        <div class="text-center space-y-2">
+          <div class="inline-flex items-center justify-center h-12 w-12 rounded-2xl bg-blue-50 text-[#1E6BFF] mx-auto">
+            <i data-lucide="mail-check" class="w-6 h-6"></i>
+          </div>
+          <h3 class="text-2xl font-heading font-black text-slate-900 tracking-tight">
+            Vérifiez votre boîte e-mail
+          </h3>
+          <p class="text-xs text-slate-500">
+            Un code à 6 chiffres a été envoyé à <strong>${pendingOtpData.email}</strong>.
+          </p>
+          ${devCode ? `
+            <div class="rounded-xl bg-amber-50 border border-amber-200 p-2 text-xs font-mono font-bold text-amber-800">
+              💡 Code reçu : ${devCode}
+            </div>
+          ` : ''}
+        </div>
+
+        <form onsubmit="handleVerifyOtpSubmit(event)" class="space-y-4 pt-2">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1 text-center">
+              Entrez le code à 6 chiffres reçu :
+            </label>
+            <input
+              id="otp-code-input"
+              type="text"
+              required
+              maxlength="6"
+              placeholder="123456"
+              class="w-full text-center tracking-[8px] font-mono font-black text-2xl rounded-xl border-2 border-blue-500 bg-blue-50/30 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+          </div>
+
+          <button id="btn-verify-otp" type="submit" class="w-full flex items-center justify-center gap-2 rounded-xl bg-[#1D63ED] hover:bg-blue-600 text-white font-bold text-sm py-3.5 px-5 shadow-lg transition">
+            <span>Valider le code &amp; Me connecter →</span>
+          </button>
+
+          <div class="text-center">
+            <button type="button" onclick="startGoogleAuthFlow()" class="text-xs font-semibold text-slate-500 hover:text-slate-800 underline">
+              Changer d'adresse e-mail ou renvoyer un code
+            </button>
+          </div>
+        </form>
+      `;
+      lucide.createIcons();
+      setTimeout(() => {
+        const inp = document.getElementById('otp-code-input');
+        if (inp) inp.focus();
+      }, 100);
+    }
+
+    async function handleVerifyOtpSubmit(e) {
+      e.preventDefault();
+      const codeInput = document.getElementById('otp-code-input');
+      const btn = document.getElementById('btn-verify-otp');
+      const codeVal = codeInput ? codeInput.value.trim() : '';
+
+      if (codeVal.length < 6) {
+        alert('Veuillez entrer les 6 chiffres complets reçus dans votre e-mail.');
+        return;
       }
 
-      state.currentUser = user;
+      btn.disabled = true;
+      btn.innerHTML = '<span>⏳ Vérification du code...</span>';
+
+      try {
+        const res = await fetch('/api/auth/verify-code', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: pendingOtpData.email, code: codeVal })
+        });
+        const data = await res.json();
+
+        if (!res.ok || !data.success) {
+          alert(data?.error || 'Code invalide ou expiré. Veuillez vérifier votre boîte mail.');
+          btn.disabled = false;
+          btn.innerHTML = '<span>Valider le code &amp; Me connecter →</span>';
+          return;
+        }
+
+        // Création ou connexion de l'utilisateur
+        let user = state.users.find(u => u.email && u.email.toLowerCase() === pendingOtpData.email.toLowerCase());
+        if (!user) {
+          user = {
+            id: 'usr-email-' + Date.now(),
+            fullName: pendingOtpData.fullName,
+            authMethod: 'email',
+            email: pendingOtpData.email,
+            phone: pendingOtpData.phone,
+            quartier: pendingOtpData.quartier,
+            role: 'user',
+            planTier: 'free',
+            status: 'ACTIF',
+            createdAt: new Date().toISOString()
+          };
+          state.users.unshift(user);
+        } else {
+          user.fullName = pendingOtpData.fullName;
+          user.phone = pendingOtpData.phone;
+          user.quartier = pendingOtpData.quartier;
+        }
+
+        state.currentUser = user;
+        saveState();
+        updateHeaderAuthLabel();
+        closeUserAuthModal();
+        alert('Félicitations ' + user.fullName + ' ! Votre e-mail a été vérifié avec succès. Vous êtes connecté à Gamba Business.');
+      } catch (err) {
+        alert('Erreur réseau lors de la validation du code.');
+        btn.disabled = false;
+        btn.innerHTML = '<span>Valider le code &amp; Me connecter →</span>';
+      }
+    }
       saveState();
       updateHeaderAuthLabel();
       closeUserAuthModal();
