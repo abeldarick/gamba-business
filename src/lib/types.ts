@@ -94,6 +94,8 @@ export interface MobileMoneyTransaction {
   operator: MobileMoneyOperator;
   phoneNumber: string;
   amount: number;
+  charged?: string; // Ce que le payeur debourse (chaine decimale SasPay ex: "5210.00")
+  net_amount?: string; // Ce qui revient au marchand (chaine decimale SasPay ex: "5000.00")
   planId: PlanTier;
   listingId?: string;
   status: 'PENDING' | 'SUCCESS' | 'FAILED';
