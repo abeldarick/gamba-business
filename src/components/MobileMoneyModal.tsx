@@ -24,13 +24,24 @@ export default function MobileMoneyModal() {
   const [operator, setOperator] = useState<MobileMoneyOperator>('airtel');
   const [phoneNumber, setPhoneNumber] = useState('077 45 12 89');
   const [step, setStep] = useState<'form' | 'ussd' | 'success'>('form');
-  const [txReference, setTxReference] = useState('');
+  const [paymentId, setPaymentId] = useState('');
+  const [idempotencyKey, setIdempotencyKey] = useState('');
+  const [chargedAmount, setChargedAmount] = useState('');
+  const [netAmount, setNetAmount] = useState('');
+  const [apiError, setApiError] = useState('');
   const [apiProcessing, setApiProcessing] = useState(false);
 
   useEffect(() => {
     if (paymentModalState.isOpen) {
       setStep('form');
       setApiProcessing(false);
+      setApiError('');
+      setPaymentId('');
+      setIdempotencyKey(
+        typeof crypto !== 'undefined' && crypto.randomUUID
+          ? crypto.randomUUID()
+          : `idem-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`
+      );
     }
   }, [paymentModalState.isOpen, paymentModalState.planId]);
 
@@ -44,74 +55,161 @@ export default function MobileMoneyModal() {
     : undefined;
 
   const ussdCode = operator === 'airtel' ? '*150#' : '*555#';
-  const operatorName = operator === 'airtel' ? 'Airtel Money Gabon' : 'Moov Money Africa';
+  const operatorName = operator === 'airtel' ? 'Airtel Gabon' : 'Moov Money Gabon';
 
+  // 1. Initiation SasPay : POST /payments/softpay/ (montant en chaine decimale + Idempotency-Key)
   const handleInitiatePayment = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!phoneNumber.trim() || apiProcessing) return;
     setApiProcessing(true);
+    setApiError('');
+
+    const decimalAmount = selectedPlan.priceXAF.toFixed(2); // Chaine decimale ex: "5000.00"
 
     try {
       const res = await fetch('/api/mobile-money', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          action: 'initiate',
+          action: 'softpay',
           operator,
           phoneNumber,
-          amount: selectedPlan.priceXAF,
+          amount: decimalAmount,
+          currency: 'XAF',
+          country: 'GA',
           planId: selectedPlan.id,
           listingId: paymentModalState.targetListingId || '',
-          listingTitle: targetListing?.title || 'Boost Commerçant Gamba',
+          listingTitle: targetListing?.title || 'Annonce Gamba Business',
+          idempotencyKey,
         }),
       });
       const data = await res.json();
-      if (data?.reference) {
-        setTxReference(data.reference);
+
+      if (!res.ok || data?.success === false) {
+        setApiError(
+          data?.error?.message ||
+            'Impossible d’initialiser le paiement SasPay. Vérifiez le numéro.'
+        );
+        setApiProcessing(false);
+        return;
       }
+
+      if (data?.paymentId) {
+        setPaymentId(data.paymentId);
+      }
+      if (data?.charged) setChargedAmount(String(data.charged));
+      if (data?.net_amount) setNetAmount(String(data.net_amount));
+
+      // Regle SasPay : Si checkout_url est non vide apres un softpay, rediriger le client vers cette URL
+      if (data?.checkout_url && String(data.checkout_url).trim().length > 0) {
+        window.location.href = String(data.checkout_url);
+        return;
+      }
+
+      setStep('ussd');
     } catch {
-      setTxReference(`GB-LIVE-${Math.floor(100000 + Math.random() * 900000)}`);
+      setApiError('Erreur réseau lors de la connexion au serveur de paiement.');
     } finally {
       setApiProcessing(false);
-      setStep('ussd');
     }
   };
 
+  // 2. Verification stricte SasPay : GET /payments/{payment_id}/verify/
+  // Ne livrer l'acces / activer la pub QUE lorsque verify renvoie SUCCESS
   const handleConfirmUssdPayment = async () => {
     if (apiProcessing) return;
     setApiProcessing(true);
+    setApiError('');
 
-    let confirmedRef = txReference;
     try {
       const res = await fetch('/api/mobile-money', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           action: 'verify',
-          reference: txReference,
-          operator,
-          phoneNumber,
-          amount: selectedPlan.priceXAF,
-          planId: selectedPlan.id,
-          listingId: paymentModalState.targetListingId || '',
+          paymentId,
+          amount: selectedPlan.priceXAF.toFixed(2),
+          currency: 'XAF',
         }),
       });
       const data = await res.json();
-      if (data?.reference) {
-        confirmedRef = data.reference;
-      }
-    } catch {}
 
-    const tx = processMobileMoneyPayment({
-      operator,
-      phoneNumber,
-      planId: selectedPlan.id,
-      targetListingId: paymentModalState.targetListingId,
-      reference: confirmedRef,
-    });
-    setTxReference(tx.reference);
-    setApiProcessing(false);
-    setStep('success');
+      if (!res.ok || data?.success === false) {
+        setApiError(
+          data?.error?.message ||
+            'Impossible de vérifier le paiement auprès de SasPay.'
+        );
+        setApiProcessing(false);
+        return;
+      }
+
+      if (data.status === 'PENDING') {
+        setApiError(
+          'Paiement toujours en attente (PENDING). Veuillez valider le Push sur votre téléphone puis réessayer.'
+        );
+        setApiProcessing(false);
+        return;
+      }
+
+      if (data.status === 'FAILED') {
+        setApiError(
+          'Le paiement a échoué (FAILED). Vous pouvez relancer sans recréer de transaction.'
+        );
+        setApiProcessing(false);
+        return;
+      }
+
+      if (data.status === 'SUCCESS') {
+        processMobileMoneyPayment({
+          operator,
+          phoneNumber,
+          planId: selectedPlan.id,
+          targetListingId: paymentModalState.targetListingId,
+          reference: data.paymentId || paymentId,
+          charged: data.charged || chargedAmount || selectedPlan.priceXAF.toFixed(2),
+          net_amount: data.net_amount || netAmount || selectedPlan.priceXAF.toFixed(2),
+        });
+        setChargedAmount(String(data.charged || selectedPlan.priceXAF.toFixed(2)));
+        setNetAmount(String(data.net_amount || selectedPlan.priceXAF.toFixed(2)));
+        setStep('success');
+      }
+    } catch {
+      setApiError('Erreur lors de la vérification du statut SasPay.');
+    } finally {
+      setApiProcessing(false);
+    }
+  };
+
+  // Relancer un paiement echoue via POST /payments/{payment_id}/retry/ avec Idempotency-Key
+  const handleRetryPayment = async () => {
+    if (!paymentId || apiProcessing) return;
+    setApiProcessing(true);
+    setApiError('');
+    try {
+      const retryKey =
+        typeof crypto !== 'undefined' && crypto.randomUUID
+          ? crypto.randomUUID()
+          : `retry-${Date.now()}`;
+      const res = await fetch('/api/mobile-money', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'retry',
+          paymentId,
+          idempotencyKey: retryKey,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok || data?.success === false) {
+        setApiError(data?.error?.message || 'Échec de la relance du paiement.');
+      } else {
+        setApiError('');
+      }
+    } catch {
+      setApiError('Erreur réseau lors de la relance.');
+    } finally {
+      setApiProcessing(false);
+    }
   };
 
   return (
@@ -322,8 +420,15 @@ export default function MobileMoneyModal() {
               </p>
             </div>
 
+            {apiError && (
+              <div className="rounded-xl bg-rose-50 border border-rose-200 p-3 text-xs font-bold text-rose-700">
+                {apiError}
+              </div>
+            )}
+
             <button
               type="submit"
+              disabled={apiProcessing}
               className={`w-full flex items-center justify-center gap-2 rounded-2xl text-white font-extrabold py-4 px-5 shadow-lg transition text-sm ${
                 operator === 'airtel'
                   ? 'bg-[#E60000] hover:opacity-95 shadow-red-600/25'
@@ -331,14 +436,18 @@ export default function MobileMoneyModal() {
               }`}
             >
               <span>
-                Payer avec {operator === 'airtel' ? 'Airtel Money (*150#)' : 'Moov Money (*555#)'}
+                {apiProcessing
+                  ? 'Connexion à SasPay...'
+                  : `Payer avec ${
+                      operator === 'airtel' ? 'Airtel Money (*150#)' : 'Moov Money (*555#)'
+                    }`}
               </span>
               <ArrowRight className="h-4 w-4" />
             </button>
           </form>
         )}
 
-        {/* ÉTAPE 2 : POPUP USSD "Paiement Mobile Money : Composez *150# ou *555# pour payer" */}
+        {/* ÉTAPE 2 : PUSH SASPAY USSD + VÉRIFICATION STRICTE GET /payments/{payment_id}/verify/ */}
         {step === 'ussd' && (
           <div className="p-6 text-center space-y-4">
             <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-50 border border-blue-200 text-blue-600 animate-pulse">
@@ -347,44 +456,68 @@ export default function MobileMoneyModal() {
 
             <div className="space-y-1">
               <span className="inline-block rounded-full bg-blue-100 text-blue-800 text-xs font-extrabold px-3 py-1">
-                ATTENTE DE VALIDATION SUR VOTRE TÉLÉPHONE
+                ATTENTE DE VALIDATION SASPAY (STATUT: PENDING)
               </span>
               <h3 className="text-lg font-black text-slate-900 pt-1">
                 Paiement Mobile Money : Composez{' '}
                 <span className="text-blue-600 underline">{ussdCode}</span> pour payer
               </h3>
               <p className="text-xs text-slate-600">
-                Demande Push CinetPay de <strong>{formatXAF(selectedPlan.priceXAF)}</strong> envoyée
-                sur le <strong>+241 {phoneNumber}</strong> ({operatorName}).
+                Demande Softpay SasPay de{' '}
+                <strong>{selectedPlan.priceXAF.toFixed(2)} XAF</strong> envoyée sur le{' '}
+                <strong>+241 {phoneNumber}</strong> ({operatorName}).
               </p>
             </div>
 
+            {apiError && (
+              <div className="rounded-xl bg-amber-50 border border-amber-200 p-3 text-xs font-bold text-amber-800 text-left space-y-2">
+                <p>{apiError}</p>
+                {paymentId && (
+                  <button
+                    type="button"
+                    onClick={handleRetryPayment}
+                    className="rounded-lg bg-amber-600 text-white px-3 py-1.5 text-[11px] font-extrabold"
+                  >
+                    Relancer le Push SasPay (Retry Idempotent)
+                  </button>
+                )}
+              </div>
+            )}
+
             <div className="rounded-2xl bg-[#0B192C] text-white p-4 text-left space-y-2 border border-blue-900">
-              <p className="text-xs text-sky-300 font-bold">Instructions simples :</p>
+              <p className="text-xs text-sky-300 font-bold">Instructions SasPay :</p>
               <ol className="text-xs text-slate-200 space-y-1.5 list-decimal list-inside">
                 <li>
                   Composez{' '}
                   <span className="rounded bg-blue-600 px-2 py-0.5 font-mono font-bold text-white">
                     {ussdCode}
                   </span>{' '}
-                  ou validez la fenêtre Push CinetPay sur votre téléphone.
+                  ou validez la fenêtre Push Mobile Money sur votre téléphone.
                 </li>
                 <li>
-                  Saisissez votre code PIN secret <strong>{operatorName}</strong> pour valider{' '}
-                  <strong>{formatXAF(selectedPlan.priceXAF)}</strong>.
+                  Saisissez votre code PIN secret <strong>{operatorName}</strong>.
                 </li>
-                <li>Cliquez sur le bouton vert ci-dessous dès que c&apos;est validé !</li>
+                <li>
+                  Cliquez ci-dessous : le serveur vérifie{' '}
+                  <code>GET /payments/&#123;id&#125;/verify/</code> et active votre annonce
+                  uniquement sur statut <strong>SUCCESS</strong>.
+                </li>
               </ol>
             </div>
 
             <div className="flex flex-col gap-2 pt-1">
               <button
                 type="button"
+                disabled={apiProcessing}
                 onClick={handleConfirmUssdPayment}
                 className="w-full flex items-center justify-center gap-2 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-4 px-4 shadow-lg shadow-emerald-600/25 transition text-sm"
               >
                 <CheckCircle2 className="h-5 w-5" />
-                <span>J&apos;ai validé le paiement sur mon téléphone</span>
+                <span>
+                  {apiProcessing
+                    ? 'Vérification SasPay en cours...'
+                    : 'Vérifier le paiement SasPay & Activer ma pub'}
+                </span>
               </button>
               <button
                 type="button"
@@ -397,7 +530,7 @@ export default function MobileMoneyModal() {
           </div>
         )}
 
-        {/* ÉTAPE 3 : CONFIRMATION & BOOST AUTOMATIQUE */}
+        {/* ÉTAPE 3 : CONFIRMATION SASPAY (STATUT: SUCCESS) & BOOST AUTOMATIQUE */}
         {step === 'success' && (
           <div className="p-6 text-center space-y-4">
             <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
@@ -406,26 +539,33 @@ export default function MobileMoneyModal() {
 
             <div>
               <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-800">
-                <Sparkles className="h-3.5 w-3.5" /> PAIEMENT VALIDÉ • PUB ACTIVÉE AUTOMATIQUEMENT
+                <Sparkles className="h-3.5 w-3.5" /> STATUT SASPAY : SUCCESS • PUB ACTIVÉE
               </span>
               <h3 className="text-xl font-black text-slate-900 mt-2">
-                Paiement confirmé ! Votre pub est en ligne 🚀
+                Paiement vérifié ! Votre pub est en ligne 🚀
               </h3>
               <p className="text-xs text-slate-600 mt-1">
-                Votre paiement <strong>{operatorName}</strong> de{' '}
-                <strong>{formatXAF(selectedPlan.priceXAF)}</strong> a été validé par l&apos;API Live et
-                votre annonce a été publiée et boostée automatiquement.
+                La vérification officielle SasPay a confirmé le statut <strong>SUCCESS</strong>.
+                Votre annonce est automatiquement approuvée et mise à la une.
               </p>
             </div>
 
             <div className="rounded-2xl bg-slate-50 p-3.5 border border-slate-200 text-left text-xs space-y-1.5">
               <div className="flex justify-between">
-                <span className="text-slate-500">Référence API Live :</span>
-                <span className="font-mono font-bold text-slate-900">{txReference}</span>
+                <span className="text-slate-500">ID Transaction SasPay :</span>
+                <span className="font-mono font-bold text-slate-900">{paymentId}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500">Validation de l&apos;annonce :</span>
-                <span className="font-extrabold text-emerald-600">AUTOMATIQUE ✓</span>
+                <span className="text-slate-500">Montant débité (charged) :</span>
+                <span className="font-mono font-bold text-slate-900">
+                  {chargedAmount || selectedPlan.priceXAF.toFixed(2)} XAF
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-500">Montant net marchand (net_amount) :</span>
+                <span className="font-mono font-bold text-emerald-700">
+                  {netAmount || selectedPlan.priceXAF.toFixed(2)} XAF
+                </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-500">Offre activée :</span>
