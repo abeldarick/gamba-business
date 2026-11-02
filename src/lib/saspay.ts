@@ -79,14 +79,38 @@ export function formatDecimalAmount(amount: number | string): string {
 }
 
 /**
- * Normalise un numero de telephone gabonais au format international +241XXXXXXXX
+ * Normalise un numero de telephone gabonais selon les exigences de routage SasPay par operateur :
+ * - Moov Money Gabon (moov_ga, prefixes 060/062/065/066) exige le 0 national apres +241 : "+241066892341"
+ * - Airtel Money Gabon (airtel_ga, prefixes 074/076/077) exige l'absence du 0 apres +241 : "+24177451289"
  */
-export function formatGabonPhone(raw: string): string {
+export function formatGabonPhone(
+  raw: string,
+  operatorOrNetwork?: 'airtel' | 'moov' | 'airtel_ga' | 'moov_ga' | string
+): string {
   const digits = String(raw || '').replace(/\D/g, '');
-  if (!digits) return '+241077000000';
-  if (digits.startsWith('241')) return `+${digits}`;
-  if (digits.startsWith('0')) return `+241${digits.slice(1)}`;
-  return `+241${digits}`;
+  if (!digits) {
+    const isMoovDefault =
+      operatorOrNetwork === 'moov' || operatorOrNetwork === 'moov_ga';
+    return isMoovDefault ? '+241066000000' : '+24177000000';
+  }
+
+  // Extraire le numero national sans l'indicatif 241
+  let national = digits.startsWith('241') ? digits.slice(3) : digits;
+  // Extraire les 8 chiffres abonnes sans le 0 initial
+  const subscriber = national.startsWith('0') ? national.slice(1) : national;
+
+  const isMoov =
+    operatorOrNetwork === 'moov' ||
+    operatorOrNetwork === 'moov_ga' ||
+    (!operatorOrNetwork && subscriber.startsWith('6'));
+
+  if (isMoov) {
+    // Moov Money Gabon (moov_ga) requiert +2410XXXXXXXX (avec le 0 national)
+    return `+2410${subscriber}`;
+  }
+
+  // Airtel Money Gabon (airtel_ga) requiert +241XXXXXXXX (sans le 0 national)
+  return `+241${subscriber}`;
 }
 
 export interface SasPayResult<T = Record<string, unknown>> {
