@@ -78,6 +78,8 @@ interface GambaContextType {
     planId: PlanTier;
     targetListingId?: string;
     reference?: string;
+    charged?: string;
+    net_amount?: string;
   }) => MobileMoneyTransaction;
   openPaymentModal: (planId: PlanTier, targetListingId?: string) => void;
   closePaymentModal: () => void;
@@ -534,12 +536,16 @@ export function GambaProvider({ children }: { children: React.ReactNode }) {
     planId,
     targetListingId,
     reference,
+    charged,
+    net_amount,
   }: {
     operator: MobileMoneyOperator;
     phoneNumber: string;
     planId: PlanTier;
     targetListingId?: string;
     reference?: string;
+    charged?: string;
+    net_amount?: string;
   }): MobileMoneyTransaction => {
     const plan = PRICING_PLANS.find((p) => p.id === planId) || PRICING_PLANS[1];
     const now = new Date();
@@ -547,15 +553,18 @@ export function GambaProvider({ children }: { children: React.ReactNode }) {
       now.getTime() + plan.durationDays * 24 * 60 * 60 * 1000
     ).toISOString();
 
+    const decimalBase = plan.priceXAF.toFixed(2);
     const tx: MobileMoneyTransaction = {
       id: 'tx-' + Date.now(),
       reference:
-        reference || `GB-LIVE-${Math.floor(100000 + Math.random() * 900000)}`,
+        reference || `SASPAY-${Math.floor(100000 + Math.random() * 900000)}`,
       userId: currentUser?.id,
       userName: currentUser?.fullName || 'Vendeur Gamba',
       operator,
       phoneNumber,
       amount: plan.priceXAF,
+      charged: charged || decimalBase,
+      net_amount: net_amount || decimalBase,
       planId,
       listingId: targetListingId,
       status: 'SUCCESS',
