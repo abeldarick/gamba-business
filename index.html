@@ -1755,39 +1755,52 @@
       lucide.createIcons();
     }
 
-    // Clé API Mobile Money Live connectée au serveur Gamba Business
-    const MOBILE_MONEY_LIVE_KEY_PREFIX = 'sk_live__fe4zzbW••••••••';
-
+    // Intégration officielle SasPay côté serveur uniquement (aucune clé API exposée côté client)
     async function goToUssdStep() {
       const plan = PLANS[state.modalPlan];
       const phone = document.getElementById('modal-phone').value;
       const ussd = state.modalOperator === 'airtel' ? '*150#' : '*555#';
-      const opName = state.modalOperator === 'airtel' ? 'Airtel Money' : 'Moov Money';
+      const opName = state.modalOperator === 'airtel' ? 'Airtel Gabon' : 'Moov Money Gabon';
+      const decimalAmount = Number(plan.priceXAF).toFixed(2); // Chaîne décimale stricte ex: "5000.00"
+      const idemKey = (window.crypto && window.crypto.randomUUID)
+        ? window.crypto.randomUUID()
+        : ('idem-' + Date.now() + '-' + Math.random().toString(36).slice(2, 10));
 
       try {
         const res = await fetch('/api/mobile-money', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            action: 'initiate',
+            action: 'softpay',
             operator: state.modalOperator,
             phoneNumber: phone,
-            amount: plan.priceXAF,
+            amount: decimalAmount,
+            currency: 'XAF',
+            country: 'GA',
             planId: plan.id,
-            listingId: state.modalTargetId || ''
+            listingId: state.modalTargetId || '',
+            idempotencyKey: idemKey
           })
         });
         const data = await res.json();
-        state.pendingTxReference = data?.reference || ('GB-LIVE-' + Math.floor(100000 + Math.random() * 900000));
+        state.pendingPaymentId = data?.paymentId || '';
+        state.pendingCharged = data?.charged || decimalAmount;
+        state.pendingNetAmount = data?.net_amount || decimalAmount;
+
+        // Règle SasPay : si checkout_url est non vide après un softpay, rediriger le client vers cette URL
+        if (data?.checkout_url && String(data.checkout_url).trim().length > 0) {
+          window.location.href = String(data.checkout_url);
+          return;
+        }
       } catch (e) {
-        state.pendingTxReference = 'GB-LIVE-' + Math.floor(100000 + Math.random() * 900000);
+        state.pendingPaymentId = '';
       }
 
       document.getElementById('modal-ussd-headline').innerHTML =
         `Paiement Mobile Money : Composez <span class="text-blue-600 underline">${ussd}</span> pour payer`;
       document.getElementById('modal-ussd-code-badge').textContent = ussd;
       document.getElementById('modal-ussd-sub').innerHTML =
-        `Requête API Live (<code>${state.pendingTxReference}</code>) de <strong>${formatXAF(plan.priceXAF)}</strong> envoyée au <strong>+241 ${phone}</strong> (${opName}).`;
+        `Demande Softpay SasPay de <strong>${decimalAmount} XAF</strong> envoyée au <strong>+241 ${phone}</strong> (${opName}).`;
 
       document.getElementById('modal-step-form').classList.add('hidden');
       document.getElementById('modal-step-ussd').classList.remove('hidden');
@@ -1798,7 +1811,10 @@
       const newExpiry = new Date(Date.now() + plan.durationDays * dayMs).toISOString();
       const isProOrBus = plan.id === 'pro' || plan.id === 'business';
       const phoneVal = document.getElementById('modal-phone').value;
-      let txRef = state.pendingTxReference || ('GB-LIVE-' + Math.floor(100000 + Math.random() * 900000));
+      const decimalAmount = Number(plan.priceXAF).toFixed(2);
+      let paymentId = state.pendingPaymentId || '';
+      let chargedVal = state.pendingCharged || decimalAmount;
+      let netVal = state.pendingNetAmount || decimalAmount;
 
       try {
         const res = await fetch('/api/mobile-money', {
@@ -1806,24 +1822,35 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             action: 'verify',
-            reference: txRef,
-            operator: state.modalOperator,
-            phoneNumber: phoneVal,
-            amount: plan.priceXAF,
-            planId: plan.id,
-            listingId: state.modalTargetId || ''
+            paymentId: paymentId,
+            amount: decimalAmount,
+            currency: 'XAF'
           })
         });
         const data = await res.json();
-        if (data?.reference) txRef = data.reference;
-      } catch (e) {}
+        if (!res.ok || data?.status !== 'SUCCESS') {
+          alert(
+            data?.error?.message ||
+            'Statut SasPay : ' + (data?.status || 'PENDING') + '. Le paiement doit renvoyer SUCCESS sur GET /payments/{id}/verify/ avant l’activation automatique de l’annonce.'
+          );
+          return;
+        }
+        paymentId = data.paymentId || paymentId;
+        chargedVal = data.charged || chargedVal;
+        netVal = data.net_amount || netVal;
+      } catch (e) {
+        alert('Impossible de vérifier le statut auprès du serveur SasPay.');
+        return;
+      }
 
       state.transactions.unshift({
         id: 'tx-' + Date.now(),
-        reference: txRef,
+        reference: paymentId,
         operator: state.modalOperator,
         phoneNumber: phoneVal,
         amount: plan.priceXAF,
+        charged: chargedVal,
+        net_amount: netVal,
         planId: plan.id,
         status: 'SUCCESS',
         createdAt: new Date().toISOString()
@@ -1834,7 +1861,7 @@
         state.users = state.users.map(u => u.id === state.currentUser.id ? { ...u, planTier: plan.id } : u);
       }
 
-      // VALIDATION & PUBLICATION AUTOMATIQUE DES PUBS APRÈS PAIEMENT MOBILE MONEY
+      // VALIDATION & PUBLICATION AUTOMATIQUE DES PUBS UNIQUEMENT LORSQUE VERIFY RENVOIE SUCCESS
       state.listings = state.listings.map(item => {
         if ((state.modalTargetId && item.id === state.modalTargetId) || (!state.modalTargetId && item.isOwner)) {
           return {
@@ -1856,7 +1883,7 @@
       document.getElementById('nav-plan-badge').classList.remove('hidden');
 
       document.getElementById('modal-success-desc').innerHTML =
-        `Votre paiement Mobile Money de <strong>${formatXAF(plan.priceXAF)}</strong> (Réf: <strong>${txRef}</strong>) est validé par l'API Live. Votre publicité est <strong>validée et publiée automatiquement à la une</strong> pendant <strong>${plan.durationDays} jours</strong> !`;
+        `Paiement SasPay vérifié (Statut: <strong>SUCCESS</strong> • Débité: <strong>${chargedVal} XAF</strong> • Net: <strong>${netVal} XAF</strong>). Votre annonce est <strong>validée et publiée automatiquement à la une</strong> pendant <strong>${plan.durationDays} jours</strong> !`;
 
       document.getElementById('modal-step-ussd').classList.add('hidden');
       document.getElementById('modal-step-success').classList.remove('hidden');
