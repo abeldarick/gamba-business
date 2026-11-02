@@ -147,7 +147,7 @@ export default function PublierAnnoncePage() {
       mapsUrl: mapsUrl.trim() || 'https://www.google.com/maps?q=-2.7258,10.0172',
       addressHint: addressHint.trim() || `Quartier ${quartier}, Gamba`,
       images: finalImages,
-      planTier: 'free',
+      planTier: selectedPlan,
     });
 
     if (selectedPlan !== 'free') {
