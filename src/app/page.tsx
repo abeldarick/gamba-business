@@ -12,14 +12,13 @@ import {
   Scissors,
   ShoppingBag,
   Shirt,
-  Award,
   Crown,
-  SlidersHorizontal,
-  ArrowRight,
   PlusCircle,
   LayoutGrid,
   RotateCcw,
   Sparkles,
+  Check,
+  TrendingUp,
 } from 'lucide-react';
 import { useGamba } from '@/context/GambaContext';
 import {
@@ -31,22 +30,19 @@ import {
 import { CategoryId, QuartierGamba } from '@/lib/types';
 import ListingCard from '@/components/ListingCard';
 
-// Les 3 photos authentiques de la vie économique à Gamba (Gabon) pour le Hero animé
+// Les 3 photos authentiques de Gamba animées en arrière-plan de la bannière de recherche
 const HERO_SLIDES = [
   {
     src: '/images/gamba-hero-1.jpg',
     label: 'Bars, Maquis & Terrasses Régab à Gamba',
-    quartierTag: 'Ambiance & Détente • Centre-ville & Plaines',
   },
   {
     src: '/images/gamba-hero-2.jpg',
     label: 'Commerces, Sandwichs & Saveurs des Quartiers',
-    quartierTag: 'Restauration Rapide & Boutiques • Plaine 1 à 5',
   },
   {
     src: '/images/gamba-hero-3.jpg',
     label: 'Poisson Frais & Fumé de la Lagune Ndougou',
-    quartierTag: 'Pêche Locale & Grillades • Mayonami & Le Couloir',
   },
 ];
 
@@ -61,16 +57,16 @@ const CATEGORY_ICONS: Record<CategoryId, React.ElementType> = {
 };
 
 export default function HomePage() {
-  const { listings, openPaymentModal, openAuthModal, currentUser } = useGamba();
+  const { listings, openPaymentModal, openAuthModal } = useGamba();
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedQuartier, setSelectedQuartier] = useState<QuartierGamba | 'Tous'>('Tous');
   const [selectedCategory, setSelectedCategory] = useState<CategoryId | 'Toutes'>('Toutes');
-  const [maxPrice, setMaxPrice] = useState<number>(100000);
-  const [showPriceFilter, setShowPriceFilter] = useState(false);
+  const [minPrice, setMinPrice] = useState<number>(0);
+  const [maxPrice, setMaxPrice] = useState<number>(300000);
   const [activeHeroSlide, setActiveHeroSlide] = useState<number>(0);
 
-  // Animation automatique en boucle des 3 photos en arrière-plan du Hero (toutes les 4 secondes)
+  // Rotation automatique des 3 photos en fond du Hero
   useEffect(() => {
     const timer = setInterval(() => {
       setActiveHeroSlide((prev) => (prev + 1) % HERO_SLIDES.length);
@@ -81,13 +77,6 @@ export default function HomePage() {
   const activeListings = useMemo(() => {
     return listings.filter((item) => getDaysRemaining(item.expiresAt) > 0);
   }, [listings]);
-
-  const bannerListing = useMemo(() => {
-    return (
-      activeListings.find((item) => item.hasHomeBanner || item.planTier === 'business') ||
-      activeListings[0]
-    );
-  }, [activeListings]);
 
   const filteredListings = useMemo(() => {
     return activeListings.filter((item) => {
@@ -103,595 +92,565 @@ export default function HomePage() {
       const matchesCategory =
         selectedCategory === 'Toutes' || item.category === selectedCategory;
 
-      const matchesPrice = maxPrice >= 100000 ? true : item.price <= maxPrice;
+      const matchesMinPrice = item.price >= minPrice;
+      const matchesMaxPrice = maxPrice >= 300000 ? true : item.price <= maxPrice;
 
-      return matchesQuery && matchesQuartier && matchesCategory && matchesPrice;
+      return (
+        matchesQuery &&
+        matchesQuartier &&
+        matchesCategory &&
+        matchesMinPrice &&
+        matchesMaxPrice
+      );
     });
-  }, [activeListings, searchQuery, selectedQuartier, selectedCategory, maxPrice]);
+  }, [activeListings, searchQuery, selectedQuartier, selectedCategory, minPrice, maxPrice]);
 
-  const featuredListings = useMemo(() => {
-    return filteredListings
-      .filter((item) => item.isBoosted || item.planTier !== 'free')
-      .sort((a, b) => {
-        const rank = { business: 3, pro: 2, decouverte: 1, free: 0 };
+  const sortedListings = useMemo(() => {
+    return [...filteredListings].sort((a, b) => {
+      const rank = { business: 3, pro: 2, decouverte: 1, free: 0 };
+      if (rank[b.planTier] !== rank[a.planTier]) {
         return rank[b.planTier] - rank[a.planTier];
-      });
-  }, [filteredListings]);
-
-  const latestListings = useMemo(() => {
-    return [...filteredListings].sort(
-      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    );
+      }
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    });
   }, [filteredListings]);
 
   const resetFilters = () => {
     setSearchQuery('');
     setSelectedQuartier('Tous');
     setSelectedCategory('Toutes');
-    setMaxPrice(100000);
+    setMinPrice(0);
+    setMaxPrice(300000);
   };
 
-  const hasActiveFilters =
-    searchQuery.trim() !== '' ||
-    selectedQuartier !== 'Tous' ||
-    selectedCategory !== 'Toutes' ||
-    maxPrice < 100000;
-
   return (
-    <div className="space-y-10 sm:space-y-14 pb-12">
-      {/* =====================================================================
-          1. HERO IMMERSIF AVEC LES 3 PHOTOS AUTHENTIQUES ANIMÉES EN FOND
-          ===================================================================== */}
-      <section className="relative overflow-hidden bg-[#0B192C] text-white pt-10 pb-20 sm:pt-16 sm:pb-24 px-4">
-        {/* Diaporama animé (Crossfade + Effet Ken Burns Zoom fluide sur les 3 photos) */}
-        <div className="absolute inset-0 z-0 overflow-hidden">
-          {HERO_SLIDES.map((slide, idx) => {
-            const isActive = idx === activeHeroSlide;
-            return (
-              <img
-                key={slide.src}
-                src={slide.src}
-                alt={slide.label}
-                className={`absolute inset-0 w-full h-full object-cover object-center transition-all duration-[1500ms] ease-out ${
-                  isActive
-                    ? 'opacity-70 scale-110'
-                    : 'opacity-0 scale-100 pointer-events-none'
-                }`}
-              />
-            );
-          })}
-        </div>
-
-        {/* Voile dégradé calibré pour laisser briller les 3 photos tout en gardant le texte ultra lisible */}
-        <div
-          className="absolute inset-0 z-[1]"
-          style={{
-            background:
-              'linear-gradient(180deg, rgba(11, 25, 44, 0.42) 0%, rgba(11, 25, 44, 0.55) 55%, rgba(11, 25, 44, 0.94) 100%)',
-          }}
-        />
-        <div className="absolute inset-0 z-[1] bg-radial from-transparent via-transparent to-[#0B192C]/60" />
-
-        <div className="max-w-5xl mx-auto text-center space-y-6 relative z-10">
-          {/* Badge de confiance local avec les vrais quartiers de Gamba */}
-          <div className="inline-flex items-center gap-2 rounded-full bg-[#0B192C]/65 border border-sky-400/40 backdrop-blur-md px-4 py-1.5 text-xs font-semibold text-sky-200 shadow-lg">
-            <span className="h-2 w-2 rounded-full bg-sky-400 animate-ping" />
-            <span>PLAINE 1 À 5 • LE COULOIR • CENTRE-VILLE • CAMP YENZI • MAYONAMI</span>
-          </div>
-
-          <h1 className="text-3xl sm:text-5xl md:text-6xl font-black tracking-tight leading-[1.12] drop-shadow-[0_4px_18px_rgba(0,0,0,0.65)]">
-            Tout{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-300 via-blue-200 to-white">
-              Gamba
-            </span>{' '}
-            dans votre poche.
-          </h1>
-
-          <p className="text-sm sm:text-lg text-white/95 max-w-2xl mx-auto font-medium leading-relaxed drop-shadow-[0_2px_10px_rgba(0,0,0,0.7)]">
-            La plateforme de référence pour trouver les meilleurs{' '}
-            <strong className="text-sky-300 font-extrabold">
-              Motels, Restaurants de poisson braisé, Bars, Boutiques, Salons et Techniciens
-            </strong>{' '}
-            à Gamba. Contact direct par WhatsApp.
-          </p>
-
-          {/* Indicateur interactif des 3 photos animées en temps réel */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-1">
-            <div className="inline-flex items-center gap-2 rounded-full bg-[#0B192C]/75 border border-white/20 backdrop-blur-md px-3.5 py-1.5 text-xs font-bold text-white shadow-md">
-              <Sparkles className="h-3.5 w-3.5 text-amber-400 shrink-0" />
-              <span>{HERO_SLIDES[activeHeroSlide].label}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              {HERO_SLIDES.map((slide, idx) => (
-                <button
+    <div className="min-h-screen bg-[#0A1628] text-white pb-16">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 pt-6 space-y-6">
+        {/* ===================================================================
+            1. BANNIÈRE DE RECHERCHE HORIZONTALE STYLE ADFOCUS + 3 PHOTOS ANIMÉES
+            =================================================================== */}
+        <section className="relative rounded-3xl overflow-hidden border border-cyan-500/30 shadow-2xl bg-[#0D213F] p-6 sm:p-8">
+          {/* Les 3 photos authentiques de Gamba animées en arrière-plan */}
+          <div className="absolute inset-0 z-0 overflow-hidden">
+            {HERO_SLIDES.map((slide, idx) => {
+              const isActive = idx === activeHeroSlide;
+              return (
+                <img
                   key={slide.src}
-                  type="button"
-                  onClick={() => setActiveHeroSlide(idx)}
-                  aria-label={`Afficher photo ${idx + 1}: ${slide.label}`}
-                  className={`h-2.5 rounded-full transition-all duration-500 ${
-                    idx === activeHeroSlide
-                      ? 'w-9 bg-sky-400 shadow-[0_0_12px_rgba(56,189,248,0.9)]'
-                      : 'w-2.5 bg-white/45 hover:bg-white/80'
+                  src={slide.src}
+                  alt={slide.label}
+                  className={`absolute inset-0 w-full h-full object-cover object-center transition-all duration-[1500ms] ease-out ${
+                    isActive
+                      ? 'opacity-60 scale-105'
+                      : 'opacity-0 scale-100 pointer-events-none'
                   }`}
                 />
-              ))}
-            </div>
+              );
+            })}
           </div>
 
-          {/* MOTEUR DE RECHERCHE BLANC & BLEU */}
-          <div className="bg-white p-2.5 sm:p-3 rounded-2xl sm:rounded-3xl shadow-2xl shadow-blue-950/50 max-w-4xl mx-auto border border-slate-100 text-left">
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-2.5">
-              {/* Champ mot-clé */}
-              <div className="md:col-span-5 relative flex items-center">
-                <Search className="h-5 w-5 text-blue-600 absolute left-4 pointer-events-none" />
+          {/* Formes géométriques bleues/cyan style AdFocus + voile de lisibilité */}
+          <div
+            className="absolute inset-0 z-[1]"
+            style={{
+              background:
+                'linear-gradient(90deg, rgba(10, 22, 40, 0.85) 0%, rgba(13, 33, 63, 0.65) 55%, rgba(6, 182, 212, 0.45) 100%)',
+            }}
+          />
+          <div className="absolute -left-10 -top-10 h-44 w-44 rounded-3xl bg-blue-600/35 rotate-12 blur-sm z-[1] pointer-events-none" />
+          <div className="absolute -right-8 -bottom-12 h-56 w-56 rounded-3xl bg-cyan-400/30 -rotate-12 blur-sm z-[1] pointer-events-none" />
+
+          {/* Contenu de la bannière de recherche */}
+          <div className="relative z-10 space-y-4">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div>
+                <h1 className="text-xl sm:text-2xl md:text-3xl font-black tracking-tight text-white drop-shadow">
+                  Recherche de commerces &amp; services à Gamba
+                </h1>
+                <p className="text-xs sm:text-sm text-cyan-200 font-medium mt-0.5">
+                  Motels, Restaurants de poisson braisé, Bars, Boutiques, Salons &amp; Artisans •{' '}
+                  <span className="text-white font-bold">{HERO_SLIDES[activeHeroSlide].label}</span>
+                </p>
+              </div>
+
+              {/* Petits points indicateurs des 3 photos animées */}
+              <div className="flex items-center gap-1.5 bg-[#0A1628]/70 border border-white/15 rounded-full px-3 py-1.5">
+                <Sparkles className="h-3.5 w-3.5 text-cyan-400" />
+                {HERO_SLIDES.map((s, idx) => (
+                  <button
+                    key={s.src}
+                    type="button"
+                    onClick={() => setActiveHeroSlide(idx)}
+                    aria-label={s.label}
+                    className={`h-2 rounded-full transition-all ${
+                      idx === activeHeroSlide ? 'w-6 bg-cyan-400' : 'w-2 bg-white/40'
+                    }`}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* Barre des 4 blocs blancs alignés comme sur le modèle AdFocus */}
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-3 pt-1">
+              {/* 1. Recherche de mots-clés */}
+              <div className="md:col-span-4 relative flex items-center bg-white rounded-xl shadow-md">
+                <Search className="h-4 w-4 text-slate-400 absolute left-3.5 pointer-events-none" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Motel, carpe braisée, clim, tresses..."
-                  className="w-full pl-11 pr-4 py-3.5 rounded-xl sm:rounded-2xl bg-slate-50 text-slate-900 placeholder-slate-400 text-sm font-medium focus:bg-white focus:ring-2 focus:ring-blue-600 focus:outline-none transition"
+                  placeholder="Recherche de mots-clés (Motel, poisson, clim...)"
+                  className="w-full pl-10 pr-4 py-3.5 rounded-xl bg-transparent text-slate-900 placeholder-slate-400 text-xs sm:text-sm font-semibold focus:outline-none"
                 />
               </div>
 
-              {/* Sélecteur des vrais Quartiers de Gamba */}
-              <div className="md:col-span-4 relative flex items-center">
-                <MapPin className="h-5 w-5 text-blue-600 absolute left-4 pointer-events-none" />
+              {/* 2. Catégorie */}
+              <div className="md:col-span-3 relative flex items-center bg-white rounded-xl shadow-md">
                 <select
-                  value={selectedQuartier}
+                  value={selectedCategory}
                   onChange={(e) =>
-                    setSelectedQuartier(e.target.value as QuartierGamba | 'Tous')
+                    setSelectedCategory(e.target.value as CategoryId | 'Toutes')
                   }
-                  className="w-full pl-11 pr-8 py-3.5 rounded-xl sm:rounded-2xl bg-slate-50 text-slate-900 text-sm font-semibold focus:bg-white focus:ring-2 focus:ring-blue-600 focus:outline-none cursor-pointer transition"
+                  className="w-full px-4 py-3.5 rounded-xl bg-transparent text-slate-800 text-xs sm:text-sm font-bold focus:outline-none cursor-pointer"
                 >
-                  <option value="Tous">📍 Tous les quartiers de Gamba</option>
-                  {QUARTIERS_GAMBA.map((quartier) => (
-                    <option key={quartier} value={quartier}>
-                      Quartier : {quartier}
+                  <option value="Toutes">Catégorie (Toutes)</option>
+                  {CATEGORIES_GAMBA.map((cat) => (
+                    <option key={cat.id} value={cat.id}>
+                      {cat.label}
                     </option>
                   ))}
                 </select>
               </div>
 
-              {/* Bouton Filtrer Prix */}
-              <div className="md:col-span-3 flex gap-2">
+              {/* 3. Budget / Type */}
+              <div className="md:col-span-2 relative flex items-center bg-white rounded-xl shadow-md">
+                <select
+                  value={maxPrice}
+                  onChange={(e) => setMaxPrice(Number(e.target.value))}
+                  className="w-full px-3.5 py-3.5 rounded-xl bg-transparent text-slate-800 text-xs sm:text-sm font-bold focus:outline-none cursor-pointer"
+                >
+                  <option value={300000}>Budget / Type</option>
+                  <option value={5000}>Max 5 000 FCFA</option>
+                  <option value={15000}>Max 15 000 FCFA</option>
+                  <option value={30000}>Max 30 000 FCFA</option>
+                  <option value={50000}>Max 50 000 FCFA</option>
+                  <option value={100000}>Max 100 000 FCFA</option>
+                </select>
+              </div>
+
+              {/* 4. Géolocalisation (Quartier Gamba) + Bouton Bleu "Recherche" intégré */}
+              <div className="md:col-span-3 flex items-center bg-white rounded-xl p-1 shadow-md">
+                <select
+                  value={selectedQuartier}
+                  onChange={(e) =>
+                    setSelectedQuartier(e.target.value as QuartierGamba | 'Tous')
+                  }
+                  className="w-full pl-3 pr-1 py-2.5 bg-transparent text-slate-800 text-xs sm:text-sm font-bold focus:outline-none cursor-pointer truncate"
+                >
+                  <option value="Tous">Géolocalisation (Gamba)</option>
+                  {QUARTIERS_GAMBA.map((q) => (
+                    <option key={q} value={q}>
+                      📍 {q}
+                    </option>
+                  ))}
+                </select>
                 <button
                   type="button"
-                  onClick={() => setShowPriceFilter(!showPriceFilter)}
-                  className="w-full flex items-center justify-center gap-2 rounded-xl sm:rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm py-3.5 px-4 transition shadow-lg shadow-blue-600/25"
+                  onClick={() => {}}
+                  className="shrink-0 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs px-4 py-2.5 shadow transition"
                 >
-                  <SlidersHorizontal className="h-4 w-4" />
-                  <span>Filtrer Prix</span>
+                  Recherche
                 </button>
               </div>
             </div>
-
-            {/* Tiroir de filtre par budget en FCFA */}
-            {showPriceFilter && (
-              <div className="mt-3 pt-3 border-t border-slate-100 px-3 pb-1 flex flex-col sm:flex-row items-center justify-between gap-4 text-slate-800">
-                <div className="flex items-center gap-2 text-xs font-bold">
-                  <span className="text-slate-500">Budget maximum :</span>
-                  <span className="rounded-lg bg-blue-50 text-blue-700 border border-blue-200 px-3 py-1 font-extrabold">
-                    {maxPrice >= 100000 ? 'Tous les tarifs (Illimité)' : formatXAF(maxPrice)}
-                  </span>
-                </div>
-                <div className="flex items-center gap-3 w-full sm:w-80">
-                  <span className="text-[11px] font-semibold text-slate-400">1 000 F</span>
-                  <input
-                    type="range"
-                    min={1000}
-                    max={100000}
-                    step={1000}
-                    value={maxPrice}
-                    onChange={(e) => setMaxPrice(Number(e.target.value))}
-                    className="w-full accent-blue-600 cursor-pointer"
-                  />
-                  <span className="text-[11px] font-semibold text-slate-400">100 000 F+</span>
-                </div>
-              </div>
-            )}
           </div>
+        </section>
 
-          {/* Raccourcis des Vrais Quartiers de Gamba */}
-          <div className="flex items-center justify-start sm:justify-center overflow-x-auto no-scrollbar gap-2 pt-2 text-xs">
-            <span className="text-sky-200/80 font-medium shrink-0">Quartiers :</span>
-            {(
-              [
-                'Plaine 1',
-                'Plaine 2',
-                'Plaine 3',
-                'Plaine 4',
-                'Plaine 5',
-                'Le Couloir',
-                'Centre-ville',
-              ] as QuartierGamba[]
-            ).map((q) => (
+        {/* ===================================================================
+            2. ARCHITECTURE 3 COLONNES COMME SUR LE MODÈLE PHOTO ADFOCUS :
+               - GAUCHE : Panneau Blanc "Filtres" (Sliders Prix + Checkboxes Catégories)
+               - CENTRE : Grille "Annonces" (3 cartes par ligne)
+               - DROITE : Panneau Blanc "Annonces à la Une & Insights Publicitaires"
+            =================================================================== */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          {/* ==================== COLONNE GAUCHE : FILTRES (3 cols) ==================== */}
+          <aside className="lg:col-span-3 bg-white text-slate-900 rounded-2xl p-5 shadow-xl space-y-6">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <h2 className="text-base font-black text-slate-900">Filtres</h2>
               <button
-                key={q}
-                onClick={() => setSelectedQuartier(selectedQuartier === q ? 'Tous' : q)}
-                className={`shrink-0 rounded-full border px-3.5 py-1.5 font-semibold transition ${
-                  selectedQuartier === q
-                    ? 'bg-blue-600 border-blue-400 text-white'
-                    : 'bg-white/10 hover:bg-blue-600 border-white/15 text-white'
-                }`}
-              >
-                {q}
-              </button>
-            ))}
-          </div>
-
-          {/* Chiffres clés rassurants (2 Jours gratuits) */}
-          <div className="grid grid-cols-3 gap-2 max-w-lg mx-auto pt-4 border-t border-white/10 text-center">
-            <div>
-              <p className="text-lg sm:text-2xl font-black text-white">100%</p>
-              <p className="text-[11px] text-sky-200/80">Commerces de Gamba</p>
-            </div>
-            <div>
-              <p className="text-lg sm:text-2xl font-black text-sky-300">WhatsApp</p>
-              <p className="text-[11px] text-sky-200/80">Contact direct sans intermédiaire</p>
-            </div>
-            <div>
-              <p className="text-lg sm:text-2xl font-black text-white">2 Jours</p>
-              <p className="text-[11px] text-sky-200/80">1ère annonce offerte</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* =====================================================================
-          2. BARRE DES 7 CATÉGORIES (STYLE MODERNE BLEU & BLANC)
-          ===================================================================== */}
-      <section className="max-w-7xl mx-auto px-4 -mt-14 relative z-20">
-        <div className="bg-white rounded-3xl p-4 sm:p-6 shadow-xl shadow-slate-900/5 border border-slate-200/80">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2">
-              <span className="h-2.5 w-2.5 rounded-full bg-blue-600" />
-              <h2 className="text-sm sm:text-base font-extrabold text-slate-900 uppercase tracking-wider">
-                Explorer par secteur d&apos;activité
-              </h2>
-            </div>
-            {hasActiveFilters && (
-              <button
+                type="button"
                 onClick={resetFilters}
-                className="inline-flex items-center gap-1 text-xs font-bold text-blue-600 hover:text-blue-800"
+                className="inline-flex items-center gap-1 text-[11px] font-bold text-blue-600 hover:underline"
               >
-                <RotateCcw className="h-3.5 w-3.5" /> Tout afficher
+                <RotateCcw className="h-3 w-3" /> Réinitialiser
               </button>
+            </div>
+
+            {/* Curseur Prix 1 : Budget Maximum FCFA */}
+            <div className="space-y-2">
+              <span className="text-xs font-bold text-slate-500 block">Prix Maximum</span>
+              <div className="flex items-center justify-between text-xs font-extrabold text-slate-900">
+                <span>1 000 F</span>
+                <span>-</span>
+                <span className="text-blue-600">
+                  {maxPrice >= 300000 ? '300 000 FCFA' : formatXAF(maxPrice)}
+                </span>
+              </div>
+              <input
+                type="range"
+                min={1000}
+                max={300000}
+                step={1000}
+                value={maxPrice}
+                onChange={(e) => setMaxPrice(Number(e.target.value))}
+                className="w-full accent-cyan-500 cursor-pointer h-1.5 bg-slate-200 rounded-lg"
+              />
+            </div>
+
+            {/* Curseur Prix 2 : Budget Minimum FCFA */}
+            <div className="space-y-2">
+              <span className="text-xs font-bold text-slate-500 block">Prix Minimum</span>
+              <div className="flex items-center justify-between text-xs font-extrabold text-slate-900">
+                <span>{formatXAF(minPrice)}</span>
+                <span>-</span>
+                <span>50 000 FCFA</span>
+              </div>
+              <input
+                type="range"
+                min={0}
+                max={50000}
+                step={1000}
+                value={minPrice}
+                onChange={(e) => setMinPrice(Number(e.target.value))}
+                className="w-full accent-cyan-500 cursor-pointer h-1.5 bg-slate-200 rounded-lg"
+              />
+            </div>
+
+            {/* Liste de Catégories avec cases à cocher bleues et icônes (Style AdFocus) */}
+            <div className="space-y-3 pt-2 border-t border-slate-100">
+              <h3 className="text-xs font-black uppercase tracking-wider text-slate-800">
+                Catégories
+              </h3>
+
+              <div className="space-y-2.5">
+                {/* Toutes les catégories */}
+                <button
+                  type="button"
+                  onClick={() => setSelectedCategory('Toutes')}
+                  className="w-full flex items-center justify-between text-left group"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <span
+                      className={`h-4 w-4 rounded flex items-center justify-center border transition ${
+                        selectedCategory === 'Toutes'
+                          ? 'bg-blue-600 border-blue-600 text-white'
+                          : 'border-slate-300 bg-white group-hover:border-blue-400'
+                      }`}
+                    >
+                      {selectedCategory === 'Toutes' && <Check className="h-3 w-3 stroke-[3]" />}
+                    </span>
+                    <LayoutGrid className="h-4 w-4 text-slate-600" />
+                    <span className="text-xs font-bold text-slate-800 group-hover:text-blue-600">
+                      Tout Gamba
+                    </span>
+                  </div>
+                  <span className="text-[11px] font-bold text-slate-400">
+                    {activeListings.length}
+                  </span>
+                </button>
+
+                {CATEGORIES_GAMBA.map((cat) => {
+                  const Icon = CATEGORY_ICONS[cat.id];
+                  const isChecked = selectedCategory === cat.id;
+                  const count = activeListings.filter((l) => l.category === cat.id).length;
+
+                  return (
+                    <button
+                      key={cat.id}
+                      type="button"
+                      onClick={() =>
+                        setSelectedCategory(isChecked ? 'Toutes' : cat.id)
+                      }
+                      className="w-full flex items-center justify-between text-left group"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <span
+                          className={`h-4 w-4 rounded flex items-center justify-center border transition ${
+                            isChecked
+                              ? 'bg-blue-600 border-blue-600 text-white'
+                              : 'border-slate-300 bg-white group-hover:border-blue-400'
+                          }`}
+                        >
+                          {isChecked && <Check className="h-3 w-3 stroke-[3]" />}
+                        </span>
+                        <Icon className="h-4 w-4 text-slate-600" />
+                        <span
+                          className={`text-xs font-bold transition ${
+                            isChecked
+                              ? 'text-blue-600'
+                              : 'text-slate-700 group-hover:text-blue-600'
+                          }`}
+                        >
+                          {cat.label}
+                        </span>
+                      </div>
+                      <span className="text-[11px] font-bold text-slate-400">{count}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Filtre rapide par Quartier de Gamba dans la barre latérale */}
+            <div className="space-y-2.5 pt-2 border-t border-slate-100">
+              <h3 className="text-xs font-black uppercase tracking-wider text-slate-800">
+                Quartiers de Gamba
+              </h3>
+              <div className="flex flex-wrap gap-1.5">
+                {(['Tous', 'Plaine 1', 'Plaine 2', 'Plaine 3', 'Le Couloir', 'Centre-ville', 'Mayonami'] as const).map(
+                  (q) => (
+                    <button
+                      key={q}
+                      type="button"
+                      onClick={() => setSelectedQuartier(q)}
+                      className={`rounded-lg px-2.5 py-1 text-[11px] font-bold transition ${
+                        selectedQuartier === q
+                          ? 'bg-blue-600 text-white'
+                          : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                      }`}
+                    >
+                      {q}
+                    </button>
+                  )
+                )}
+              </div>
+            </div>
+          </aside>
+
+          {/* ==================== COLONNE CENTRALE : GRILLE DES ANNONCES (6 cols) ==================== */}
+          <div className="lg:col-span-6 space-y-4">
+            {/* En-tête "Annonces" + bouton "Filtrer" exactement comme sur la photo */}
+            <div className="flex items-center justify-between px-1">
+              <div className="flex items-center gap-2.5">
+                <h2 className="text-lg font-extrabold text-white">Annonces</h2>
+                <span className="rounded-full bg-blue-600/30 border border-cyan-400/30 px-2.5 py-0.5 text-xs font-bold text-cyan-300">
+                  {sortedListings.length} résultat(s)
+                </span>
+              </div>
+
+              <div className="flex items-center gap-2 text-xs text-slate-300 font-semibold">
+                <LayoutGrid className="h-4 w-4 text-cyan-400" />
+                <span>
+                  {selectedQuartier === 'Tous' ? 'Tout Gamba' : selectedQuartier}
+                </span>
+              </div>
+            </div>
+
+            {sortedListings.length === 0 ? (
+              <div className="rounded-2xl bg-white text-slate-900 p-8 text-center space-y-4 shadow-xl">
+                <div className="mx-auto h-14 w-14 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center">
+                  <PlusCircle className="h-7 w-7" />
+                </div>
+                <div className="space-y-1">
+                  <h3 className="text-lg font-black text-slate-900">
+                    Aucune annonce publiée pour le moment
+                  </h3>
+                  <p className="text-xs text-slate-500 max-w-md mx-auto">
+                    Créez votre compte par téléphone (+241) ou par mail et publiez la première
+                    annonce de votre commerce à Gamba (2 jours d&apos;essai gratuit ou publication
+                    automatique à la une via SasPay Mobile Money).
+                  </p>
+                </div>
+                <div className="flex flex-wrap justify-center gap-2.5 pt-1">
+                  <button
+                    type="button"
+                    onClick={openAuthModal}
+                    className="rounded-xl bg-[#0A1628] hover:bg-slate-800 text-white font-bold text-xs px-4 py-2.5 transition"
+                  >
+                    🔐 Se connecter / S&apos;inscrire
+                  </button>
+                  <Link
+                    href="/publier"
+                    className="rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-4 py-2.5 shadow-md transition"
+                  >
+                    + Créer une annonce (2 jours gratuits)
+                  </Link>
+                </div>
+
+                {/* Aperçu des 3 univers économiques de Gamba avec vos 3 photos */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-4 border-t border-slate-100 text-left">
+                  <div
+                    onClick={() => setSelectedCategory('Bars')}
+                    className="cursor-pointer group relative h-32 rounded-xl overflow-hidden"
+                  >
+                    <img
+                      src="/images/gamba-hero-1.jpg"
+                      alt="Bars & Motels Gamba"
+                      className="w-full h-full object-cover group-hover:scale-105 transition"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent" />
+                    <div className="absolute bottom-2 left-2.5 right-2.5 text-white">
+                      <span className="text-[9px] font-bold uppercase text-cyan-300">
+                        Bars &amp; Motels
+                      </span>
+                      <p className="text-xs font-extrabold leading-tight">
+                        Maquis &amp; Détente à Gamba
+                      </p>
+                    </div>
+                  </div>
+
+                  <div
+                    onClick={() => setSelectedCategory('Restaurants')}
+                    className="cursor-pointer group relative h-32 rounded-xl overflow-hidden"
+                  >
+                    <img
+                      src="/images/gamba-hero-3.jpg"
+                      alt="Poisson braisé Gamba"
+                      className="w-full h-full object-cover group-hover:scale-105 transition"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent" />
+                    <div className="absolute bottom-2 left-2.5 right-2.5 text-white">
+                      <span className="text-[9px] font-bold uppercase text-cyan-300">
+                        Saveurs Lagune
+                      </span>
+                      <p className="text-xs font-extrabold leading-tight">
+                        Poisson Braisé &amp; Fumé
+                      </p>
+                    </div>
+                  </div>
+
+                  <div
+                    onClick={() => setSelectedCategory('Alimentation')}
+                    className="cursor-pointer group relative h-32 rounded-xl overflow-hidden"
+                  >
+                    <img
+                      src="/images/gamba-hero-2.jpg"
+                      alt="Commerces Gamba"
+                      className="w-full h-full object-cover group-hover:scale-105 transition"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent" />
+                    <div className="absolute bottom-2 left-2.5 right-2.5 text-white">
+                      <span className="text-[9px] font-bold uppercase text-cyan-300">
+                        Quartiers Plaine 1-5
+                      </span>
+                      <p className="text-xs font-extrabold leading-tight">
+                        Sandwichs &amp; Boutiques
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+                {sortedListings.map((listing) => (
+                  <ListingCard key={listing.id} listing={listing} />
+                ))}
+              </div>
             )}
           </div>
 
-          <div className="flex md:grid md:grid-cols-8 gap-2.5 overflow-x-auto no-scrollbar pb-1">
-            <button
-              onClick={() => setSelectedCategory('Toutes')}
-              className={`shrink-0 flex flex-col items-center justify-center rounded-2xl p-3 border text-center transition min-w-[98px] ${
-                selectedCategory === 'Toutes'
-                  ? 'bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-600/20'
-                  : 'bg-slate-50/70 text-slate-700 border-slate-200/80 hover:border-blue-400'
-              }`}
-            >
-              <div
-                className={`h-10 w-10 rounded-xl flex items-center justify-center mb-1.5 ${
-                  selectedCategory === 'Toutes'
-                    ? 'bg-white/20 text-white'
-                    : 'bg-blue-100/80 text-blue-700'
-                }`}
-              >
-                <LayoutGrid className="h-5 w-5" />
-              </div>
-              <span className="text-xs font-extrabold">Tout Gamba</span>
-              <span className="text-[10px] opacity-80">{activeListings.length} offres</span>
-            </button>
-
-            {CATEGORIES_GAMBA.map((cat) => {
-              const Icon = CATEGORY_ICONS[cat.id];
-              const isSelected = selectedCategory === cat.id;
-              const count = activeListings.filter((l) => l.category === cat.id).length;
-
-              return (
-                <button
-                  key={cat.id}
-                  onClick={() => setSelectedCategory(isSelected ? 'Toutes' : cat.id)}
-                  className={`shrink-0 flex flex-col items-center justify-center rounded-2xl p-3 border text-center transition min-w-[106px] ${
-                    isSelected
-                      ? 'bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-600/20'
-                      : 'bg-white text-slate-800 border-slate-200/80 hover:border-blue-400 hover:bg-blue-50/30'
-                  }`}
-                >
-                  <div
-                    className={`h-10 w-10 rounded-xl flex items-center justify-center mb-1.5 ${
-                      isSelected ? 'bg-white/20 text-white' : 'bg-blue-50 text-blue-700'
-                    }`}
-                  >
-                    <Icon className="h-5 w-5" />
-                  </div>
-                  <span className="text-xs font-extrabold truncate w-full">{cat.id}</span>
-                  <span
-                    className={`text-[10px] ${
-                      isSelected ? 'text-blue-100' : 'text-slate-400'
-                    }`}
-                  >
-                    {count} {count > 1 ? 'offres' : 'offre'}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* =====================================================================
-          3. VITRINE PHOTO RÉELLE : LA VIE ÉCONOMIQUE À GAMBA (NDOUGOU)
-          ===================================================================== */}
-      <section className="max-w-7xl mx-auto px-4">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-5 gap-2">
-          <div>
-            <span className="text-xs font-extrabold uppercase tracking-wider text-blue-600">
-              DÉCOUVRIR GAMBA
-            </span>
-            <h2 className="text-xl sm:text-2xl font-black text-slate-900">
-              L&apos;économie locale de Gamba en un clin d&apos;œil
-            </h2>
-          </div>
-          <p className="text-xs text-slate-500">
-            Cliquez sur un univers pour filtrer les annonces correspondantes
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div
-            onClick={() => setSelectedCategory('Bars')}
-            className="group cursor-pointer relative h-52 rounded-3xl overflow-hidden shadow-md border border-slate-200"
-          >
-            <img
-              src="/images/gamba-hero-1.jpg"
-              alt="Bars, Maquis et Détente à Gamba"
-              className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/35 to-transparent" />
-            <div className="absolute bottom-4 left-4 right-4 text-white">
-              <span className="rounded-full bg-blue-600 px-2.5 py-0.5 text-[10px] font-bold uppercase">
-                Détente &amp; Séjours
-              </span>
-              <h3 className="text-lg font-bold mt-1">Bars, Maquis &amp; Motels de Gamba</h3>
-              <p className="text-xs text-slate-200">
-                Centre-ville, Plaine 1 à 5 &amp; Le Couloir
-              </p>
-            </div>
-          </div>
-
-          <div
-            onClick={() => setSelectedCategory('Restaurants')}
-            className="group cursor-pointer relative h-52 rounded-3xl overflow-hidden shadow-md border border-slate-200"
-          >
-            <img
-              src="/images/gamba-hero-3.jpg"
-              alt="Poisson braisé et fumé de la lagune de Gamba"
-              className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/35 to-transparent" />
-            <div className="absolute bottom-4 left-4 right-4 text-white">
-              <span className="rounded-full bg-sky-500 px-2.5 py-0.5 text-[10px] font-bold uppercase">
-                Saveurs de la Lagune
-              </span>
-              <h3 className="text-lg font-bold mt-1">
-                Poisson Braisé, Fumé &amp; Restaurants
-              </h3>
-              <p className="text-xs text-slate-200">
-                Pêche fraîche de Ndougou, grillades &amp; livraison
-              </p>
-            </div>
-          </div>
-
-          <div
-            onClick={() => setSelectedCategory('Alimentation')}
-            className="group cursor-pointer relative h-52 rounded-3xl overflow-hidden shadow-md border border-slate-200"
-          >
-            <img
-              src="/images/gamba-hero-2.jpg"
-              alt="Sandwichs, Commerces et Boutiques à Gamba"
-              className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/35 to-transparent" />
-            <div className="absolute bottom-4 left-4 right-4 text-white">
-              <span className="rounded-full bg-indigo-600 px-2.5 py-0.5 text-[10px] font-bold uppercase">
-                Commerces &amp; Quartiers
-              </span>
-              <h3 className="text-lg font-bold mt-1">
-                Sandwichs, Boutiques &amp; Services
-              </h3>
-              <p className="text-xs text-slate-200">
-                Alimentation, coiffure et commerce général
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* =====================================================================
-          4. BANNIÈRE PUB ACCUEIL (INCLUSE DANS L'OFFRE BUSINESS 15 000 XAF)
-          ===================================================================== */}
-      {bannerListing && (
-        <section className="max-w-7xl mx-auto px-4">
-          <div className="relative rounded-3xl overflow-hidden shadow-xl border border-blue-200 bg-[#0B192C] text-white">
-            <img
-              src={bannerListing.images[0]}
-              alt={bannerListing.title}
-              className="absolute inset-0 w-full h-full object-cover opacity-30"
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-[#0B192C] via-[#0B192C]/90 to-blue-900/60" />
-            <div className="relative z-10 p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-5">
-              <div className="space-y-2 text-center md:text-left max-w-2xl">
-                <div className="inline-flex items-center gap-1.5 rounded-full bg-blue-500/30 border border-sky-400/40 px-3 py-1 text-[10px] font-extrabold uppercase text-sky-200">
-                  <Crown className="h-3.5 w-3.5 text-sky-300" /> BANNIÈRE À LA UNE • OFFRE BUSINESS
+          {/* ==================== COLONNE DROITE : ANNONCES À LA UNE & INSIGHTS (3 cols) ==================== */}
+          <aside className="lg:col-span-3 bg-white text-slate-900 rounded-2xl p-5 shadow-xl space-y-6">
+            {/* Bloc 1 : Annonces à la Une */}
+            <div className="space-y-3">
+              <h2 className="text-base font-black text-slate-900">Annonces à la Une</h2>
+              <div className="rounded-2xl bg-gradient-to-br from-sky-50 via-blue-50 to-indigo-50 border border-blue-100 p-4 text-center space-y-3">
+                <div className="mx-auto h-20 w-full rounded-xl overflow-hidden relative">
+                  <img
+                    src="/images/logo-gamba-horizontal.jpg"
+                    alt="Gamba Business"
+                    className="w-full h-full object-cover"
+                  />
                 </div>
-                <h3 className="text-xl sm:text-2xl font-black text-white">
-                  {bannerListing.title}
+                <p className="text-xs text-slate-600 font-medium leading-relaxed">
+                  Propulsez votre commerce en tête des recherches à Gamba. Validation automatique
+                  dès paiement Mobile Money.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => openPaymentModal('pro')}
+                  className="w-full rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs py-2.5 px-4 shadow-md transition"
+                >
+                  🚀 Booster mon annonce (dès 2 000 F)
+                </button>
+              </div>
+            </div>
+
+            {/* Bloc 2 : Insights publicitaires rapides (Graphique en barres comme sur la maquette) */}
+            <div className="space-y-3 pt-2 border-t border-slate-100">
+              <div className="flex items-center justify-between">
+                <h3 className="text-xs font-black text-slate-900">
+                  Insights publicitaires rapides
                 </h3>
-                <p className="text-xs sm:text-sm text-slate-200">
-                  📍 {bannerListing.quartier} ({bannerListing.addressHint}) — Tarif :{' '}
-                  <strong className="text-sky-300 font-black">
-                    {formatXAF(bannerListing.price)} {bannerListing.priceLabel || ''}
-                  </strong>
-                </p>
+                <TrendingUp className="h-4 w-4 text-cyan-500" />
               </div>
+              <p className="text-[11px] text-slate-500">
+                Visibilité moyenne des commerces sponsorisés à Gamba (Plaine 1-5 &amp; Centre-ville)
+              </p>
 
-              <div className="flex flex-wrap items-center justify-center gap-3 shrink-0">
-                <Link
-                  href={`/annonce/${bannerListing.id}`}
-                  className="inline-flex items-center gap-1.5 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white font-extrabold text-xs sm:text-sm px-5 py-3.5 shadow-lg transition"
-                >
-                  <span>Découvrir l&apos;établissement</span>
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-                <button
-                  onClick={() => openPaymentModal('business')}
-                  className="inline-flex items-center gap-1 rounded-2xl bg-white/10 hover:bg-white/20 text-sky-200 font-bold text-xs px-4 py-3.5 border border-white/15 backdrop-blur-sm transition"
-                >
-                  <span>Afficher ma bannière ici (15 000 F)</span>
-                </button>
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* =====================================================================
-          5. SECTION "ANNONCES À LA UNE" (BOOSTÉES / PARTENAIRES PRO)
-          ===================================================================== */}
-      {featuredListings.length > 0 && (
-        <section className="max-w-7xl mx-auto px-4 space-y-5">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-gradient-to-r from-blue-50 via-sky-50 to-white border border-blue-200/80 rounded-3xl p-5 shadow-sm">
-            <div className="flex items-center gap-3.5">
-              <div className="h-12 w-12 rounded-2xl bg-blue-600 text-white flex items-center justify-center shadow-md shadow-blue-600/20 shrink-0">
-                <Award className="h-6 w-6" />
-              </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <h2 className="text-lg sm:text-xl font-black text-slate-900">
-                    Annonces à la une à Gamba
-                  </h2>
-                  <span className="rounded-full bg-blue-600 text-white text-[10px] font-extrabold px-2.5 py-0.5 uppercase">
-                    PARTENAIRES PRO
-                  </span>
+              {/* Histogramme Bleu/Cyan fidèle à la maquette */}
+              <div className="pt-2 pb-1 px-2 bg-slate-50 rounded-xl border border-slate-100">
+                <div className="h-24 flex items-end justify-between gap-2 pt-4 px-1">
+                  <div className="flex-1 flex flex-col items-center gap-1">
+                    <div className="w-full bg-blue-300 rounded-t-md h-8" />
+                    <span className="text-[9px] font-bold text-slate-400">Lun</span>
+                  </div>
+                  <div className="flex-1 flex flex-col items-center gap-1">
+                    <div className="w-full bg-cyan-400 rounded-t-md h-12" />
+                    <span className="text-[9px] font-bold text-slate-400">Mar</span>
+                  </div>
+                  <div className="flex-1 flex flex-col items-center gap-1">
+                    <div className="w-full bg-blue-500 rounded-t-md h-10" />
+                    <span className="text-[9px] font-bold text-slate-400">Mer</span>
+                  </div>
+                  <div className="flex-1 flex flex-col items-center gap-1">
+                    <div className="w-full bg-cyan-400 rounded-t-md h-16" />
+                    <span className="text-[9px] font-bold text-slate-400">Jeu</span>
+                  </div>
+                  <div className="flex-1 flex flex-col items-center gap-1">
+                    <div className="w-full bg-blue-600 rounded-t-md h-14" />
+                    <span className="text-[9px] font-bold text-slate-400">Ven</span>
+                  </div>
+                  <div className="flex-1 flex flex-col items-center gap-1">
+                    <div className="w-full bg-gradient-to-t from-blue-600 to-cyan-400 rounded-t-md h-20" />
+                    <span className="text-[9px] font-extrabold text-blue-600">Sam</span>
+                  </div>
                 </div>
-                <p className="text-xs sm:text-sm text-slate-600">
-                  Établissements vérifiés et annonces mises en avant via Airtel Money &amp; Moov
-                  Money
-                </p>
               </div>
             </div>
 
-            <Link
-              href="/tarifs"
-              className="inline-flex items-center gap-1.5 rounded-xl bg-white hover:bg-blue-50 text-blue-700 border border-blue-200 font-bold text-xs px-4 py-2.5 shadow-sm transition shrink-0"
-            >
-              <span>Mettre mon commerce à la une (dès 2 000 F)</span>
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
+            {/* Bloc 3 : Visuels d'impact d'annonces de partenaires (Carte sombre en bas à droite comme sur la photo) */}
+            <div className="space-y-2.5 pt-2 border-t border-slate-100">
+              <h3 className="text-xs font-black text-slate-900">
+                Visuels d&apos;impact d&apos;annonces de partenaires
+              </h3>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {featuredListings.map((listing) => (
-              <ListingCard key={listing.id} listing={listing} />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* =====================================================================
-          6. SECTION "DERNIÈRES ANNONCES" (TOUT GAMBA)
-          ===================================================================== */}
-      <section className="max-w-7xl mx-auto px-4 space-y-5">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-4">
-          <div>
-            <h2 className="text-xl sm:text-2xl font-black text-slate-900">
-              Toutes les annonces récentes
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-500">
-              {filteredListings.length} commerce(s) et service(s) disponibles
-              {selectedQuartier !== 'Tous' ? ` au quartier ${selectedQuartier}` : ' à Gamba'}
-            </p>
-          </div>
-
-          <Link
-            href="/publier"
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 hover:bg-blue-700 text-white font-bold text-xs sm:text-sm px-4 py-2.5 transition"
-          >
-            <PlusCircle className="h-4 w-4 text-sky-400" />
-            <span>Publier une annonce (2 jours gratuits)</span>
-          </Link>
-        </div>
-
-        {latestListings.length === 0 ? (
-          <div className="rounded-3xl bg-white border border-slate-200 p-10 text-center space-y-4 shadow-sm">
-            <p className="text-lg font-black text-slate-900">
-              Aucune annonce publiée pour le moment
-            </p>
-            <p className="text-xs sm:text-sm text-slate-500 max-w-lg mx-auto">
-              Toutes les annonces de démonstration ont été retirées. Connectez-vous par
-              numéro de téléphone (+241) ou par adresse mail et publiez votre première vraie
-              annonce commerciale à Gamba !
-            </p>
-            <div className="flex flex-wrap justify-center gap-3 pt-2">
-              <button
-                onClick={openAuthModal}
-                className="rounded-xl bg-[#0B192C] hover:bg-slate-800 text-white font-extrabold text-xs sm:text-sm px-5 py-3 transition"
+              <div
+                onClick={() => openPaymentModal('business')}
+                className="cursor-pointer group relative rounded-2xl overflow-hidden bg-[#0A1628] text-white p-4 shadow-lg border border-blue-900/60"
               >
-                🔐 S&apos;inscrire (Mail ou Téléphone)
-              </button>
-              <Link
-                href="/publier"
-                className="rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs sm:text-sm px-5 py-3 shadow-md transition"
-              >
-                + Publier la 1ère annonce (2 jours gratuits)
-              </Link>
+                <img
+                  src="/images/gamba-hero-1.jpg"
+                  alt="Partenaire Gamba Business"
+                  className="absolute inset-0 w-full h-full object-cover opacity-45 group-hover:scale-105 transition duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-[#0A1628] via-[#0A1628]/85 to-transparent" />
+                <div className="relative z-10 space-y-2 max-w-[190px]">
+                  <span className="inline-flex items-center gap-1 rounded-md bg-cyan-500/20 border border-cyan-400/40 px-2 py-0.5 text-[10px] font-extrabold text-cyan-300">
+                    <Crown className="h-3 w-3" /> OFFRE BUSINESS
+                  </span>
+                  <h4 className="text-xs font-extrabold leading-snug">
+                    Visuel d&apos;impact de partenaires à Gamba
+                  </h4>
+                  <p className="text-[11px] text-sky-200/90">
+                    Bannière grand format + Badge PRO Vérifié (15 000 FCFA)
+                  </p>
+                </div>
+              </div>
             </div>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {latestListings.map((listing) => (
-              <ListingCard key={listing.id} listing={listing} />
-            ))}
-          </div>
-        )}
-      </section>
-
-      {/* =====================================================================
-          7. BANDEAU D'ACQUISITION COMMERÇANTS (2 JOURS GRATUITS - BLEU ROYAL)
-          ===================================================================== */}
-      <section className="max-w-7xl mx-auto px-4 pt-4">
-        <div className="rounded-3xl bg-gradient-to-br from-blue-900 via-blue-800 to-[#0B192C] text-white p-6 sm:p-10 shadow-xl border border-blue-700/50 grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-          <div className="lg:col-span-8 space-y-3">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-sky-400/20 border border-sky-300/30 px-3 py-1 text-xs font-bold text-sky-200">
-              🚀 DÉVELOPPEZ VOTRE CHIFFRE D&apos;AFFAIRES À GAMBA
-            </span>
-            <h3 className="text-2xl sm:text-3xl font-black leading-tight">
-              Vous gérez un Motel, un Restaurant, une Boutique ou un Service à Gamba ?
-            </h3>
-            <p className="text-xs sm:text-sm text-blue-100 leading-relaxed max-w-2xl">
-              Profitez de <strong>2 jours d&apos;essai 100% gratuit</strong> pour votre première
-              annonce. Ensuite, restez en tête des recherches dès <strong>2 000 FCFA</strong>{' '}
-              payables directement par Airtel Money (<strong>*150#</strong>) ou Moov Money (
-              <strong>*555#</strong>).
-            </p>
-          </div>
-
-          <div className="lg:col-span-4 flex flex-col sm:flex-row lg:flex-col gap-3">
-            <Link
-              href="/publier"
-              className="w-full flex items-center justify-center gap-2 rounded-2xl bg-white hover:bg-sky-50 text-blue-900 font-extrabold text-sm py-4 px-5 shadow-lg transition"
-            >
-              <PlusCircle className="h-5 w-5 text-blue-600" />
-              <span>Publier gratuitement (2 jours)</span>
-            </Link>
-            <Link
-              href="/tarifs"
-              className="w-full flex items-center justify-center gap-2 rounded-2xl bg-blue-700/60 hover:bg-blue-700 text-white font-bold text-xs sm:text-sm py-3.5 px-5 border border-blue-400/30 transition"
-            >
-              <span>Découvrir les forfaits PRO (2 000 F - 15 000 F)</span>
-            </Link>
-          </div>
+          </aside>
         </div>
-      </section>
+      </div>
     </div>
   );
 }
