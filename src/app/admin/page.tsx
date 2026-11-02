@@ -220,8 +220,8 @@ export default function AdminBackendPage() {
             <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/20 border border-emerald-400/30 px-3 py-1 text-[11px] font-extrabold text-emerald-300 uppercase">
               <ShieldCheck className="h-3.5 w-3.5" /> BACK-END SUPER-ADMIN • CONTRÔLE TOTAL
             </span>
-            <span className="rounded-full bg-blue-500/20 border border-sky-400/30 px-3 py-1 text-[11px] font-bold text-sky-200">
-              GAMBA BUSINESS GABON 🇬🇦
+            <span className="rounded-full bg-teal-500/20 border border-teal-400/30 px-3 py-1 text-[11px] font-mono font-bold text-teal-200">
+              🔑 API Mobile Money : sk_live__fe4zzbW•••••••• (Auto-Validation Pubs ACTIVE)
             </span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black tracking-tight">
