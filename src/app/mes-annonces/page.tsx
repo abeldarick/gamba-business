@@ -203,12 +203,18 @@ export default function MesAnnoncesPage() {
                   <div className="space-y-1">
                     <div className="flex flex-wrap items-center gap-1.5">
                       {isExpired ? (
-                        <span className="inline-flex items-center gap-1 rounded-md bg-red-100 text-red-700 px-2 py-0.5 text-[10px] font-extrabold uppercase">
-                          <AlertTriangle className="h-3 w-3" /> EXPIRÉE
-                        </span>
+                        item.paymentStatus === 'PENDING_PAYMENT' ? (
+                          <span className="inline-flex items-center gap-1 rounded-md bg-amber-100 text-amber-800 px-2 py-0.5 text-[10px] font-extrabold uppercase">
+                            <Clock className="h-3 w-3" /> EN ATTENTE DE PAIEMENT MOBILE MONEY (VALIDATION AUTO DÈS PAIEMENT)
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 rounded-md bg-red-100 text-red-700 px-2 py-0.5 text-[10px] font-extrabold uppercase">
+                            <AlertTriangle className="h-3 w-3" /> EXPIRÉE
+                          </span>
+                        )
                       ) : (
                         <span className="inline-flex items-center gap-1 rounded-md bg-emerald-100 text-emerald-800 px-2 py-0.5 text-[10px] font-extrabold uppercase">
-                          ACTIVE • {daysLeft} JOURS RESTANTS
+                          ✓ VALIDÉE AUTO • ACTIVE ({daysLeft} JOURS RESTANTS)
                         </span>
                       )}
 
@@ -244,11 +250,20 @@ export default function MesAnnoncesPage() {
                 <div className="flex flex-wrap items-center gap-2 w-full md:w-auto justify-end border-t md:border-t-0 pt-3 md:pt-0 border-slate-100">
                   {isExpired ? (
                     <button
-                      onClick={() => openPaymentModal('decouverte', item.id)}
+                      onClick={() =>
+                        openPaymentModal(
+                          item.planTier !== 'free' ? item.planTier : 'decouverte',
+                          item.id
+                        )
+                      }
                       className="inline-flex items-center gap-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs px-4 py-2.5 shadow-sm transition"
                     >
                       <Smartphone className="h-4 w-4" />
-                      <span>Réactiver (2 000 FCFA)</span>
+                      <span>
+                        {item.paymentStatus === 'PENDING_PAYMENT'
+                          ? 'Finaliser le paiement & Activer la pub'
+                          : 'Réactiver (2 000 FCFA)'}
+                      </span>
                     </button>
                   ) : (
                     <button
